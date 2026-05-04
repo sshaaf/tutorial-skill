@@ -21,10 +21,17 @@ Complete tutorial generation with chapters
 ### Installation
 
 ```bash
-# Copy to your Claude skills directory
-cp -r tutorial-skill ~/.claude/skills/tutorial
+# Install via NPM (recommended)
+npx @sshaaf/tutorial-skill install
+```
 
-# Restart Claude Code if using desktop app
+**Alternative methods:**
+```bash
+# Manual install from source
+cp -r tutorial ~/.claude/skills/tutorial
+
+# Or extract from package
+tar -xzf tutorial.skill -C ~/.claude/skills/
 ```
 
 ### Usage

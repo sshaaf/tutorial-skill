@@ -1,9 +1,9 @@
 {
   "name": "@sshaaf/tutorial-skill",
-  "version": "1.1.1",
+  "version": "0.1.0",
   "description": "AI-powered codebase analysis and tutorial generation for Claude Code",
   "bin": {
-    "tutorial-skill": "./bin/cli.js"
+    "tutorial-skill": "bin/cli.js"
   },
   "files": [
     "bin/",
@@ -24,7 +24,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sshaaf/waver-llm"
+    "url": "git+https://github.com/sshaaf/waver-llm.git"
   },
   "engines": {
     "node": ">=14.0.0"

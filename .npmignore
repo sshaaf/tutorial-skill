@@ -1,0 +1,11 @@
+node_modules/
+.git/
+.DS_Store
+*.log
+.gitignore
+tests/output/
+output/
+*.skill
+*.zip
+*.sha256
+install-tutorial-skill.sh
