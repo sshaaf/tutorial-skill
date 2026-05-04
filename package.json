@@ -24,7 +24,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sshaaf/waver-llm.git"
+    "url": "git+https://github.com/sshaaf/tutorial-skill.git"
   },
   "engines": {
     "node": ">=14.0.0"
