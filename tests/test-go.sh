@@ -1,16 +1,16 @@
 #!/bin/bash
 #
-# Test script for JavaScript project analysis and tutorial generation
+# Test script for Go project analysis and tutorial generation
 #
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TEST_DIR="$SCRIPT_DIR/tests/javascript"
-OUTPUT_DIR="$SCRIPT_DIR/output/javascript"
+TEST_DIR="$SCRIPT_DIR/go"
+OUTPUT_DIR="$SCRIPT_DIR/output/go"
 
 echo "======================================"
-echo "Tutorial Skill - JavaScript Test"
+echo "Tutorial Skill - Go Test"
 echo "======================================"
 echo ""
 
@@ -23,13 +23,13 @@ echo "Output Directory: $OUTPUT_DIR"
 echo ""
 
 # Count files
-FILE_COUNT=$(find "$TEST_DIR" -name "*.js" | wc -l | tr -d ' ')
-echo "Found $FILE_COUNT JavaScript files"
+FILE_COUNT=$(find "$TEST_DIR" -name "*.go" | wc -l | tr -d ' ')
+echo "Found $FILE_COUNT Go files"
 echo ""
 
 # List files
 echo "Files to analyze:"
-find "$TEST_DIR" -name "*.js" -exec basename {} \;
+find "$TEST_DIR" -name "*.go" -exec basename {} \;
 echo ""
 
 echo "--------------------------------------"
@@ -39,7 +39,7 @@ echo ""
 echo "This test would run: /tutorial:analyze"
 echo "Expected output:"
 echo "  - Core abstractions: User, UserRepository, UserService, PasswordEncoder, UserController"
-echo "  - Language features: Classes, Map, Arrow functions, CommonJS modules"
+echo "  - Language features: Structs, Pointers, Goroutine-safe (sync.RWMutex)"
 echo "  - Relationships: UserController -> UserService -> UserRepository"
 echo "  - Architecture: Layered (MVC)"
 echo ""
@@ -56,11 +56,11 @@ echo ""
 echo "This test would run: /tutorial:build --output $OUTPUT_DIR"
 echo "Expected output files:"
 echo "  - index.md (Introduction)"
-echo "  - 01-User.md"
-echo "  - 02-PasswordEncoder.md"
-echo "  - 03-UserRepository.md"
-echo "  - 04-UserService.md"
-echo "  - 05-UserController.md"
+echo "  - 01-user.md"
+echo "  - 02-password_encoder.md"
+echo "  - 03-user_repository.md"
+echo "  - 04-user_service.md"
+echo "  - 05-user_controller.md"
 echo ""
 
 echo "To run this test with Claude Code:"
@@ -76,14 +76,14 @@ echo "1. Open Claude Code"
 echo "2. Navigate to: $TEST_DIR"
 echo "3. Run: /tutorial:analyze"
 echo "4. Verify it identifies 5 core components"
-echo "5. Verify it mentions JS features (ES6 classes, Map data structure)"
+echo "5. Verify it mentions Go features (pointers, error handling, concurrency)"
 echo "6. Run: /tutorial:build --output $OUTPUT_DIR"
 echo "7. Verify 6 files are created in $OUTPUT_DIR"
 echo "8. Check that chapters explain:"
-echo "   - User class with toJSON method"
-echo "   - Repository using Map for storage"
-echo "   - Service layer with error handling"
-echo "   - Controller with Response class"
+echo "   - User struct with pointer semantics"
+echo "   - Repository with thread-safe operations"
+echo "   - Service layer with error returns"
+echo "   - Controller with request/response types"
 echo ""
 
 echo "======================================"
