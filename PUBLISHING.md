@@ -69,6 +69,7 @@ npx @sshaaf/tutorial-skill
 tutorial/
 ├── SKILL.md           # Main skill (bundled)
 ├── README.md          # Skill docs (bundled)
+├── lib/               # HonKit runtime/docs helpers (bundled)
 ├── tests/             # Test projects (bundled)
 ├── package.json       # NPM config
 ├── bin/cli.js         # CLI entry
@@ -76,6 +77,18 @@ tutorial/
 ├── .npmignore         # Exclude patterns
 └── PUBLISHING.md      # This file (excluded)
 ```
+
+## HonKit Runtime Bundling
+
+During `npx @sshaaf/tutorial-skill install`, the installer now bootstraps a local HonKit runtime under:
+
+```bash
+~/.claude/skills/tutorial/.runtime/honkit
+```
+
+This installs:
+- `honkit`
+- `honkit-plugin-mermaid-hybrid`
 
 ## Update Instructions for Users
 

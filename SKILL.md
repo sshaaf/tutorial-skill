@@ -1,14 +1,16 @@
 ---
 name: tutorial
-description: Generate tutorials and analyze codebases with AI. Use "/tutorial build" to create comprehensive, chapter-based tutorials from any codebase. Use "/tutorial analyze" for quick architectural analysis with diagrams. Works with any programming language. Triggers on requests about creating tutorials, analyzing code architecture, understanding codebases, or generating learning materials.
+description: Generate tutorials and analyze codebases with AI. Use "/tutorial build" to create comprehensive, chapter-based tutorials from any codebase. Use "/tutorial analyze" for quick architectural analysis with diagrams. Use "/tutorial preview" to view generated tutorials locally with HonKit. Use "/tutorial doctor" to diagnose local preview/runtime issues. Works with any programming language. Triggers on requests about creating tutorials, analyzing code architecture, understanding codebases, or generating learning materials.
 ---
 
 # Tutorial Generator & Analyzer
 
-A unified skill for codebase analysis and tutorial generation. Supports two modes:
+A unified skill for codebase analysis and tutorial generation. Supports four modes:
 
 - **`/tutorial analyze`** - Fast codebase analysis (3-stage pipeline)
 - **`/tutorial build`** - Complete tutorial generation (6-stage pipeline)
+- **`/tutorial preview`** - Local docs preview using HonKit
+- **`/tutorial doctor`** - Diagnose docs/runtime setup issues
 
 ## Quick Reference
 
@@ -19,9 +21,21 @@ A unified skill for codebase analysis and tutorial generation. Supports two mode
 # Full tutorial generation
 /tutorial build .
 
+# Preview generated tutorial docs
+/tutorial preview ./tutorials
+
+# Diagnose local docs/runtime issues
+/tutorial doctor ./tutorials
+
+# Repair bundled HonKit runtime (if preview/doctor says runtime missing)
+# (Run from your local `tutorial-skill` git checkout)
+# node ./bin/cli.js docs runtime install
+
 # With arguments
 /tutorial analyze ./src/main/java
 /tutorial build --output ./docs/tutorial
+/tutorial preview --path ./docs/tutorial
+/tutorial doctor --path ./docs/tutorial
 ```
 
 ---
@@ -238,7 +252,7 @@ graph TD
 **Purpose**: Transform any codebase into comprehensive, beginner-friendly tutorials.
 
 **Time**: 10-30 minutes depending on project size
-**Output**: Multiple Markdown files (index + chapters)
+**Output**: Multiple Markdown files plus HonKit-ready navigation files
 
 ## When to Use Build Mode
 
@@ -489,22 +503,32 @@ order: {N}
 
 ---
 
-### Final Step: Create Table of Contents
+### Final Step: Create HonKit Navigation Files
 
-Update `index.md` to add the chapter links:
+After generating tutorial chapters, prepare the output for HonKit by default:
 
+1. Ensure there is a root landing page:
+   - If `README.md` does not exist and `index.md` exists, copy `index.md` to `README.md`
+   - If both are missing, create a minimal `README.md`
+
+2. Create `SUMMARY.md` from ordered chapter files:
 ```markdown
-## 📚 Chapters
+# Summary
 
-1. [Configuration](./01-Configuration.md)
-2. [User Model](./02-User-Model.md)
-3. [UserRepository](./03-UserRepository.md)
-4. [UserService](./04-UserService.md)
-5. [UserController](./05-UserController.md)
+* [Introduction](README.md)
+* [Configuration](01-Configuration.md)
+* [User Model](02-User-Model.md)
+* [UserRepository](03-UserRepository.md)
+* [UserService](04-UserService.md)
+* [UserController](05-UserController.md)
+```
 
----
-
-Ready to start? Begin with [Chapter 1: Configuration](./01-Configuration.md)!
+3. Create `book.json` if it doesn't exist:
+```json
+{
+  "title": "Tutorial",
+  "plugins": ["mermaid-hybrid"]
+}
 ```
 
 **Completion Message**:
@@ -513,7 +537,10 @@ Ready to start? Begin with [Chapter 1: Configuration](./01-Configuration.md)!
 
 📁 Output Directory: ./tutorials
 📄 Files Created:
-   - index.md (Introduction + TOC)
+   - index.md (Introduction)
+   - README.md (HonKit landing page)
+   - SUMMARY.md (HonKit navigation)
+   - book.json (HonKit config)
    - 01-Configuration.md
    - 02-User-Model.md
    - 03-UserRepository.md
@@ -527,9 +554,97 @@ Ready to start? Begin with [Chapter 1: Configuration](./01-Configuration.md)!
 
 🎯 Next Steps:
    - Review the tutorial
-   - Convert to HTML/PDF if needed
+   - Preview locally with (local dev repo): `node <path-to-tutorial-skill-repo>/bin/cli.js docs preview --dir ./tutorials`
+   - Build static docs with (local dev repo): `node <path-to-tutorial-skill-repo>/bin/cli.js docs build --dir ./tutorials`
+   - After publishing a new npm version, you can use: `npx @sshaaf/tutorial-skill@latest docs preview --dir ./tutorials`
    - Share with your team!
 ```
+
+---
+
+# Mode 3: Preview (`/tutorial preview`)
+
+**Purpose**: Preview generated tutorial docs locally using bundled HonKit.
+
+**Time**: 5-30 seconds to start
+**Output**: Local preview server URL (typically `http://localhost:4000`)
+
+## When to Use Preview Mode
+
+- Reviewing generated tutorial content before publishing
+- Validating Mermaid diagram rendering
+- Checking chapter navigation and ordering
+- Sharing a local preview in team demos
+
+## Preview Workflow
+
+1. Determine preview directory:
+   - If user provides path (e.g., `/tutorial preview ./docs/tutorial`), use that
+   - Else if `--path` is provided, use that
+   - Otherwise default to `./tutorials`
+
+2. Confirm directory exists:
+   - If it does not exist, respond with:
+     - "I couldn't find `{path}`. Run `/tutorial build --output {path}` first, or provide another path."
+   - If it exists, continue
+
+3. Prepare and serve docs with the CLI:
+   - Do **not** use `~/.claude/skills/tutorial/bin/cli.js` — the skill install copies `SKILL.md` but does not copy the package `bin/` directory.
+   - Prefer local development (before publishing):
+     - `node <path-to-tutorial-skill-repo>/bin/cli.js docs preview --dir {path}`
+   - After publishing, users can run:
+     - `npx @sshaaf/tutorial-skill@latest docs preview --dir {path}`
+   - Avoid `npx honkit serve` for validation — it won’t use the bundled runtime/plugins unless you install HonKit + Mermaid into the book directory.
+   - This command auto-creates/updates HonKit files (`README.md`, `SUMMARY.md`, `book.json`) if needed
+
+4. Confirm preview details:
+   - "✅ Preview started for `{path}`"
+   - "Open: `http://localhost:4000`"
+   - "Stop server with Ctrl+C"
+
+5. If preview command fails:
+   - If `npx @sshaaf/tutorial-skill ...` prints only `install`, you’re on an older published npm version — use the local repo CLI (`node .../bin/cli.js ...`) until you publish.
+   - If preview fails because HonKit runtime is missing/out of date:
+     - Local dev repair: `node <path-to-tutorial-skill-repo>/bin/cli.js docs runtime install`
+   - Suggest reinstalling to refresh bundled runtime:
+     - `rm -rf ~/.claude/skills/tutorial`
+     - Local dev install (from repo): `node bin/cli.js install`
+     - Published install (after release): `npx @sshaaf/tutorial-skill@latest install`
+
+---
+
+# Mode 4: Doctor (`/tutorial doctor`)
+
+**Purpose**: Diagnose local docs preview issues before publishing.
+
+**Time**: 10-30 seconds
+**Output**: Pass/fail checklist with fixes
+
+## Doctor Workflow
+
+1. Resolve target directory:
+   - If path provided (e.g., `/tutorial doctor ./docs/tutorial`), use it
+   - Else if `--path` provided, use it
+   - Otherwise default to `./tutorials`
+
+2. Run CLI diagnostics:
+   - Prefer local development (before publishing):
+     - `node <path-to-tutorial-skill-repo>/bin/cli.js docs doctor --dir {path}`
+   - After publishing:
+     - `npx @sshaaf/tutorial-skill@latest docs doctor --dir {path}`
+
+3. Report results clearly:
+   - If checks pass: confirm runtime/plugin/docs are healthy
+   - If checks fail: show the exact failing checks and include the suggested fix commands
+
+4. Common fixes to suggest:
+   - `rm -rf ~/.claude/skills/tutorial`
+   - Local dev install (from repo): `node bin/cli.js install`
+   - Published install (after release): `npx @sshaaf/tutorial-skill@latest install`
+   - Local dev docs helpers:
+     - `node <path-to-tutorial-skill-repo>/bin/cli.js docs runtime install`
+     - `node <path-to-tutorial-skill-repo>/bin/cli.js docs init --dir {path}`
+     - `node <path-to-tutorial-skill-repo>/bin/cli.js docs preview --dir {path}`
 
 ---
 
@@ -545,17 +660,23 @@ if invoked_as == "/tutorial analyze" or mode == "analyze":
     run_analyze_mode()
 elif invoked_as == "/tutorial build" or mode == "build":
     run_build_mode()
+elif invoked_as == "/tutorial preview" or mode == "preview":
+    run_preview_mode()
+elif invoked_as == "/tutorial doctor" or mode == "doctor":
+    run_doctor_mode()
 elif no_mode_specified:
-    ask_user: "Would you like to analyze or build a tutorial?"
+    ask_user: "Would you like to analyze, build, preview, or doctor a tutorial?"
 ```
 
 ## Supported Arguments
 
-Both modes support:
+Supported arguments:
 - **Path**: `/tutorial analyze ./src/main/java`
 - **Output**: `/tutorial build --output ./docs`
 - **Language**: `/tutorial analyze --language python`
 - **Focus**: `/tutorial analyze --focus services`
+- **Preview Path**: `/tutorial preview ./docs/tutorial` or `/tutorial preview --path ./docs/tutorial`
+- **Doctor Path**: `/tutorial doctor ./docs/tutorial` or `/tutorial doctor --path ./docs/tutorial`
 
 Parse arguments flexibly - accept flags or positional args.
 
@@ -599,6 +720,7 @@ Show clear progress at each stage:
 - Specify target audience for better content
 - Generate tutorials for one module at a time in large projects
 - Regenerate individual chapters if needed
+- By default, outputs are prepared for HonKit local preview
 
 ---
 
@@ -631,6 +753,38 @@ Show clear progress at each stage:
 
 # Complete specification
 /tutorial build ./src/main/java --output ./tutorials --name "Spring Boot API" --audience intermediate
+
+# Preview generated docs locally (HonKit default engine)
+node <path-to-tutorial-skill-repo>/bin/cli.js docs preview --dir ./docs/tutorial
+
+# After publishing a new npm version:
+# npx @sshaaf/tutorial-skill@latest docs preview --dir ./docs/tutorial
+```
+
+## Preview Examples
+
+```bash
+# Preview default tutorial output directory
+/tutorial preview
+
+# Preview specific directory
+/tutorial preview ./docs/tutorial
+
+# Preview specific directory with flag
+/tutorial preview --path ./docs/tutorial
+```
+
+## Doctor Examples
+
+```bash
+# Diagnose default output directory
+/tutorial doctor
+
+# Diagnose specific tutorial directory
+/tutorial doctor ./docs/tutorial
+
+# Diagnose specific directory with flag
+/tutorial doctor --path ./docs/tutorial
 ```
 
 ## Interactive Example
@@ -673,5 +827,7 @@ Great! I'll generate a comprehensive tutorial.
 **Remember**:
 - **Analyze** is fast and interactive (3 stages)
 - **Build** is comprehensive and creates files (6 stages)
-- Both work with any programming language
-- Both provide progress updates and allow user input
+- **Preview** launches local HonKit docs for generated tutorials
+- **Doctor** validates runtime/plugin/docs health before publishing
+- All modes work with any programming language
+- All modes provide progress updates and allow user input

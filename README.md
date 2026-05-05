@@ -13,8 +13,20 @@ Fast codebase analysis with architecture diagrams
 ### `/tutorial build`
 Complete tutorial generation with chapters
 - **Time**: 10-30 minutes
-- **Output**: Multiple Markdown files (index + chapters)
+- **Output**: Multiple Markdown files + HonKit-ready docs scaffolding
 - **Use for**: Creating learning materials, documentation, training resources
+
+### `/tutorial preview`
+Local tutorial preview with HonKit
+- **Time**: 5-30 seconds to start
+- **Output**: Local docs site (usually `http://localhost:4000`)
+- **Use for**: Reviewing generated docs before publishing
+
+### `/tutorial doctor`
+Diagnostics for local preview/runtime + docs scaffolding
+- **Time**: ~10-30 seconds
+- **Output**: Pass/fail checklist
+- **Use for**: Verifying HonKit runtime + `book.json` before publishing
 
 ## Quick Start
 
@@ -25,6 +37,8 @@ Complete tutorial generation with chapters
 npx @sshaaf/tutorial-skill install
 ```
 
+The installer bootstraps a local HonKit runtime under `~/.claude/skills/tutorial/.runtime/honkit` and installs `honkit-plugin-mermaid-hybrid` for diagram rendering.
+
 **Alternative methods:**
 ```bash
 # Manual install from source
@@ -33,6 +47,8 @@ cp -r tutorial ~/.claude/skills/tutorial
 # Or extract from package
 tar -xzf tutorial.skill -C ~/.claude/skills/
 ```
+
+Note: alternative/manual installation methods do not bootstrap the bundled HonKit runtime; use the NPM installer for the default preview workflow.
 
 ### Usage
 
@@ -48,7 +64,40 @@ tar -xzf tutorial.skill -C ~/.claude/skills/
 
 # With output directory
 /tutorial build --output ./docs/tutorial
+
+# Preview generated tutorial in Claude mode
+/tutorial preview ./docs/tutorial
+
+# Diagnose local preview/runtime/docs scaffolding
+/tutorial doctor ./docs/tutorial
+
+# Initialize docs files for HonKit
+npx @sshaaf/tutorial-skill docs init --dir ./docs/tutorial
+
+# Preview locally with HonKit
+npx @sshaaf/tutorial-skill docs preview --dir ./docs/tutorial
+
+# Build static site with HonKit
+npx @sshaaf/tutorial-skill docs build --dir ./docs/tutorial
+
+# Diagnose runtime/plugin setup
+npx @sshaaf/tutorial-skill docs doctor --dir ./docs/tutorial
 ```
+
+`honkit` is the default docs engine. `--engine honkit` is optional and supported for future engine compatibility.
+
+### Developer / pre-publish CLI (git checkout)
+
+If you are testing changes **before publishing** to npm, use the repo CLI (not `npx`), because `npx` resolves the **published** package version:
+
+```bash
+node ./bin/cli.js docs runtime install
+node ./bin/cli.js docs init --dir ./docs/tutorial
+node ./bin/cli.js docs doctor --dir ./docs/tutorial
+node ./bin/cli.js docs preview --dir ./docs/tutorial
+```
+
+See `DEV_TESTING.md` for the short checklist.
 
 ## Examples
 
@@ -83,7 +132,19 @@ Claude:
 ...
 ✅ Tutorial complete!
 📁 Output: ./tutorials/
-📄 Files: index.md + 7 chapters
+📄 Files: index.md + README.md + SUMMARY.md + book.json + 7 chapters
+```
+
+### Local docs workflow (default)
+```bash
+/tutorial build --output ./docs/tutorial
+/tutorial preview ./docs/tutorial
+
+# or use the CLI directly
+node ./bin/cli.js docs preview --dir ./docs/tutorial
+
+# published-package equivalent (after release):
+# npx @sshaaf/tutorial-skill@latest docs preview --dir ./docs/tutorial
 ```
 
 ## Pipeline Overview
@@ -123,6 +184,7 @@ Works with any programming language:
 ## Documentation
 
 - **SKILL.md**: Complete skill implementation
+- **DEV_TESTING.md**: Local testing checklist for maintainers
 - **Installation**: See parent directory QUICK-START.md
 - **Comparison**: See parent directory SKILLS-README.md
 
