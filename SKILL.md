@@ -200,12 +200,36 @@ graph TD
 ```
 ✅ Analysis complete!
 
-Would you like me to:
+Would you like me to save the architecture diagram to disk?
+- The diagram will be saved as a Mermaid (.mmd) file
+- You can also get a full Markdown analysis file
+- Reply "yes" to save diagram, "markdown" for full analysis, or "skip" to continue
+
+Other options:
 - 🔎 Deep dive into a specific component?
 - 📚 Generate a full tutorial with this? (use /tutorial build)
-- 💾 Export this analysis as a Markdown file?
 - ❓ Answer questions about the architecture?
 ```
+
+**If user wants to save diagram**:
+1. Ask for filename (default: `architecture-diagram.mmd`)
+2. Create the Mermaid file with just the diagram content:
+```mermaid
+graph TD
+    A[ComponentA] -->|relationship| B[ComponentB]
+    B -->|relationship| C[ComponentC]
+    ...
+```
+3. Confirm: "✅ Diagram saved to `{filename}`"
+
+**If user wants full markdown analysis**:
+1. Ask for filename (default: `codebase-analysis.md`)
+2. Include all content from Stages 2-3:
+   - Core Abstractions section
+   - Project Overview
+   - Architecture Diagram (embedded mermaid)
+   - Key Relationships
+3. Confirm: "✅ Analysis saved to `{filename}`"
 
 ---
 
