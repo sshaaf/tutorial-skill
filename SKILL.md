@@ -1,32 +1,32 @@
 ---
 name: tutorial
-description: Generate tutorials and analyze codebases with AI. Use "/tutorial:build" to create comprehensive, chapter-based tutorials from any codebase. Use "/tutorial:analyze" for quick architectural analysis with diagrams. Works with any programming language. Triggers on requests about creating tutorials, analyzing code architecture, understanding codebases, or generating learning materials.
+description: Generate tutorials and analyze codebases with AI. Use "/tutorial build" to create comprehensive, chapter-based tutorials from any codebase. Use "/tutorial analyze" for quick architectural analysis with diagrams. Works with any programming language. Triggers on requests about creating tutorials, analyzing code architecture, understanding codebases, or generating learning materials.
 ---
 
 # Tutorial Generator & Analyzer
 
 A unified skill for codebase analysis and tutorial generation. Supports two modes:
 
-- **`/tutorial:analyze`** - Fast codebase analysis (3-stage pipeline)
-- **`/tutorial:build`** - Complete tutorial generation (6-stage pipeline)
+- **`/tutorial analyze`** - Fast codebase analysis (3-stage pipeline)
+- **`/tutorial build`** - Complete tutorial generation (6-stage pipeline)
 
 ## Quick Reference
 
 ```bash
 # Quick analysis
-/tutorial:analyze
+/tutorial analyze .
 
 # Full tutorial generation
-/tutorial:build
+/tutorial build .
 
 # With arguments
-/tutorial:analyze ./src/main/java
-/tutorial:build --output ./docs/tutorial
+/tutorial analyze ./src/main/java
+/tutorial build --output ./docs/tutorial
 ```
 
 ---
 
-# Mode 1: Analyze (`/tutorial:analyze`)
+# Mode 1: Analyze (`/tutorial analyze`)
 
 **Purpose**: Quickly understand any codebase by identifying core components and their relationships.
 
@@ -47,7 +47,7 @@ A unified skill for codebase analysis and tutorial generation. Supports two mode
 
 **Instructions**:
 1. Determine project details:
-   - If user provided path in command (e.g., `/tutorial:analyze ./src`), use that
+   - If user provided path in command (e.g., `/tutorial analyze ./src`), use that
    - Otherwise ask: "What directory should I analyze?"
    - Auto-detect primary language from file extensions
    - Ask if they want to focus on specific areas (optional)
@@ -202,14 +202,14 @@ graph TD
 
 Would you like me to:
 - 🔎 Deep dive into a specific component?
-- 📚 Generate a full tutorial with this? (use /tutorial:build)
+- 📚 Generate a full tutorial with this? (use /tutorial build)
 - 💾 Export this analysis as a Markdown file?
 - ❓ Answer questions about the architecture?
 ```
 
 ---
 
-# Mode 2: Build (`/tutorial:build`)
+# Mode 2: Build (`/tutorial build`)
 
 **Purpose**: Transform any codebase into comprehensive, beginner-friendly tutorials.
 
@@ -517,9 +517,9 @@ When the skill is invoked, check for arguments:
 
 ```python
 # Pseudo-code for argument handling
-if invoked_as == "/tutorial:analyze" or mode == "analyze":
+if invoked_as == "/tutorial analyze" or mode == "analyze":
     run_analyze_mode()
-elif invoked_as == "/tutorial:build" or mode == "build":
+elif invoked_as == "/tutorial build" or mode == "build":
     run_build_mode()
 elif no_mode_specified:
     ask_user: "Would you like to analyze or build a tutorial?"
@@ -528,10 +528,10 @@ elif no_mode_specified:
 ## Supported Arguments
 
 Both modes support:
-- **Path**: `/tutorial:analyze ./src/main/java`
-- **Output**: `/tutorial:build --output ./docs`
-- **Language**: `/tutorial:analyze --language python`
-- **Focus**: `/tutorial:analyze --focus services`
+- **Path**: `/tutorial analyze ./src/main/java`
+- **Output**: `/tutorial build --output ./docs`
+- **Language**: `/tutorial analyze --language python`
+- **Focus**: `/tutorial analyze --focus services`
 
 Parse arguments flexibly - accept flags or positional args.
 
@@ -547,7 +547,7 @@ Parse arguments flexibly - accept flags or positional args.
 
 Show clear progress at each stage:
 ```
-/tutorial:build
+/tutorial build .
 
 📦 Tutorial Generator - Build Mode
 
@@ -584,35 +584,35 @@ Show clear progress at each stage:
 
 ```bash
 # Basic analysis
-/tutorial:analyze
+/tutorial analyze .
 
 # Analyze specific directory
-/tutorial:analyze ./src/services
+/tutorial analyze ./src/services
 
 # With language hint
-/tutorial:analyze ./app --language typescript
+/tutorial analyze ./app --language typescript
 
 # Focus on specific layer
-/tutorial:analyze ./backend --focus "authentication and authorization"
+/tutorial analyze ./backend --focus "authentication and authorization"
 ```
 
 ## Build Examples
 
 ```bash
 # Basic tutorial generation
-/tutorial:build
+/tutorial build .
 
 # With output directory
-/tutorial:build --output ./docs/tutorial
+/tutorial build --output ./docs/tutorial
 
 # Complete specification
-/tutorial:build ./src/main/java --output ./tutorials --name "Spring Boot API" --audience intermediate
+/tutorial build ./src/main/java --output ./tutorials --name "Spring Boot API" --audience intermediate
 ```
 
 ## Interactive Example
 
 ```
-User: /tutorial:analyze
+User: /tutorial analyze .
 
 Claude: I'll analyze your codebase. What directory should I analyze?
 
@@ -629,7 +629,7 @@ Claude:
 
 Would you like me to:
 - Deep dive into a specific component?
-- Generate a full tutorial? (use /tutorial:build)
+- Generate a full tutorial? (use /tutorial build)
 - Export this analysis?
 
 User: Generate a full tutorial

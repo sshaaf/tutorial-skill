@@ -63,14 +63,14 @@ function install() {
   console.log('🎯 Usage in Claude Code:');
   console.log('');
   console.log('  Fast Analysis (2-5 minutes):');
-  console.log('    /tutorial:analyze ./src');
+  console.log('    /tutorial analyze ./src');
   console.log('');
   console.log('  Full Tutorial (10-30 minutes):');
-  console.log('    /tutorial:build --output ./docs');
+  console.log('    /tutorial build --output ./docs');
   console.log('');
   console.log('🧪 Test the skill:');
   console.log('  cd', path.join(SKILL_DIR, 'tests/java'));
-  console.log('  # Then in Claude Code: /tutorial:analyze .');
+  console.log('  # Then in Claude Code: /tutorial analyze .');
   console.log('');
   console.log('📚 Documentation:');
   console.log('  README:', path.join(SKILL_DIR, 'README.md'));

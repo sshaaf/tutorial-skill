@@ -4,13 +4,13 @@ A unified skill for AI-powered codebase analysis and tutorial generation.
 
 ## Commands
 
-### `/tutorial:analyze`
+### `/tutorial analyze`
 Fast codebase analysis with architecture diagrams
 - **Time**: 2-5 minutes
 - **Output**: Interactive summary + Mermaid diagram
 - **Use for**: Understanding codebases, onboarding, planning refactors
 
-### `/tutorial:build`
+### `/tutorial build`
 Complete tutorial generation with chapters
 - **Time**: 10-30 minutes
 - **Output**: Multiple Markdown files (index + chapters)
@@ -38,23 +38,23 @@ tar -xzf tutorial.skill -C ~/.claude/skills/
 
 ```bash
 # Quick analysis
-/tutorial:analyze
+/tutorial analyze .
 
 # With path
-/tutorial:analyze ./src/main/java
+/tutorial analyze ./src/main/java
 
 # Full tutorial
-/tutorial:build
+/tutorial build .
 
 # With output directory
-/tutorial:build --output ./docs/tutorial
+/tutorial build --output ./docs/tutorial
 ```
 
 ## Examples
 
 ### Analyze a codebase
 ```
-User: /tutorial:analyze ./backend
+User: /tutorial analyze ./backend
 
 Claude:
 ⏳ Discovering source files...
@@ -72,7 +72,7 @@ Claude:
 
 ### Generate tutorial
 ```
-User: /tutorial:build
+User: /tutorial build .
 
 Claude: I'll generate a tutorial. What directory should I analyze?
 
