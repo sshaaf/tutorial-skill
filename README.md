@@ -1,6 +1,43 @@
 # Tutorial Skill
 
-A unified skill for AI-powered codebase analysis and tutorial generation.
+This skill generates code tutorials from source code using Large Language Models (LLMs). It analyzes the source code, identifies abstractions and relationships, and generates a structured tutorial with chapters.
+It has various commands such as `analysis`, `build` and `preview`. 
+
+### Quick start
+```
+npx @sshaaf/tutorial-skill install
+
+# reload the coding agent. e.g. claude.
+
+/tutorial build
+
+You can preview the files in markdown on disk. for example preview in VSCode. however if you want to preview in html then use the following command.
+
+/tutorial preview
+```
+
+![Example](.github/assets/images/example-preview.jpg)
+
+
+## Pipeline Overview
+
+### Analyze Mode (3 stages)
+1. **Code Discovery**: Find and read source files
+2. **Identify Abstractions**: Extract core concepts
+3. **Analyze Relationships**: Map component interactions
+
+### Build Mode (6 stages)
+1. **Code Discovery**: Find and read source files
+2. **Identify Abstractions**: Extract core concepts
+3. **Analyze Relationships**: Map component interactions
+4. **Organize Chapters**: Determine pedagogical order
+5. **Generate Metadata**: Create tutorial info
+6. **Write Content**: Generate introduction + chapters
+
+## Language Support
+
+Works with any programming language:
+- Java, Python, JavaScript/TypeScript, Go, C#, Ruby, PHP, Rust, Kotlin etc.
 
 ## Commands
 
@@ -27,8 +64,6 @@ Diagnostics for local preview/runtime + docs scaffolding
 - **Time**: ~10-30 seconds
 - **Output**: Pass/fail checklist
 - **Use for**: Verifying HonKit runtime + `book.json` before publishing
-
-## Quick Start
 
 ### Installation
 
@@ -90,84 +125,7 @@ npx @sshaaf/tutorial-skill docs doctor --dir ./docs/tutorial
 
 If you are testing changes **before publishing** to npm, use the repo CLI (not `npx`), because `npx` resolves the **published** package version:
 
-```bash
-node ./bin/cli.js docs runtime install
-node ./bin/cli.js docs init --dir ./docs/tutorial
-node ./bin/cli.js docs doctor --dir ./docs/tutorial
-node ./bin/cli.js docs preview --dir ./docs/tutorial
-```
-
 See `DEV_TESTING.md` for the short checklist.
-
-## Examples
-
-### Analyze a codebase
-```
-User: /tutorial analyze ./backend
-
-Claude:
-⏳ Discovering source files...
-✓ Found 23 files (4,521 lines)
-
-⏳ Identifying abstractions...
-✓ Found 9 core components
-
-## 🏗️ Architecture Diagram
-[Shows Mermaid diagram]
-
-## 📊 Core Components
-[Lists components by category]
-```
-
-### Generate tutorial
-```
-User: /tutorial build .
-
-Claude: I'll generate a tutorial. What directory should I analyze?
-
-User: ./src
-
-Claude:
-[Runs 6-stage pipeline]
-...
-✅ Tutorial complete!
-📁 Output: ./tutorials/
-📄 Files: index.md + README.md + SUMMARY.md + book.json + 7 chapters
-```
-
-### Local docs workflow (default)
-```bash
-/tutorial build --output ./docs/tutorial
-/tutorial preview ./docs/tutorial
-
-# or use the CLI directly
-node ./bin/cli.js docs preview --dir ./docs/tutorial
-
-# published-package equivalent (after release):
-# npx @sshaaf/tutorial-skill@latest docs preview --dir ./docs/tutorial
-```
-
-## Pipeline Overview
-
-### Analyze Mode (3 stages)
-1. **Code Discovery**: Find and read source files
-2. **Identify Abstractions**: Extract core concepts
-3. **Analyze Relationships**: Map component interactions
-
-### Build Mode (6 stages)
-1. **Code Discovery**: Find and read source files
-2. **Identify Abstractions**: Extract core concepts
-3. **Analyze Relationships**: Map component interactions
-4. **Organize Chapters**: Determine pedagogical order
-5. **Generate Metadata**: Create tutorial info
-6. **Write Content**: Generate introduction + chapters
-
-## Language Support
-
-Works with any programming language:
-- ✅ Java, Python, JavaScript/TypeScript
-- ✅ Go, C#, Ruby, PHP, Rust, Kotlin
-- ✅ And more...
 
 ## Tips
 
