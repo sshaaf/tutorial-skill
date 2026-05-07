@@ -554,9 +554,7 @@ After generating tutorial chapters, prepare the output for HonKit by default:
 
 🎯 Next Steps:
    - Review the tutorial
-   - Preview locally with (local dev repo): `node <path-to-tutorial-skill-repo>/bin/cli.js docs preview --dir ./tutorials`
-   - Build static docs with (local dev repo): `node <path-to-tutorial-skill-repo>/bin/cli.js docs build --dir ./tutorials`
-   - After publishing a new npm version, you can use: `npx @sshaaf/tutorial-skill@latest docs preview --dir ./tutorials`
+   - Preview locally with `/tutorial preview`
    - Share with your team!
 ```
 
