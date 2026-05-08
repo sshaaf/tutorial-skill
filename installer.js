@@ -1,9 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 const { execFileSync } = require('child_process');
 
-const SKILL_DIR = path.join(os.homedir(), '.claude/skills/tutorial');
+const SKILL_DIR = path.join(process.cwd(), '.claude/tutorial');
 const SOURCE_DIR = __dirname;
 const HONKIT_RUNTIME_DIR = path.join(SKILL_DIR, '.runtime', 'honkit');
 const HONKIT_RUNTIME_PACKAGE = path.join(HONKIT_RUNTIME_DIR, 'package.json');
@@ -84,19 +83,43 @@ function bootstrapHonkitRuntime() {
   console.log('✅ HonKit runtime ready.');
 }
 
+function writeVersionFile() {
+  const versionFilePath = path.join(SKILL_DIR, '.version');
+  let packageJson;
+
+  try {
+    packageJson = require('./package.json');
+  } catch (error) {
+    // If package.json doesn't exist (dev), use a default
+    packageJson = { version: '0.0.0-dev' };
+  }
+
+  const versionData = {
+    version: packageJson.version,
+    installedAt: new Date().toISOString(),
+    customized: false
+  };
+
+  fs.writeFileSync(versionFilePath, JSON.stringify(versionData, null, 2) + '\n');
+}
+
 function install() {
-  console.log('📦 Installing Tutorial Skill...');
+  const isUpdate = fs.existsSync(SKILL_DIR);
+
+  console.log(isUpdate ? '🔄 Updating Tutorial Skill...' : '📦 Installing Tutorial Skill...');
   console.log('');
 
-  // Check if already installed
-  if (fs.existsSync(SKILL_DIR)) {
-    console.log('⚠️  Tutorial skill already exists at:', SKILL_DIR);
-    console.log('');
-    console.log('To reinstall, first remove the existing installation:');
-    console.log('  rm -rf', SKILL_DIR);
-    console.log('');
-    console.log('Then run this installer again.');
-    process.exit(1);
+  // If updating, show current version
+  if (isUpdate) {
+    const versionFile = path.join(SKILL_DIR, '.version');
+    if (fs.existsSync(versionFile)) {
+      try {
+        const versionData = JSON.parse(fs.readFileSync(versionFile, 'utf8'));
+        console.log('Current version:', versionData.version);
+      } catch (error) {
+        // Ignore parse errors
+      }
+    }
   }
 
   // Create .claude/skills directory if needed
@@ -122,10 +145,25 @@ function install() {
     process.exit(1);
   }
 
+  // Write version information
+  writeVersionFile();
+
   console.log('');
-  console.log('✅ Installation complete!');
+  console.log(isUpdate ? '✅ Update complete!' : '✅ Installation complete!');
   console.log('');
   console.log('📍 Installed to:', SKILL_DIR);
+  console.log('');
+
+  if (!isUpdate) {
+    console.log('💡 Version Control:');
+    console.log('   • Exclude all: echo ".claude/" >> .gitignore');
+    console.log('   • Commit templates: git add .claude/tutorial/templates/ .claude/tutorial/SKILL.md');
+    console.log('');
+    console.log('📦 Updates:');
+    console.log('   • Check for updates: npx @sshaaf/tutorial-skill update --check');
+    console.log('   • Update (with backup): npx @sshaaf/tutorial-skill update');
+    console.log('   ⚠️  Updates overwrite templates - backup created automatically');
+  }
   console.log('');
   console.log('🎯 Usage in Claude Code:');
   console.log('');
@@ -136,15 +174,15 @@ function install() {
   console.log('    /tutorial build --output ./docs');
   console.log('');
   console.log('  Local HonKit Preview (default docs engine):');
-  console.log('    node', path.join(SKILL_DIR, 'bin/cli.js'), 'docs runtime install');
-  console.log('    node', path.join(SKILL_DIR, 'bin/cli.js'), 'docs init --dir ./docs/tutorial');
-  console.log('    node', path.join(SKILL_DIR, 'bin/cli.js'), 'docs preview --dir ./docs/tutorial');
-  console.log('    node', path.join(SKILL_DIR, 'bin/cli.js'), 'docs doctor --dir ./docs/tutorial');
+  console.log('    node', path.join(SKILL_DIR, 'bin/cli.js'), 'runtime install');
+  console.log('    node', path.join(SKILL_DIR, 'bin/cli.js'), 'init --dir ./docs/tutorial');
+  console.log('    node', path.join(SKILL_DIR, 'bin/cli.js'), 'preview --dir ./docs/tutorial');
+  console.log('    node', path.join(SKILL_DIR, 'bin/cli.js'), 'doctor --dir ./docs/tutorial');
   console.log('');
   console.log('  Published-package equivalents (after npm publish):');
-  console.log('    npx @sshaaf/tutorial-skill@latest docs init --dir ./docs/tutorial');
-  console.log('    npx @sshaaf/tutorial-skill@latest docs preview --dir ./docs/tutorial');
-  console.log('    npx @sshaaf/tutorial-skill@latest docs doctor --dir ./docs/tutorial');
+  console.log('    npx @sshaaf/tutorial-skill@latest init --dir ./docs/tutorial');
+  console.log('    npx @sshaaf/tutorial-skill@latest preview --dir ./docs/tutorial');
+  console.log('    npx @sshaaf/tutorial-skill@latest doctor --dir ./docs/tutorial');
   console.log('');
   console.log('🧪 Test the skill:');
   console.log('  cd', path.join(SKILL_DIR, 'tests/java'));

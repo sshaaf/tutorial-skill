@@ -1,6 +1,6 @@
 {
   "name": "@sshaaf/tutorial-skill",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "AI-powered codebase analysis and tutorial generation for Claude Code",
   "bin": {
     "tutorial-skill": "bin/cli.js"
@@ -8,6 +8,7 @@
   "files": [
     "bin/",
     "lib/",
+    "templates/",
     "installer.js",
     "SKILL.md",
     "README.md",

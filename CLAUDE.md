@@ -2,13 +2,44 @@
 
 This is a Claude Code skill for generating tutorials and analyzing codebases.
 
-## Recent Updates (2026-05-05)
+## Recent Updates (2026-05-08)
+
+### Local Installation Pattern
+
+The skill now installs locally to `.claude/tutorial/` in your project directory instead of globally to `~/.claude/skills/tutorial/`. This enables:
+
+- **Version control**: Commit templates and skill configuration with your project
+- **Per-project customization**: Each project can customize templates independently
+- **No global state**: Multiple projects can use different versions
+- **Team sharing**: Teams can share customized templates via git
+
+When you run `npx @sshaaf/tutorial-skill install`, it creates:
+```
+your-project/
+  .claude/
+    tutorial/
+      SKILL.md              # Skill definition
+      templates/honkit/     # Customizable templates
+      bin/                  # CLI tools
+      lib/                  # Helper libraries
+      .runtime/honkit/      # Bundled HonKit + plugins
+      .version              # Version tracking
+```
+
+**Update behavior**:
+- `npx @sshaaf/tutorial-skill update` updates the local installation in current directory
+- Creates automatic backup at `.claude/tutorial/.backup/` before updating
+- **WARNING**: Updates overwrite all files including templates
+- Users who customize templates should manually backup before updating
+- Runtime (`.runtime/honkit/`) is preserved across updates
+
+## Previous Updates (2026-05-05)
 
 ### HonKit local preview + diagnostics
 
 The skill supports `/tutorial preview` and `/tutorial doctor`, backed by a bundled HonKit runtime installed under:
 
-`~/.claude/skills/tutorial/.runtime/honkit`
+`.claude/tutorial/.runtime/honkit` (in your project directory)
 
 Diagram rendering uses **`honkit-plugin-mermaid-hybrid`** (newer Mermaid than legacy GitBook Mermaid plugins).
 

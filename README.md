@@ -4,17 +4,28 @@ This skill generates code tutorials from source code using Large Language Models
 It has various commands such as `analysis`, `build` and `preview`. 
 
 ### Quick start
-```
+```bash
+# 1. Navigate to your project
+cd /path/to/your/project
+
+# 2. Install the skill locally
 npx @sshaaf/tutorial-skill install
 
-# reload the coding agent. e.g. claude.
+# 3. Reload your coding agent (e.g., restart Claude Code CLI or reload IDE)
 
+# 4. Generate tutorial (in Claude Code)
 /tutorial build
 
-You can preview the files in markdown on disk. for example preview in VSCode. however if you want to preview in html then use the following command.
-
+# 5. Preview the tutorial
+# Option A: View markdown files directly (VS Code, etc.)
+# Option B: Preview as HTML with HonKit
 /tutorial preview
 ```
+
+**What happens**:
+- Step 2 creates `.claude/tutorial/` in your project
+- Step 4 generates tutorial files in `./docs/tutorial/`
+- Step 5 serves an interactive HTML site at `http://localhost:4000`
 
 ![Example](.github/assets/images/example-preview.jpg)
 
@@ -68,22 +79,106 @@ Diagnostics for local preview/runtime + docs scaffolding
 ### Installation
 
 ```bash
+# Navigate to your project directory
+cd /path/to/your/project
+
 # Install via NPM (recommended)
 npx @sshaaf/tutorial-skill install
 ```
 
-The installer bootstraps a local HonKit runtime under `~/.claude/skills/tutorial/.runtime/honkit` and installs `honkit-plugin-mermaid-hybrid` for diagram rendering.
+This creates `.claude/tutorial/` in your project directory with:
+- Skill definition (SKILL.md)
+- Templates for tutorial generation
+- CLI tools for preview/build
+- Bundled HonKit runtime (`.runtime/honkit`)
+
+**Benefits of local installation**:
+- ✅ Version control templates with your project
+- ✅ Customize templates per project
+- ✅ Multiple projects can have different versions
+- ✅ No global state - everything is project-local
+
+### Updating
+
+```bash
+# Navigate to the project directory where you installed the skill
+cd /path/to/your/project
+
+# Check for updates
+npx @sshaaf/tutorial-skill update --check
+
+# Update to latest version (with automatic backup)
+npx @sshaaf/tutorial-skill update
+
+# Update without backup
+npx @sshaaf/tutorial-skill update --no-backup
+
+# Force update even if on latest version
+npx @sshaaf/tutorial-skill update --force
+```
+
+**Important notes about updates**:
+- ⚠️ Updates **overwrite** files in `.claude/tutorial/` including templates
+- ✅ Automatic backup created at `.claude/tutorial/.backup/` before update
+- ✅ HonKit runtime (`.runtime/honkit/`) is preserved
+- ✅ Rolls back automatically if update fails
+- 💡 If you customized templates, backup is your safety net
+
+**Workflow for customized templates**:
+```bash
+# Before update - manually save your customizations
+cp -r .claude/tutorial/templates .claude/tutorial/templates.custom
+
+# Run update
+npx @sshaaf/tutorial-skill update
+
+# After update - restore specific customizations
+# (merge changes as needed)
+diff -r .claude/tutorial/templates .claude/tutorial/templates.custom
+```
 
 **Alternative methods:**
 ```bash
-# Manual install from source
-cp -r tutorial ~/.claude/skills/tutorial
+# Manual install from source (run from project directory)
+cp -r /path/to/tutorial-skill .claude/tutorial
 
-# Or extract from package
-tar -xzf tutorial.skill -C ~/.claude/skills/
+# Or clone directly
+git clone https://github.com/sshaaf/tutorial-skill .claude/tutorial
 ```
 
 Note: alternative/manual installation methods do not bootstrap the bundled HonKit runtime; use the NPM installer for the default preview workflow.
+
+**Version control**:
+```bash
+# Option 1: Exclude from git (recommended for most users)
+echo ".claude/" >> .gitignore
+
+# Option 2: Commit templates for team customization
+git add .claude/tutorial/templates/
+git add .claude/tutorial/SKILL.md
+git commit -m "Add customized tutorial templates"
+```
+
+**Managing multiple projects**:
+```bash
+# Each project has its own local installation
+cd ~/projects/app-A
+npx @sshaaf/tutorial-skill install  # Creates app-A/.claude/tutorial/
+
+cd ~/projects/app-B
+npx @sshaaf/tutorial-skill install  # Creates app-B/.claude/tutorial/
+
+# Customize templates differently per project
+vim ~/projects/app-A/.claude/tutorial/templates/honkit/index.md
+vim ~/projects/app-B/.claude/tutorial/templates/honkit/index.md
+
+# Updates are per-project
+cd ~/projects/app-A
+npx @sshaaf/tutorial-skill update  # Updates only app-A
+
+cd ~/projects/app-B
+npx @sshaaf/tutorial-skill update  # Updates only app-B
+```
 
 ### Usage
 
@@ -107,16 +202,16 @@ Note: alternative/manual installation methods do not bootstrap the bundled HonKi
 /tutorial doctor ./docs/tutorial
 
 # Initialize docs files for HonKit
-npx @sshaaf/tutorial-skill docs init --dir ./docs/tutorial
+npx @sshaaf/tutorial-skill init --dir ./docs/tutorial
 
 # Preview locally with HonKit
-npx @sshaaf/tutorial-skill docs preview --dir ./docs/tutorial
+npx @sshaaf/tutorial-skill preview --dir ./docs/tutorial
 
 # Build static site with HonKit
-npx @sshaaf/tutorial-skill docs build --dir ./docs/tutorial
+npx @sshaaf/tutorial-skill build --dir ./docs/tutorial
 
 # Diagnose runtime/plugin setup
-npx @sshaaf/tutorial-skill docs doctor --dir ./docs/tutorial
+npx @sshaaf/tutorial-skill doctor --dir ./docs/tutorial
 ```
 
 `honkit` is the default docs engine. `--engine honkit` is optional and supported for future engine compatibility.
