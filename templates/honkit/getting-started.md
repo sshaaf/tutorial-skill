@@ -52,6 +52,17 @@ Once the application is running, verify it's working correctly:
 
 {{COMMON_ISSUES}}
 
+## Practice Exercise
+
+Verify your setup by making a small change:
+
+{{SETUP_PRACTICE_EXERCISE}}
+
+**Expected Outcome**: {{SETUP_EXPECTED_OUTCOME}}
+
+**Hints**:
+{{SETUP_HINTS}}
+
 ---
 
 **Next Steps**: Now that you have the project running, let's explore the codebase architecture in the next chapter.

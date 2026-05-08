@@ -252,6 +252,8 @@ Use code blocks with proper syntax highlighting for all commands and configurati
 - `{{COMPONENT_EXPLANATION}}` - Clear explanation of what this component is and its purpose
 - `{{HOW_IT_WORKS_EXPLANATION}}` - Description of the component's operational flow
 - `{{KEY_RESPONSIBILITIES}}` - Bulleted list of main responsibilities
+- `{{FLOW_DESCRIPTION}}` - 2-3 sentences describing how data flows through this component
+- `{{FLOW_DIAGRAM}}` - Mermaid flowchart showing data flow and transformations (see flow-diagram-examples.md)
 - `{{CODE_SECTION_N_TITLE}}` - Titles for different code sections (methods, classes, etc.)
 - `{{CODE_SECTION_N_EXPLANATION}}` - Explanation before each code snippet
 - `{{LANGUAGE}}` - Programming language for syntax highlighting
@@ -273,6 +275,26 @@ Use code blocks with proper syntax highlighting for all commands and configurati
 - Include 2-4 code snippets with detailed explanations
 - Reference related components from earlier chapters
 - Keep consistent structure across all chapters
+
+**Flow Diagram requirements**:
+- Use Mermaid `graph TD` (top-down) or `graph LR` (left-right) syntax
+- Show how data enters the component, transforms, and exits
+- Use `[brackets]` for intermediate data/results (e.g., `[text chunks]`, `[vector embeddings]`)
+- Use `[Component Name]` for processes/services
+- Use `[(Database)]` for storage/persistence
+- Use `{Decision?}` for conditional branching
+- Include data transformation labels between nodes
+- Reference `templates/honkit/flow-diagram-examples.md` for patterns and examples
+- Keep diagrams focused on this component's primary data flow (3-8 nodes typically)
+
+**Flow Diagram examples**:
+```mermaid
+graph TD
+    A[Input Data] --> B[This Component]
+    B --> C[processed data]
+    C --> D[Next Component]
+    D --> E[(Storage)]
+```
 
 **Practice Exercise guidelines**:
 - Create 3-5 numbered tasks with progressive difficulty
@@ -379,9 +401,10 @@ All tutorial templates are organized by output format at `~/.claude/skills/tutor
 - `SUMMARY.md` - Table of contents template (always use)
 - `index.md` - Introduction chapter template with structure and placeholders (always use)
 - `getting-started.md` - Getting Started chapter template with practice exercise (use as structural guide)
-- `chapter-template.md` - Code chapter template for abstraction chapters with practice exercises (always use)
+- `chapter-template.md` - Code chapter template for abstraction chapters with practice exercises and flow diagrams (always use)
 - `conclusion.md` - Optional conclusion chapter template (use if generating conclusion)
 - `practice-exercise-examples.md` - Reference examples showing good practice exercise structure (read for inspiration)
+- `flow-diagram-examples.md` - Reference examples of Mermaid flow diagrams showing data flow patterns (read for inspiration)
 - `styles/website.css` - Custom CSS for HonKit rendering (always copy to output)
 
 These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
@@ -389,6 +412,7 @@ These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
 **Usage pattern**:
 - **book.json, README.md, SUMMARY.md, index.md, chapter-template.md**: Always read the template, replace all placeholders with actual values from analysis/metadata, and write to output directory
 - **getting-started.md, conclusion.md**: Use as structural references, generate content based on actual analysis
+- **practice-exercise-examples.md, flow-diagram-examples.md**: Reference documents for inspiration - read to understand patterns and best practices
 - **styles/website.css**: Copy to `{output_dir}/styles/` without modification
 
 **Future template engines**: The templates directory is organized to support additional formats (e.g., `templates/mdbook/`, `templates/docusaurus/`) in future versions.

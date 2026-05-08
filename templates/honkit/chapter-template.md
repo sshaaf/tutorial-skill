@@ -14,6 +14,12 @@
 
 {{KEY_RESPONSIBILITIES}}
 
+### Data Flow
+
+{{FLOW_DESCRIPTION}}
+
+{{FLOW_DIAGRAM}}
+
 ## Code Deep Dive
 
 Let's explore the implementation in detail.
@@ -51,6 +57,19 @@ Let's explore the implementation in detail.
 ## Key Takeaways
 
 {{KEY_POINTS}}
+
+## Practice Exercise
+
+Now it's your turn! Apply what you've learned with this hands-on exercise:
+
+{{PRACTICE_EXERCISE}}
+
+**Expected Outcome**: {{EXPECTED_OUTCOME}}
+
+**Hints**:
+{{HINTS}}
+
+**Solution**: {{SOLUTION_LINK_OR_EXPLANATION}}
 
 ## What's Next?
 
