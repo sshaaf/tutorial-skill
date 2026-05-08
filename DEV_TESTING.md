@@ -42,11 +42,21 @@ Developer workflow (testing before publish):
 
 Test `/tutorial build` in Claude Code after installing the skill:
 
+**Local installation:**
 ```bash
 # Install skill to local project
 node ./bin/cli.js install
 
 # In Claude Code, test the skill
+/tutorial build ./src
+```
+
+**Global installation:**
+```bash
+# Install skill globally
+node ./bin/cli.js install -g
+
+# In Claude Code (from any project), test the skill
 /tutorial build ./src
 ```
 
@@ -80,7 +90,11 @@ node ./bin/cli.js …
 
 ## Skill install details
 
-The installer copies these to `.claude/tutorial/`:
+The installer copies these to:
+- **Local**: `.claude/tutorial/` (in current project)
+- **Global**: `~/.claude/skills/tutorial/` (in home directory)
+
+Files copied:
 - `SKILL.md` (skill definition)
 - `templates/` (HonKit-compatible markdown templates)
 - `bin/cli.js`, `lib/`, `installer.js` (CLI tools for install/update)

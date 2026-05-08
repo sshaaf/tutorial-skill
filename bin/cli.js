@@ -4,18 +4,24 @@ const installer = require('../installer');
 const updater = require('../lib/updater');
 
 const command = process.argv[2];
-const subcommand = process.argv[3];
-const commandArgs = process.argv.slice(3);
+const commandArgs = process.argv.slice(2);
+
+// Parse flags
+const isGlobal = commandArgs.includes('-g') || commandArgs.includes('--global');
+const isCheck = commandArgs.includes('--check');
+const noBackup = commandArgs.includes('--no-backup');
+const force = commandArgs.includes('--force');
 
 if (command === 'install' || !command) {
-  installer.install();
+  installer.install({ global: isGlobal });
 } else if (command === 'update') {
-  if (subcommand === '--check') {
-    updater.checkForUpdates();
+  if (isCheck) {
+    updater.checkForUpdates({ global: isGlobal });
   } else {
     const options = {
-      backup: !commandArgs.includes('--no-backup'),
-      force: commandArgs.includes('--force')
+      global: isGlobal,
+      backup: !noBackup,
+      force: force
     };
     updater.updateSkill(options);
   }
@@ -23,10 +29,14 @@ if (command === 'install' || !command) {
   console.log('Usage: npx @sshaaf/tutorial-skill [command] [options]');
   console.log('');
   console.log('Commands:');
-  console.log('  install                                   Install to .claude/tutorial/ (default)');
-  console.log('  update [--check] [--no-backup] [--force]  Update local installation');
+  console.log('  install [-g|--global]                     Install skill');
+  console.log('  update [-g|--global] [options]            Update installation');
+  console.log('');
+  console.log('Install options:');
+  console.log('  -g, --global  Install to ~/.claude/skills/tutorial (default: .claude/tutorial)');
   console.log('');
   console.log('Update options:');
+  console.log('  -g, --global  Update global installation');
   console.log('  --check       Check for updates without installing');
   console.log('  --no-backup   Skip creating backup before update (not recommended)');
   console.log('  --force       Force update even if already on latest version');

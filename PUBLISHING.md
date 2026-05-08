@@ -49,16 +49,18 @@ npx @sshaaf/tutorial-skill install
 
 ## Usage for End Users
 
-Once published, users simply run:
+Once published, users can install locally or globally:
 
+**Local installation** (per-project):
 ```bash
 npx @sshaaf/tutorial-skill install
+# Or just:
+npx @sshaaf/tutorial-skill
 ```
 
-Or just:
-
+**Global installation** (system-wide):
 ```bash
-npx @sshaaf/tutorial-skill
+npx @sshaaf/tutorial-skill install -g
 ```
 
 (install is the default command)
@@ -99,9 +101,26 @@ honkit serve
 
 To update to a newer version:
 
+**Local installation:**
 ```bash
-rm -rf ~/.claude/skills/tutorial
+cd /path/to/your/project
+npx @sshaaf/tutorial-skill update
+```
+
+**Global installation:**
+```bash
+npx @sshaaf/tutorial-skill update -g
+```
+
+**Manual update (if needed):**
+```bash
+# Local
+rm -rf .claude/tutorial
 npx @sshaaf/tutorial-skill@latest install
+
+# Global
+rm -rf ~/.claude/skills/tutorial
+npx @sshaaf/tutorial-skill@latest install -g
 ```
 
 ## Unpublishing (Emergency Only)

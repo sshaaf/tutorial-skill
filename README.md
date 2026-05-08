@@ -7,15 +7,14 @@ This skill generates code tutorials from source code using Large Language Models
 - 📚 **Single or comprehensive**: Choose to generate for one module or all modules in your project
 - 🎨 **Professional output**: HonKit-ready with diagrams, practice exercises, and custom styling
 - 🔄 **Flexible structure**: Easy to split multi-module tutorials into standalone modules
-
-It has various commands such as `build` and `preview`. 
+ 
 
 ### Quick start
 ```bash
 # 1. Navigate to your project
 cd /path/to/your/project
 
-# 2. Install the skill locally
+# 2. Install the skill locally "install -g" for global install.
 npx @sshaaf/tutorial-skill install
 
 # 3. Reload your coding agent (e.g., restart Claude Code CLI or reload IDE)
@@ -65,6 +64,8 @@ Complete tutorial generation with chapters
 
 ## Installation
 
+### Local Installation (per-project)
+
 ```bash
 # Navigate to your project directory
 cd /path/to/your/project
@@ -83,6 +84,23 @@ This creates `.claude/tutorial/` in your project directory with:
 - ✅ Multiple projects can have different versions
 - ✅ No global state - everything is project-local
 
+### Global Installation (system-wide)
+
+```bash
+# Install globally (available in all projects)
+npx @sshaaf/tutorial-skill install -g
+```
+
+This creates `~/.claude/skills/tutorial/` with:
+- Skill definition (SKILL.md) - enables `/tutorial build` in any project
+- Templates for tutorial generation (HonKit-compatible markdown)
+
+**Benefits of global installation**:
+- ✅ One installation works everywhere
+- ✅ No per-project setup needed
+- ✅ Consistent templates across all projects
+- ✅ Simpler for single-user environments
+
 **Preview generated tutorials**:
 The skill generates HonKit-compatible markdown. To preview as HTML:
 ```bash
@@ -97,6 +115,7 @@ honkit serve
 
 ### Updating
 
+**Local installation:**
 ```bash
 # Navigate to the project directory where you installed the skill
 cd /path/to/your/project
@@ -114,9 +133,26 @@ npx @sshaaf/tutorial-skill update --no-backup
 npx @sshaaf/tutorial-skill update --force
 ```
 
+**Global installation:**
+```bash
+# Can run from any directory
+
+# Check for updates
+npx @sshaaf/tutorial-skill update -g --check
+
+# Update to latest version (with automatic backup)
+npx @sshaaf/tutorial-skill update -g
+
+# Update without backup
+npx @sshaaf/tutorial-skill update -g --no-backup
+
+# Force update even if on latest version
+npx @sshaaf/tutorial-skill update -g --force
+```
+
 **Important notes about updates**:
-- ⚠️ Updates **overwrite** files in `.claude/tutorial/` including templates
-- ✅ Automatic backup created at `.claude/tutorial/.backup/` before update
+- ⚠️ Updates **overwrite** files in `.claude/tutorial/` (local) or `~/.claude/skills/tutorial/` (global) including templates
+- ✅ Automatic backup created at `.backup/` subdirectory before update
 - ✅ Rolls back automatically if update fails
 - 💡 If you customized templates, backup is your safety net
 
@@ -142,7 +178,7 @@ cp -r /path/to/tutorial-skill .claude/tutorial
 git clone https://github.com/sshaaf/tutorial-skill .claude/tutorial
 ```
 
-**Version control**:
+**Version control (local installation only)**:
 ```bash
 # Option 1: Exclude from git (recommended for most users)
 echo ".claude/" >> .gitignore
@@ -152,6 +188,8 @@ git add .claude/tutorial/templates/
 git add .claude/tutorial/SKILL.md
 git commit -m "Add customized tutorial templates"
 ```
+
+**Note**: Global installations (`~/.claude/skills/tutorial/`) are in your home directory and not part of any project repository.
 
 **Managing multiple projects**:
 ```bash

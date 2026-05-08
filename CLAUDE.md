@@ -39,30 +39,43 @@ tutorials/
 - Clear system organization in navigation
 - Each module self-contained
 
-### Local Installation Pattern
+### Installation Patterns
 
-The skill now installs locally to `.claude/tutorial/` in your project directory instead of globally to `~/.claude/skills/tutorial/`. This enables:
+The skill supports both local (per-project) and global (system-wide) installation:
 
+**Local installation** (default):
+```bash
+npx @sshaaf/tutorial-skill install
+```
+- Installs to `.claude/tutorial/` in current project directory
 - **Version control**: Commit templates and skill configuration with your project
 - **Per-project customization**: Each project can customize templates independently
 - **No global state**: Multiple projects can use different versions
 - **Team sharing**: Teams can share customized templates via git
 
-When you run `npx @sshaaf/tutorial-skill install`, it creates:
+**Global installation**:
+```bash
+npx @sshaaf/tutorial-skill install -g
 ```
-your-project/
-  .claude/
-    tutorial/
-      SKILL.md              # Skill definition
-      templates/honkit/     # Customizable HonKit-compatible templates
-      bin/                  # CLI tools (install, update)
-      lib/                  # Helper libraries
-      .version              # Version tracking
+- Installs to `~/.claude/skills/tutorial/` (system-wide)
+- **Available everywhere**: Works in all projects without per-project setup
+- **Consistent templates**: Same templates across all projects
+- **Simpler setup**: One installation for all projects
+
+**Installation structure** (same for both):
+```
+.claude/tutorial/  (or ~/.claude/skills/tutorial/)
+  SKILL.md              # Skill definition
+  templates/honkit/     # Customizable HonKit-compatible templates
+  bin/                  # CLI tools (install, update)
+  lib/                  # Helper libraries
+  .version              # Version tracking
 ```
 
 **Update behavior**:
-- `npx @sshaaf/tutorial-skill update` updates the local installation in current directory
-- Creates automatic backup at `.claude/tutorial/.backup/` before updating
+- Local: `npx @sshaaf/tutorial-skill update` (run from project directory)
+- Global: `npx @sshaaf/tutorial-skill update -g` (run from anywhere)
+- Creates automatic backup at `.backup/` subdirectory before updating
 - **WARNING**: Updates overwrite all files including templates
 - Users who customize templates should manually backup before updating
 

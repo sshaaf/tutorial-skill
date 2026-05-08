@@ -1,9 +1,16 @@
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { execFileSync } = require('child_process');
 
-const SKILL_DIR = path.join(process.cwd(), '.claude/tutorial');
 const SOURCE_DIR = __dirname;
+
+function getSkillDir(isGlobal) {
+  if (isGlobal) {
+    return path.join(os.homedir(), '.claude/skills/tutorial');
+  }
+  return path.join(process.cwd(), '.claude/tutorial');
+}
 
 function copyRecursive(src, dest) {
   const exists = fs.existsSync(src);
@@ -46,8 +53,8 @@ function copyCliBundle(destRoot) {
 }
 
 
-function writeVersionFile() {
-  const versionFilePath = path.join(SKILL_DIR, '.version');
+function writeVersionFile(skillDir) {
+  const versionFilePath = path.join(skillDir, '.version');
   let packageJson;
 
   try {
@@ -66,10 +73,13 @@ function writeVersionFile() {
   fs.writeFileSync(versionFilePath, JSON.stringify(versionData, null, 2) + '\n');
 }
 
-function install() {
+function install(options = {}) {
+  const { global: isGlobal = false } = options;
+  const SKILL_DIR = getSkillDir(isGlobal);
   const isUpdate = fs.existsSync(SKILL_DIR);
 
-  console.log(isUpdate ? '🔄 Updating Tutorial Skill...' : '📦 Installing Tutorial Skill...');
+  const installType = isGlobal ? 'globally' : 'locally';
+  console.log(isUpdate ? `🔄 Updating Tutorial Skill (${installType})...` : `📦 Installing Tutorial Skill (${installType})...`);
   console.log('');
 
   // If updating, show current version
@@ -98,7 +108,7 @@ function install() {
   copyCliBundle(SKILL_DIR);
 
   // Write version information
-  writeVersionFile();
+  writeVersionFile(SKILL_DIR);
 
   console.log('');
   console.log(isUpdate ? '✅ Update complete!' : '✅ Installation complete!');
@@ -107,13 +117,16 @@ function install() {
   console.log('');
 
   if (!isUpdate) {
-    console.log('💡 Version Control:');
-    console.log('   • Exclude all: echo ".claude/" >> .gitignore');
-    console.log('   • Commit templates: git add .claude/tutorial/templates/ .claude/tutorial/SKILL.md');
-    console.log('');
+    if (!isGlobal) {
+      console.log('💡 Version Control (local installation):');
+      console.log('   • Exclude all: echo ".claude/" >> .gitignore');
+      console.log('   • Commit templates: git add .claude/tutorial/templates/ .claude/tutorial/SKILL.md');
+      console.log('');
+    }
     console.log('📦 Updates:');
-    console.log('   • Check for updates: npx @sshaaf/tutorial-skill update --check');
-    console.log('   • Update (with backup): npx @sshaaf/tutorial-skill update');
+    const updateFlag = isGlobal ? ' -g' : '';
+    console.log(`   • Check for updates: npx @sshaaf/tutorial-skill update${updateFlag} --check`);
+    console.log(`   • Update (with backup): npx @sshaaf/tutorial-skill update${updateFlag}`);
     console.log('   ⚠️  Updates overwrite templates - backup created automatically');
   }
   console.log('');
