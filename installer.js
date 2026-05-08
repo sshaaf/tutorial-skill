@@ -6,10 +6,7 @@ const { execFileSync } = require('child_process');
 const SOURCE_DIR = __dirname;
 
 function getSkillDir(isGlobal) {
-  if (isGlobal) {
-    return path.join(os.homedir(), '.claude/skills/tutorial');
-  }
-  return path.join(process.cwd(), '.claude/tutorial');
+  return path.join(process.cwd(), '.claude/skills/tutorial');
 }
 
 function copyRecursive(src, dest) {
