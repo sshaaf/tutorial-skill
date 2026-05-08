@@ -23,7 +23,15 @@ your-project/
       bin/                  # CLI tools
       lib/                  # Helper libraries
       .runtime/honkit/      # Bundled HonKit + plugins
+      .version              # Version tracking
 ```
+
+**Update behavior**:
+- `npx @sshaaf/tutorial-skill update` updates the local installation in current directory
+- Creates automatic backup at `.claude/tutorial/.backup/` before updating
+- **WARNING**: Updates overwrite all files including templates
+- Users who customize templates should manually backup before updating
+- Runtime (`.runtime/honkit/`) is preserved across updates
 
 ## Previous Updates (2026-05-05)
 

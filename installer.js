@@ -151,9 +151,19 @@ function install() {
   console.log('');
   console.log(isUpdate ? '✅ Update complete!' : '✅ Installation complete!');
   console.log('');
-  console.log('💡 Tip: Add .claude/ to your .gitignore to exclude, or commit it for version control');
-  console.log('');
   console.log('📍 Installed to:', SKILL_DIR);
+  console.log('');
+
+  if (!isUpdate) {
+    console.log('💡 Version Control:');
+    console.log('   • Exclude all: echo ".claude/" >> .gitignore');
+    console.log('   • Commit templates: git add .claude/tutorial/templates/ .claude/tutorial/SKILL.md');
+    console.log('');
+    console.log('📦 Updates:');
+    console.log('   • Check for updates: npx @sshaaf/tutorial-skill update --check');
+    console.log('   • Update (with backup): npx @sshaaf/tutorial-skill update');
+    console.log('   ⚠️  Updates overwrite templates - backup created automatically');
+  }
   console.log('');
   console.log('🎯 Usage in Claude Code:');
   console.log('');

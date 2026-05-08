@@ -4,17 +4,28 @@ This skill generates code tutorials from source code using Large Language Models
 It has various commands such as `analysis`, `build` and `preview`. 
 
 ### Quick start
-```
+```bash
+# 1. Navigate to your project
+cd /path/to/your/project
+
+# 2. Install the skill locally
 npx @sshaaf/tutorial-skill install
 
-# reload the coding agent. e.g. claude.
+# 3. Reload your coding agent (e.g., restart Claude Code CLI or reload IDE)
 
+# 4. Generate tutorial (in Claude Code)
 /tutorial build
 
-You can preview the files in markdown on disk. for example preview in VSCode. however if you want to preview in html then use the following command.
-
+# 5. Preview the tutorial
+# Option A: View markdown files directly (VS Code, etc.)
+# Option B: Preview as HTML with HonKit
 /tutorial preview
 ```
+
+**What happens**:
+- Step 2 creates `.claude/tutorial/` in your project
+- Step 4 generates tutorial files in `./docs/tutorial/`
+- Step 5 serves an interactive HTML site at `http://localhost:4000`
 
 ![Example](.github/assets/images/example-preview.jpg)
 
@@ -90,6 +101,9 @@ This creates `.claude/tutorial/` in your project directory with:
 ### Updating
 
 ```bash
+# Navigate to the project directory where you installed the skill
+cd /path/to/your/project
+
 # Check for updates
 npx @sshaaf/tutorial-skill update --check
 
@@ -103,11 +117,25 @@ npx @sshaaf/tutorial-skill update --no-backup
 npx @sshaaf/tutorial-skill update --force
 ```
 
-The update command:
-- ✅ Automatically backs up your current installation
-- ✅ Preserves your HonKit runtime
-- ✅ Shows what's new after update
+**Important notes about updates**:
+- ⚠️ Updates **overwrite** files in `.claude/tutorial/` including templates
+- ✅ Automatic backup created at `.claude/tutorial/.backup/` before update
+- ✅ HonKit runtime (`.runtime/honkit/`) is preserved
 - ✅ Rolls back automatically if update fails
+- 💡 If you customized templates, backup is your safety net
+
+**Workflow for customized templates**:
+```bash
+# Before update - manually save your customizations
+cp -r .claude/tutorial/templates .claude/tutorial/templates.custom
+
+# Run update
+npx @sshaaf/tutorial-skill update
+
+# After update - restore specific customizations
+# (merge changes as needed)
+diff -r .claude/tutorial/templates .claude/tutorial/templates.custom
+```
 
 **Alternative methods:**
 ```bash
@@ -122,12 +150,34 @@ Note: alternative/manual installation methods do not bootstrap the bundled HonKi
 
 **Version control**:
 ```bash
-# Option 1: Exclude from git (default)
+# Option 1: Exclude from git (recommended for most users)
 echo ".claude/" >> .gitignore
 
 # Option 2: Commit templates for team customization
 git add .claude/tutorial/templates/
 git add .claude/tutorial/SKILL.md
+git commit -m "Add customized tutorial templates"
+```
+
+**Managing multiple projects**:
+```bash
+# Each project has its own local installation
+cd ~/projects/app-A
+npx @sshaaf/tutorial-skill install  # Creates app-A/.claude/tutorial/
+
+cd ~/projects/app-B
+npx @sshaaf/tutorial-skill install  # Creates app-B/.claude/tutorial/
+
+# Customize templates differently per project
+vim ~/projects/app-A/.claude/tutorial/templates/honkit/index.md
+vim ~/projects/app-B/.claude/tutorial/templates/honkit/index.md
+
+# Updates are per-project
+cd ~/projects/app-A
+npx @sshaaf/tutorial-skill update  # Updates only app-A
+
+cd ~/projects/app-B
+npx @sshaaf/tutorial-skill update  # Updates only app-B
 ```
 
 ### Usage

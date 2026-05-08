@@ -40,8 +40,8 @@ if (command === 'install' || !command) {
   console.log('Usage: npx @sshaaf/tutorial-skill [command] [options]');
   console.log('');
   console.log('Commands:');
-  console.log('  install                                   Install the tutorial skill (default)');
-  console.log('  update [--check] [--no-backup] [--force]  Update to latest version');
+  console.log('  install                                   Install to .claude/tutorial/ (default)');
+  console.log('  update [--check] [--no-backup] [--force]  Update local installation');
   console.log('  init [--dir <path>] [--engine honkit]     Prepare Markdown for HonKit');
   console.log('  preview [--dir <path>] [--engine honkit]  Run local HonKit preview server');
   console.log('  build [--dir <path>] [--engine honkit]    Build static docs via HonKit');
@@ -50,7 +50,9 @@ if (command === 'install' || !command) {
   console.log('');
   console.log('Update options:');
   console.log('  --check       Check for updates without installing');
-  console.log('  --no-backup   Skip creating backup before update');
+  console.log('  --no-backup   Skip creating backup before update (not recommended)');
   console.log('  --force       Force update even if already on latest version');
+  console.log('');
+  console.log('Note: All commands work on local installation (.claude/tutorial/ in current directory)');
   process.exit(0);
 }
