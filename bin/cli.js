@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const installer = require('../installer');
-const { initDocs, previewDocs, buildDocs, doctorDocs } = require('../lib/honkit');
 const updater = require('../lib/updater');
 
 const command = process.argv[2];
@@ -20,39 +19,21 @@ if (command === 'install' || !command) {
     };
     updater.updateSkill(options);
   }
-} else if (command === 'init') {
-  initDocs(commandArgs);
-} else if (command === 'preview') {
-  previewDocs(commandArgs);
-} else if (command === 'build') {
-  buildDocs(commandArgs);
-} else if (command === 'doctor') {
-  doctorDocs(commandArgs);
-} else if (command === 'runtime' && subcommand === 'install') {
-  try {
-    installer.bootstrapHonkitRuntime();
-  } catch (error) {
-    console.error('❌ Failed to install HonKit runtime.');
-    console.error(error.message);
-    process.exit(1);
-  }
 } else {
   console.log('Usage: npx @sshaaf/tutorial-skill [command] [options]');
   console.log('');
   console.log('Commands:');
   console.log('  install                                   Install to .claude/tutorial/ (default)');
   console.log('  update [--check] [--no-backup] [--force]  Update local installation');
-  console.log('  init [--dir <path>] [--engine honkit]     Prepare Markdown for HonKit');
-  console.log('  preview [--dir <path>] [--engine honkit]  Run local HonKit preview server');
-  console.log('  build [--dir <path>] [--engine honkit]    Build static docs via HonKit');
-  console.log('  doctor [--dir <path>] [--engine honkit]   Check runtime and docs setup');
-  console.log('  runtime install                           Install/repair bundled HonKit runtime');
   console.log('');
   console.log('Update options:');
   console.log('  --check       Check for updates without installing');
   console.log('  --no-backup   Skip creating backup before update (not recommended)');
   console.log('  --force       Force update even if already on latest version');
   console.log('');
-  console.log('Note: All commands work on local installation (.claude/tutorial/ in current directory)');
+  console.log('The skill generates HonKit-compatible markdown files.');
+  console.log('To preview tutorials as HTML, install HonKit separately:');
+  console.log('  npm install -g honkit');
+  console.log('  cd ./docs/tutorial && honkit serve');
   process.exit(0);
 }

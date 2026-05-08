@@ -54,10 +54,9 @@ your-project/
   .claude/
     tutorial/
       SKILL.md              # Skill definition
-      templates/honkit/     # Customizable templates
-      bin/                  # CLI tools
+      templates/honkit/     # Customizable HonKit-compatible templates
+      bin/                  # CLI tools (install, update)
       lib/                  # Helper libraries
-      .runtime/honkit/      # Bundled HonKit + plugins
       .version              # Version tracking
 ```
 
@@ -66,23 +65,27 @@ your-project/
 - Creates automatic backup at `.claude/tutorial/.backup/` before updating
 - **WARNING**: Updates overwrite all files including templates
 - Users who customize templates should manually backup before updating
-- Runtime (`.runtime/honkit/`) is preserved across updates
 
 ## Previous Updates (2026-05-05)
 
-### HonKit local preview + diagnostics
+### HonKit-Compatible Output
 
-The skill generates HonKit-ready tutorial files. A bundled HonKit runtime is installed under:
+The skill generates HonKit-ready tutorial files with:
+- Markdown chapters with proper formatting
+- `README.md` (landing page with architecture diagram)
+- `SUMMARY.md` (table of contents with hierarchical structure)
+- `book.json` (HonKit configuration with mermaid-hybrid plugin)
+- `styles/website.css` (professional styling)
 
-`.claude/tutorial/.runtime/honkit` (in your project directory)
+**Preview workflow**:
+Users can preview generated tutorials by installing HonKit separately:
+```bash
+npm install -g honkit
+cd ./docs/tutorial
+honkit serve
+```
 
-Diagram rendering uses **`honkit-plugin-mermaid-hybrid`** (newer Mermaid than legacy GitBook Mermaid plugins).
-
-Users can preview tutorials locally using the CLI:
-- `npx @sshaaf/tutorial-skill preview --dir ./docs/tutorial`
-- `npx @sshaaf/tutorial-skill doctor --dir ./docs/tutorial` (diagnostics)
-
-Maintainers should validate locally using the repo CLI (`./bin/cli.js`) — see `DEV_TESTING.md`.
+Diagram rendering uses **`honkit-plugin-mermaid-hybrid`** (newer Mermaid than legacy GitBook plugins).
 
 ### Architecture Diagram Export Feature
 

@@ -69,26 +69,31 @@ npx @sshaaf/tutorial-skill
 tutorial/
 ├── SKILL.md           # Main skill (bundled)
 ├── README.md          # Skill docs (bundled)
-├── lib/               # HonKit runtime/docs helpers (bundled)
+├── templates/         # HonKit-compatible markdown templates (bundled)
+├── lib/               # CLI helpers (bundled)
 ├── tests/             # Test projects (bundled)
 ├── package.json       # NPM config
-├── bin/cli.js         # CLI entry
+├── bin/cli.js         # CLI entry (install, update commands)
 ├── installer.js       # Install logic
 ├── .npmignore         # Exclude patterns
 └── PUBLISHING.md      # This file (excluded)
 ```
 
-## HonKit Runtime Bundling
+## HonKit Output Format
 
-During `npx @sshaaf/tutorial-skill install`, the installer now bootstraps a local HonKit runtime under:
+The skill generates HonKit-compatible markdown files:
+- README.md (landing page with architecture diagram)
+- SUMMARY.md (table of contents)
+- book.json (HonKit configuration with mermaid-hybrid plugin)
+- Chapter files with practice exercises and diagrams
+- styles/website.css (professional styling)
 
+Users can preview tutorials by installing HonKit separately:
 ```bash
-~/.claude/skills/tutorial/.runtime/honkit
+npm install -g honkit
+cd ./docs/tutorial
+honkit serve
 ```
-
-This installs:
-- `honkit`
-- `honkit-plugin-mermaid-hybrid`
 
 ## Update Instructions for Users
 

@@ -714,7 +714,7 @@ Files created:
 Next steps:
 - Review the generated content
 - Try the practice exercises in each chapter
-- Preview locally: npx @sshaaf/tutorial-skill preview --dir ./tutorials
+- Preview locally: npm install -g honkit && cd ./tutorials && honkit serve
 ```
 
 ### Multi-Module Workflow
@@ -799,5 +799,5 @@ Total: 3 modules, 12 chapters across 3 services
 Next steps:
 - Review the generated content
 - Each module can be extracted as standalone tutorial
-- Preview locally: npx @sshaaf/tutorial-skill preview --dir ./tutorials
+- Preview locally: npm install -g honkit && cd ./tutorials && honkit serve
 ```

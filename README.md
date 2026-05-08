@@ -23,16 +23,18 @@ npx @sshaaf/tutorial-skill install
 # 4. Generate tutorial (in Claude Code)
 /tutorial build
 
-# 5. Preview the tutorial
+# 5. Preview the tutorial (optional)
 # Option A: View markdown files directly (VS Code, etc.)
-# Option B: Preview as HTML with HonKit
-npx @sshaaf/tutorial-skill preview --dir ./docs/tutorial
+# Option B: Preview as HTML with HonKit (install separately)
+npm install -g honkit
+cd ./docs/tutorial
+honkit serve
 ```
 
 **What happens**:
 - Step 2 creates `.claude/tutorial/` in your project
-- Step 4 generates tutorial files in `./docs/tutorial/`
-- Step 5 serves an interactive HTML site at `http://localhost:4000`
+- Step 4 generates HonKit-compatible tutorial files in `./docs/tutorial/`
+- Step 5 (optional) serves an interactive HTML site at `http://localhost:4000`
 
 ![Example](.github/assets/images/example-preview.jpg)
 
@@ -73,15 +75,25 @@ npx @sshaaf/tutorial-skill install
 
 This creates `.claude/tutorial/` in your project directory with:
 - Skill definition (SKILL.md) - enables `/tutorial build` command
-- Templates for tutorial generation
-- CLI tools (npx @sshaaf/tutorial-skill init/preview/build/doctor)
-- Bundled HonKit runtime (`.runtime/honkit`) for local HTML preview
+- Templates for tutorial generation (HonKit-compatible markdown)
 
 **Benefits of local installation**:
 - ✅ Version control templates with your project
 - ✅ Customize templates per project
 - ✅ Multiple projects can have different versions
 - ✅ No global state - everything is project-local
+
+**Preview generated tutorials**:
+The skill generates HonKit-compatible markdown. To preview as HTML:
+```bash
+# Install HonKit globally (one-time)
+npm install -g honkit
+
+# Preview any generated tutorial
+cd ./docs/tutorial
+honkit serve
+# Opens at http://localhost:4000
+```
 
 ### Updating
 
@@ -105,7 +117,6 @@ npx @sshaaf/tutorial-skill update --force
 **Important notes about updates**:
 - ⚠️ Updates **overwrite** files in `.claude/tutorial/` including templates
 - ✅ Automatic backup created at `.claude/tutorial/.backup/` before update
-- ✅ HonKit runtime (`.runtime/honkit/`) is preserved
 - ✅ Rolls back automatically if update fails
 - 💡 If you customized templates, backup is your safety net
 
@@ -130,8 +141,6 @@ cp -r /path/to/tutorial-skill .claude/tutorial
 # Or clone directly
 git clone https://github.com/sshaaf/tutorial-skill .claude/tutorial
 ```
-
-Note: alternative/manual installation methods do not bootstrap the bundled HonKit runtime; use the NPM installer for the default preview workflow.
 
 **Version control**:
 ```bash
@@ -168,32 +177,26 @@ npx @sshaaf/tutorial-skill update  # Updates only app-B
 ### Usage
 
 ```bash
-# Full tutorial
+# Generate tutorial (in Claude Code)
 /tutorial build .
 
 # With output directory
 /tutorial build --output ./docs/tutorial
 
-# Initialize docs files for HonKit
-npx @sshaaf/tutorial-skill init --dir ./docs/tutorial
-
-# Preview locally with HonKit
-npx @sshaaf/tutorial-skill preview --dir ./docs/tutorial
-
-# Build static site with HonKit
-npx @sshaaf/tutorial-skill build --dir ./docs/tutorial
-
-# Diagnose runtime/plugin setup
-npx @sshaaf/tutorial-skill doctor --dir ./docs/tutorial
+# Preview generated tutorial as HTML (optional)
+npm install -g honkit
+cd ./docs/tutorial
+honkit serve
+# Opens at http://localhost:4000
 ```
 
-`honkit` is the default docs engine. `--engine honkit` is optional and supported for future engine compatibility.
+The skill generates HonKit-compatible markdown files (README.md, SUMMARY.md, book.json, chapters).
 
-### Developer / pre-publish CLI (git checkout)
+### Developer Notes
 
-If you are testing changes **before publishing** to npm, use the repo CLI (not `npx`), because `npx` resolves the **published** package version:
+If you are testing changes **before publishing** to npm:
 
-See `DEV_TESTING.md` for the short checklist.
+See `DEV_TESTING.md` for the testing checklist.
 
 ## Tips
 

@@ -1,13 +1,11 @@
 # Local testing (developers)
 
-This package has two surfaces:
+This package provides:
 
 - **Skill command**: `/tutorial build` - installed to `.claude/tutorial/SKILL.md` (what Claude reads and executes)
-- **CLI utilities**: `bin/cli.js` + `lib/` - standalone tools for HonKit operations (`init`, `preview`, `build`, `doctor`)
+- **CLI**: `bin/cli.js` - provides `install` and `update` commands
 
-**Important distinction**:
-- The skill provides only `/tutorial build` for generating tutorials in Claude Code
-- The CLI provides utilities for working with generated HonKit files (separate from the skill)
+The skill generates HonKit-compatible markdown files. Users can preview using HonKit (installed separately).
 
 During development, treat the git checkout as the source of truth:
 
@@ -16,7 +14,6 @@ During development, treat the git checkout as the source of truth:
 ## Prerequisites
 
 - Node + npm available on PATH
-- Network access for the first HonKit runtime install (`npm install` into `.claude/tutorial/.runtime/honkit`)
 
 ## Understanding the workflow
 
@@ -31,8 +28,9 @@ During development, treat the git checkout as the source of truth:
 │    /tutorial build                                          │
 │    → Creates: ./docs/tutorial/*.md, SUMMARY.md, book.json  │
 │                                                              │
-│ 3. Preview locally (optional):                              │
-│    npx @sshaaf/tutorial-skill preview --dir ./docs/tutorial │
+│ 3. Preview locally (optional, requires HonKit):             │
+│    npm install -g honkit                                    │
+│    cd ./docs/tutorial && honkit serve                       │
 │    → Serves at http://localhost:4000                        │
 └─────────────────────────────────────────────────────────────┘
 
@@ -40,7 +38,7 @@ Developer workflow (testing before publish):
   Replace `npx @sshaaf/tutorial-skill` with `node ./bin/cli.js`
 ```
 
-## Testing the skill command
+## Testing the skill
 
 Test `/tutorial build` in Claude Code after installing the skill:
 
@@ -52,35 +50,23 @@ node ./bin/cli.js install
 /tutorial build ./src
 ```
 
-## Testing CLI utilities (HonKit workflows)
-
-Test the standalone CLI tools from the repo root:
-
-```bash
-# Install HonKit runtime
-node ./bin/cli.js runtime install
-
-# Initialize HonKit files (creates README.md, SUMMARY.md, book.json)
-node ./bin/cli.js init --dir ./tutorials
-
-# Run diagnostics
-node ./bin/cli.js doctor --dir ./tutorials
-
-# Preview locally (serves at http://localhost:4000)
-node ./bin/cli.js preview --dir ./tutorials
-```
-
 ### What “healthy” looks like
 
 **Skill command**:
 - `/tutorial build` generates complete tutorial with all files
 - Creates README.md, SUMMARY.md, book.json, chapters, and conclusion
+- All markdown files include proper formatting, navigation, practice exercises
+- Mermaid diagrams embedded in markdown
 
-**CLI utilities**:
-- `doctor` exits `0` with all checks passing
-- `preview` logs include: `plugin “mermaid-hybrid” is loaded`
+**Preview (optional, using HonKit separately)**:
+```bash
+npm install -g honkit
+cd ./docs/tutorial
+honkit serve
+```
 - HonKit serves at `http://localhost:4000`
 - Mermaid diagrams render correctly in browser
+- Navigation works between chapters
 
 ## Publishing vs local CLI (`npx`)
 
@@ -92,17 +78,14 @@ If npm is behind your local checkout, `npx` will not expose new CLI commands yet
 node ./bin/cli.js …
 ```
 
-## Skill install pitfalls
+## Skill install details
 
-`.claude/tutorial/bin/cli.js` only exists if your installer copies `bin/`, `lib/`, and `installer.js` into the skill directory (this repo’s installer is intended to do that on install).
+The installer copies these to `.claude/tutorial/`:
+- `SKILL.md` (skill definition)
+- `templates/` (HonKit-compatible markdown templates)
+- `bin/cli.js`, `lib/`, `installer.js` (CLI tools for install/update)
 
-Do **not** assume `.claude/tutorial/bin/cli.js` exists unless that copy step ran.
-
-If preview says the HonKit runtime is missing/out of date:
-
-```bash
-node ./bin/cli.js runtime install
-```
+The skill generates HonKit-compatible files. Users preview with HonKit (installed separately).
 
 ## Best practices
 
@@ -110,15 +93,14 @@ node ./bin/cli.js runtime install
 - Test `/tutorial build` with various project types (Maven, npm, monorepo)
 - Verify multi-module detection prompts appear correctly
 - Check generated files include all required sections (practice exercises, diagrams, navigation)
+- Verify `book.json` includes `mermaid-hybrid` plugin
+- Check SUMMARY.md has correct hierarchical structure
 
-**For CLI testing**:
-- **Always run `doctor`** before claiming preview works; it separates “markdown exists” vs “runtime/plugins healthy”
-- **Keep `book.json` managed by `init`** during iteration; don’t hand-edit unless you know the HonKit plugin names
-- **Prefer upgrading the renderer when diagrams look wrong** before rewriting content:
-  - Complex diagrams + older renderers often fail partially (single box / truncated graph)
-- **Separate failures**:
-  - Runtime/plugins issues: use `doctor` and check preview logs
-  - Diagram syntax errors: check browser devtools console (Mermaid errors)
+**For HonKit preview (optional)**:
+- Install HonKit globally: `npm install -g honkit`
+- Test diagrams render correctly in browser
+- Verify navigation links work between chapters
+- Check that `book.json` plugin configuration is valid
 
 ## Minimal troubleshooting
 
@@ -135,17 +117,22 @@ node ./bin/cli.js install
 - Check SKILL.md has latest templates
 - Verify templates exist in `.claude/tutorial/templates/honkit/`
 
-### CLI utility issues
-
-**Problem**: HonKit runtime missing
+**Problem**: HonKit preview not working
 ```bash
-node ./bin/cli.js runtime install
+# Install HonKit globally
+npm install -g honkit
+
+# Navigate to generated tutorial
+cd ./docs/tutorial
+
+# Serve
+honkit serve
 ```
 
-**Problem**: `book.json` plugin mismatch or missing files
-```bash
-node ./bin/cli.js init --dir ./tutorials
-```
+**Problem**: Mermaid diagrams not rendering
+- Check `book.json` includes `"mermaid-hybrid"` in plugins array
+- Verify HonKit is latest version: `npm update -g honkit`
+- Check browser console for Mermaid errors
 
 **Problem**: Published CLI stale (npx uses old version)
 ```bash
