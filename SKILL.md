@@ -435,8 +435,8 @@ After generating chapters, prepare for HonKit using the provided templates:
 1. **Determine directory**: Use path from args, `--path` flag, or default to `./tutorials`
 2. **Confirm exists**: If directory missing, suggest running `/tutorial build` first
 3. **Serve docs**:
-   - Local dev: `node <path-to-repo>/bin/cli.js docs preview --dir {path}`
-   - Published: `npx @sshaaf/tutorial-skill@latest docs preview --dir {path}`
+   - Local dev: `node <path-to-repo>/bin/cli.js preview --dir {path}`
+   - Published: `npx @sshaaf/tutorial-skill@latest preview --dir {path}`
    - Auto-creates/updates HonKit files if needed
 4. **Confirm**: Show preview URL (`http://localhost:4000`) and stop command (Ctrl+C)
 5. **If fails**: Suggest runtime repair or skill reinstall
@@ -450,10 +450,10 @@ After generating chapters, prepare for HonKit using the provided templates:
 **Workflow**:
 1. **Determine directory**: Use path from args, `--path` flag, or default to `./tutorials`
 2. **Run diagnostics**:
-   - Local dev: `node <path-to-repo>/bin/cli.js docs doctor --dir {path}`
-   - Published: `npx @sshaaf/tutorial-skill@latest docs doctor --dir {path}`
+   - Local dev: `node <path-to-repo>/bin/cli.js doctor --dir {path}`
+   - Published: `npx @sshaaf/tutorial-skill@latest doctor --dir {path}`
 3. **Report**: Show pass/fail results with specific failing checks and fixes
-4. **Common fixes**: Runtime repair, skill reinstall, docs init/preview commands
+4. **Common fixes**: Runtime repair, skill reinstall, init/preview commands
 
 ---
 
@@ -533,10 +533,10 @@ These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
 /tutorial preview --path ./docs/tutorial
 
 # Local dev (from repo)
-node ./bin/cli.js docs preview --dir ./docs/tutorial
+node ./bin/cli.js preview --dir ./docs/tutorial
 
 # Published version
-npx @sshaaf/tutorial-skill@latest docs preview --dir ./docs/tutorial
+npx @sshaaf/tutorial-skill@latest preview --dir ./docs/tutorial
 ```
 
 ### Doctor Mode
@@ -550,6 +550,12 @@ npx @sshaaf/tutorial-skill@latest docs preview --dir ./docs/tutorial
 
 # Diagnose with flag
 /tutorial doctor --path ./docs/tutorial
+
+# Local dev (from repo)
+node ./bin/cli.js doctor --dir ./docs/tutorial
+
+# Published version
+npx @sshaaf/tutorial-skill@latest doctor --dir ./docs/tutorial
 ```
 
 ### Interactive Workflow

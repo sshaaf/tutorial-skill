@@ -107,16 +107,16 @@ Note: alternative/manual installation methods do not bootstrap the bundled HonKi
 /tutorial doctor ./docs/tutorial
 
 # Initialize docs files for HonKit
-npx @sshaaf/tutorial-skill docs init --dir ./docs/tutorial
+npx @sshaaf/tutorial-skill init --dir ./docs/tutorial
 
 # Preview locally with HonKit
-npx @sshaaf/tutorial-skill docs preview --dir ./docs/tutorial
+npx @sshaaf/tutorial-skill preview --dir ./docs/tutorial
 
 # Build static site with HonKit
-npx @sshaaf/tutorial-skill docs build --dir ./docs/tutorial
+npx @sshaaf/tutorial-skill build --dir ./docs/tutorial
 
 # Diagnose runtime/plugin setup
-npx @sshaaf/tutorial-skill docs doctor --dir ./docs/tutorial
+npx @sshaaf/tutorial-skill doctor --dir ./docs/tutorial
 ```
 
 `honkit` is the default docs engine. `--engine honkit` is optional and supported for future engine compatibility.
