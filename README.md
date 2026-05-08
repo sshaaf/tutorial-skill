@@ -74,6 +74,28 @@ npx @sshaaf/tutorial-skill install
 
 The installer bootstraps a local HonKit runtime under `~/.claude/skills/tutorial/.runtime/honkit` and installs `honkit-plugin-mermaid-hybrid` for diagram rendering.
 
+### Updating
+
+```bash
+# Check for updates
+npx @sshaaf/tutorial-skill update --check
+
+# Update to latest version (with automatic backup)
+npx @sshaaf/tutorial-skill update
+
+# Update without backup
+npx @sshaaf/tutorial-skill update --no-backup
+
+# Force update even if on latest version
+npx @sshaaf/tutorial-skill update --force
+```
+
+The update command:
+- ✅ Automatically backs up your current installation
+- ✅ Preserves your HonKit runtime
+- ✅ Shows what's new after update
+- ✅ Rolls back automatically if update fails
+
 **Alternative methods:**
 ```bash
 # Manual install from source
