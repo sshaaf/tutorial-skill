@@ -1,0 +1,40 @@
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+  // Auto-detect and convert mermaid literal blocks to diagrams
+  document.addEventListener('DOMContentLoaded', function() {
+    const literalBlocks = document.querySelectorAll('.literalblock .content pre');
+
+    literalBlocks.forEach(block => {
+      const text = block.textContent.trim();
+
+      // Detect Mermaid diagram syntax
+      if (text.match(/^(graph|flowchart|sequenceDiagram|classDiagram|stateDiagram|erDiagram|gantt|pie|gitGraph|journey|quadrantChart|requirementDiagram|C4Context)/)) {
+        const mermaidDiv = document.createElement('div');
+        mermaidDiv.className = 'mermaid';
+        mermaidDiv.textContent = text;
+
+        // Replace the literal block with mermaid div
+        const literalBlock = block.closest('.literalblock');
+        if (literalBlock) {
+          literalBlock.parentNode.replaceChild(mermaidDiv, literalBlock);
+        }
+      }
+    });
+
+    // Initialize Mermaid
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'default',
+      securityLevel: 'loose',
+      flowchart: {
+        useMaxWidth: true,
+        htmlLabels: true,
+        curve: 'basis'
+      }
+    });
+
+    // Render all mermaid diagrams
+    mermaid.run();
+  });
+</script>

@@ -1,0 +1,232 @@
+= Navigation Examples (AsciiDoc)
+
+This file shows how to create navigation links in Antora using AsciiDoc cross-references.
+
+== Basic Cross-References
+
+In AsciiDoc, use `xref:` for internal links:
+
+[source,asciidoc]
+----
+xref:chapter-01.adoc[Chapter 1: Introduction]
+----
+
+== Chapter Navigation Template
+
+At the end of each chapter, include navigation links:
+
+[source,asciidoc]
+----
+'''
+
+== Navigation
+
+* ← Previous: xref:getting-started.adoc[Getting Started]
+* → Next: xref:chapter-02.adoc[Chapter 2: Core Concepts]
+* ↑ Back to: xref:index.adoc[Tutorial Home]
+----
+
+== Example: First Chapter
+
+[source,asciidoc]
+----
+= Chapter 1: Introduction
+:description: Getting started with the basics
+
+...chapter content...
+
+'''
+
+== Navigation
+
+* → Next: xref:chapter-02.adoc[Chapter 2: Understanding Services]
+* ↑ Back to: xref:index.adoc[Tutorial Home]
+----
+
+== Example: Middle Chapter
+
+[source,asciidoc]
+----
+= Chapter 3: Data Layer
+:description: Working with databases and repositories
+
+...chapter content...
+
+'''
+
+== Navigation
+
+* ← Previous: xref:chapter-02.adoc[Chapter 2: Understanding Services]
+* → Next: xref:chapter-04.adoc[Chapter 4: API Design]
+* ↑ Back to: xref:index.adoc[Tutorial Home]
+----
+
+== Example: Last Chapter
+
+[source,asciidoc]
+----
+= Chapter 6: Advanced Patterns
+:description: Design patterns and best practices
+
+...chapter content...
+
+'''
+
+== Navigation
+
+* ← Previous: xref:chapter-05.adoc[Chapter 5: Testing Strategies]
+* → Next: xref:conclusion.adoc[Conclusion]
+* ↑ Back to: xref:index.adoc[Tutorial Home]
+----
+
+== Cross-References Within Content
+
+=== Referencing Other Chapters
+
+When mentioning concepts from other chapters:
+
+[source,asciidoc]
+----
+We covered dependency injection in xref:chapter-02.adoc#dependency-injection[Chapter 2],
+and now we'll see how it applies to testing.
+----
+
+=== Referencing Specific Sections
+
+Link to a specific section using anchors:
+
+[source,asciidoc]
+----
+For more on error handling, see xref:chapter-04.adoc#error-handling[Error Handling Strategies].
+----
+
+== Creating Anchor Points
+
+Define custom anchors in your content:
+
+[source,asciidoc]
+----
+[#dependency-injection]
+== Dependency Injection
+
+This is the dependency injection section...
+----
+
+== Navigation in nav.adoc
+
+The `nav.adoc` file creates the left sidebar navigation:
+
+[source,asciidoc]
+----
+.Tutorial Title
+* xref:index.adoc[Introduction]
+* xref:getting-started.adoc[Getting Started]
+* xref:chapter-01.adoc[Chapter 1: Basics]
+* xref:chapter-02.adoc[Chapter 2: Services]
+** xref:chapter-02.adoc#service-layer[Service Layer]
+** xref:chapter-02.adoc#dependency-injection[Dependency Injection]
+* xref:chapter-03.adoc[Chapter 3: Data]
+* xref:conclusion.adoc[Conclusion]
+----
+
+== Multi-Module Navigation
+
+For multi-module projects:
+
+[source,asciidoc]
+----
+.System Overview
+* xref:index.adoc[Introduction]
+
+.Module: User Service
+* xref:user-service/index.adoc[Overview]
+* xref:user-service/chapter-01.adoc[Authentication]
+* xref:user-service/chapter-02.adoc[User Management]
+
+.Module: Payment Service
+* xref:payment-service/index.adoc[Overview]
+* xref:payment-service/chapter-01.adoc[Payment Processing]
+* xref:payment-service/chapter-02.adoc[Webhooks]
+
+.Conclusion
+* xref:conclusion.adoc[Final Thoughts]
+----
+
+== External Links
+
+For external resources:
+
+[source,asciidoc]
+----
+Learn more in the https://spring.io/guides[Spring Framework Guides].
+----
+
+== Breadcrumbs
+
+Antora automatically generates breadcrumbs based on the navigation hierarchy.
+
+== Related Topics Section
+
+At the end of chapters, include related topics:
+
+[source,asciidoc]
+----
+== Related Topics
+
+Interested in diving deeper? Check out these related chapters:
+
+* xref:chapter-05.adoc[Chapter 5: Advanced Patterns] - Design patterns used in this service
+* xref:chapter-07.adoc[Chapter 7: Performance] - Optimizing database queries
+* xref:appendix-a.adoc[Appendix A: Best Practices] - Additional guidelines
+----
+
+== Navigation Best Practices
+
+=== Always Provide Context
+
+Bad:
+[source,asciidoc]
+----
+See xref:chapter-02.adoc[here] for more information.
+----
+
+Good:
+[source,asciidoc]
+----
+For a deep dive into service layer patterns, see xref:chapter-02.adoc[Chapter 2: Service Architecture].
+----
+
+=== Use Descriptive Link Text
+
+Bad:
+[source,asciidoc]
+----
+Click xref:chapter-03.adoc[this link] to learn about databases.
+----
+
+Good:
+[source,asciidoc]
+----
+Learn more about xref:chapter-03.adoc[database design and repositories].
+----
+
+=== Create Navigation at Natural Breakpoints
+
+* After major sections
+* At the end of chapters
+* Before practice exercises (link to related concepts)
+
+=== Keep Navigation Consistent
+
+Use the same navigation format throughout:
+
+[source,asciidoc]
+----
+'''
+
+== Navigation
+
+* ← Previous: xref:chapter-XX.adoc[Previous Chapter Title]
+* → Next: xref:chapter-YY.adoc[Next Chapter Title]
+* ↑ Back to: xref:index.adoc[Tutorial Home]
+----

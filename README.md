@@ -5,8 +5,9 @@ This skill generates code tutorials from source code using Large Language Models
 **Features**:
 - 🏗️ **Multi-module support**: Detects Maven multi-module, npm workspaces, monorepos, and generates hierarchical tutorials
 - 📚 **Single or comprehensive**: Choose to generate for one module or all modules in your project
-- 🎨 **Professional output**: HonKit-ready with diagrams, practice exercises, and custom styling
+- 🎨 **Professional output**: HonKit (Markdown) or Antora (AsciiDoc) compatible with diagrams, practice exercises, and custom styling
 - 🔄 **Flexible structure**: Easy to split multi-module tutorials into standalone modules
+- 📝 **Multiple formats**: Generate Markdown for HonKit or AsciiDoc for Antora with `--engine` flag
  
 
 ### Quick start
@@ -21,19 +22,23 @@ npx @sshaaf/tutorial-skill install
 
 # 4. Generate tutorial (in Claude Code)
 /tutorial build
+# Or for Antora: /tutorial build --engine antora
 
 # 5. Preview the tutorial (optional)
-# Option A: View markdown files directly (VS Code, etc.)
-# Option B: Preview as HTML with HonKit (install separately)
+# Option A: View markdown/AsciiDoc files directly (VS Code, etc.)
+# Option B: Preview as HTML with HonKit (for Markdown output)
 npm install -g honkit
 cd ./docs/tutorial
 honkit serve
+# Option C: Preview as HTML with Antora (for AsciiDoc output)
+npm install -g @antora/cli @antora/site-generator-default
+# Create playbook (configure url, start_path, supplemental_files), then: antora antora-playbook.yml
 ```
 
 **What happens**:
-- Step 2 creates `.claude/tutorial/` in your project
-- Step 4 generates HonKit-compatible tutorial files in `./docs/tutorial/`
-- Step 5 (optional) serves an interactive HTML site at `http://localhost:4000`
+- Step 2 creates `.claude/tutorial/` in your project with both HonKit and Antora templates
+- Step 4 generates tutorial files in `./docs/tutorial/` (Markdown for HonKit or AsciiDoc for Antora)
+- Step 5 (optional) serves an interactive HTML site
 
 ![Example](.github/assets/images/example-preview.jpg)
 
@@ -58,9 +63,12 @@ Works with any programming language:
 ### `/tutorial build`
 Complete tutorial generation with chapters
 - **Time**: 10-30 minutes
-- **Output**: Multiple Markdown files + HonKit-ready docs scaffolding
+- **Output**: Documentation files (Markdown for HonKit or AsciiDoc for Antora)
 - **Use for**: Creating learning materials, documentation, training resources
 - **Supports**: Multi-module projects (Maven, npm workspaces, monorepos)
+- **Engines**:
+  - `--engine honkit` (default): Generates Markdown files for HonKit static site generator
+  - `--engine antora`: Generates AsciiDoc files for Antora documentation system
 
 ## Installation
 
@@ -214,21 +222,45 @@ npx @sshaaf/tutorial-skill update  # Updates only app-B
 
 ### Usage
 
+**Generate tutorial** (in Claude Code):
+
 ```bash
-# Generate tutorial (in Claude Code)
+# Default (HonKit/Markdown)
 /tutorial build .
+
+# With Antora (AsciiDoc)
+/tutorial build --engine antora
 
 # With output directory
 /tutorial build --output ./docs/tutorial
 
-# Preview generated tutorial as HTML (optional)
+# Combine options
+/tutorial build --engine antora --output ./docs/tutorial
+```
+
+**Preview generated tutorials**:
+
+HonKit (Markdown):
+```bash
 npm install -g honkit
 cd ./docs/tutorial
 honkit serve
 # Opens at http://localhost:4000
 ```
 
-The skill generates HonKit-compatible markdown files (README.md, SUMMARY.md, book.json, chapters).
+Antora (AsciiDoc):
+```bash
+npm install -g @antora/cli @antora/site-generator-default
+# Create antora-playbook.yml (see template README for configuration)
+antora antora-playbook.yml
+npx http-server build/site -p 8080
+# Opens at http://localhost:8080
+# Note: Mermaid diagrams render client-side via supplemental-ui
+```
+
+**Output formats**:
+- **HonKit**: Generates `README.md`, `SUMMARY.md`, `book.json`, `*.md` chapters
+- **Antora**: Generates `antora.yml`, `modules/ROOT/nav.adoc`, `modules/ROOT/pages/*.adoc` chapters
 
 ### Developer Notes
 
@@ -250,10 +282,14 @@ See `DEV_TESTING.md` for the testing checklist.
 
 ### For Multi-Module Projects
 - The skill auto-detects Maven multi-module, npm workspaces, monorepos, etc.
-- **Choose "All modules"** to create comprehensive system-wide tutorial with hierarchical structure
+- **Choose "All modules"** to create comprehensive system-wide tutorial
+  - Each module gets a COMPLETE tutorial (getting-started → all chapters → conclusion)
+  - Same depth and quality as single-module mode
+  - Hierarchical navigation links all modules together
+  - Each module is fully standalone and can be extracted
 - **Choose "Specific module"** to focus on one module at a time
-- Multi-module tutorials are easy to split: just extract a module directory
-- Each module can be learned independently or as part of the whole system
+- Multi-module tutorials are easy to split: just copy a module directory for standalone use
+- Learn modules in any order - each is self-contained
 
 ## Documentation
 

@@ -1,0 +1,7 @@
+.{{TUTORIAL_TITLE}}
+* xref:index.adoc[Introduction]
+* xref:getting-started.adoc[Getting Started]
+
+{{CHAPTER_NAVIGATION_ITEMS}}
+
+* xref:conclusion.adoc[Conclusion]

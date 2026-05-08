@@ -4,6 +4,46 @@ This is a Claude Code skill for generating tutorials and analyzing codebases.
 
 ## Recent Updates (2026-05-08)
 
+### Antora Support
+
+The skill now supports generating tutorials in AsciiDoc format for Antora documentation system.
+
+**New `--engine` flag**:
+- `--engine honkit` (default): Generates Markdown files for HonKit
+- `--engine antora`: Generates AsciiDoc files for Antora
+
+**Antora output structure**:
+```
+docs/
+├── antora.yml                    # Component descriptor
+├── modules/
+│   └── ROOT/
+│       ├── nav.adoc              # Navigation sidebar
+│       ├── pages/
+│       │   ├── index.adoc        # Landing page
+│       │   ├── getting-started.adoc
+│       │   ├── chapter-01.adoc
+│       │   └── conclusion.adoc
+│       ├── images/               # For diagrams
+│       └── examples/             # For code samples
+└── supplemental-ui/              # Client-side Mermaid rendering
+    └── partials/
+        └── footer-scripts.hbs    # Loads Mermaid.js from CDN
+```
+
+**Key differences from HonKit**:
+- File extension: `.adoc` instead of `.md`
+- Mermaid diagrams: Use `[mermaid]` directive with `....` delimiters (rendered client-side via Mermaid.js)
+- Cross-references: Use `xref:filename.adoc[Link Text]` instead of `[Link Text](filename.md)`
+- Structured module hierarchy: `modules/ROOT/pages/` instead of flat directory
+- Includes supplemental-ui for client-side Mermaid rendering
+- Requires Antora playbook configuration (url, start_path, worktrees, supplemental_files)
+
+**Templates**:
+Both template sets are installed at:
+- `.claude/tutorial/templates/honkit/` - Markdown templates
+- `.claude/tutorial/templates/antora/` - AsciiDoc templates
+
 ### Multi-Module Project Support
 
 The skill now detects multi-module projects (Maven multi-module, npm workspaces, monorepos, etc.) and asks users whether to:
@@ -21,23 +61,34 @@ The skill now detects multi-module projects (Maven multi-module, npm workspaces,
 **Multi-module output structure**:
 ```
 tutorials/
-  README.md                  # System overview
-  01-getting-started.md      # Global setup
-  module-a/
-    README.md                # Module intro
-    01-*.md, 02-*.md        # Module chapters
-  module-b/
-    README.md
-    01-*.md, 02-*.md
-  conclusion.md              # System synthesis
-  SUMMARY.md                 # Hierarchical navigation
+  README.md                       # System overview
+  01-getting-started.md           # Global setup
+  user-service/                   # Module 1 - COMPLETE TUTORIAL
+    README.md                     # Module intro
+    01-getting-started.md         # Module setup
+    02-user-controller.md         # Code chapter
+    03-user-service.md            # Code chapter
+    04-user-repository.md         # Code chapter
+    conclusion.md                 # Module conclusion
+  payment-service/                # Module 2 - COMPLETE TUTORIAL
+    README.md                     # Module intro
+    01-getting-started.md         # Module setup
+    02-payment-controller.md      # Code chapter
+    03-payment-service.md         # Code chapter
+    conclusion.md                 # Module conclusion
+  conclusion.md                   # System synthesis
+  SUMMARY.md                      # Hierarchical navigation
 ```
 
+**Key principle**: Each module gets the SAME full treatment as single-module mode.
+
 **Benefits**:
-- Learn entire system progressively
-- Easy to extract modules as standalone tutorials
-- Clear system organization in navigation
-- Each module self-contained
+- Learn entire system progressively (or jump to specific modules)
+- Each module is a COMPLETE standalone tutorial
+- Same depth and quality as single-module tutorials
+- Easy to extract: copy module directory for standalone use
+- Hierarchical navigation shows system organization
+- Module conclusions + system conclusion for different abstraction levels
 
 ### Installation Patterns
 
@@ -90,15 +141,24 @@ The skill generates HonKit-ready tutorial files with:
 - `book.json` (HonKit configuration with mermaid-hybrid plugin)
 - `styles/website.css` (professional styling)
 
-**Preview workflow**:
-Users can preview generated tutorials by installing HonKit separately:
+**Preview workflows**:
+
+HonKit (Markdown):
 ```bash
 npm install -g honkit
 cd ./docs/tutorial
 honkit serve
 ```
-
 Diagram rendering uses **`honkit-plugin-mermaid-hybrid`** (newer Mermaid than legacy GitBook plugins).
+
+Antora (AsciiDoc):
+```bash
+npm install -g @antora/cli @antora/site-generator-default
+# Create antora-playbook.yml (configure url, start_path, worktrees, supplemental_files)
+antora antora-playbook.yml
+npx http-server build/site -p 8080
+```
+Diagram rendering uses **client-side Mermaid.js** loaded from CDN via `supplemental-ui/partials/footer-scripts.hbs`.
 
 ### Architecture Diagram Export Feature
 
@@ -118,10 +178,13 @@ This enhancement makes it easy to share and reuse architecture diagrams without 
 
 ### Build Mode (`/tutorial build`)
 - 6-stage pipeline for comprehensive tutorial generation
-- Creates multi-chapter Markdown tutorials with HonKit-ready files
+- Creates multi-chapter tutorials in Markdown (HonKit) or AsciiDoc (Antora) format
 - Supports multi-module projects (Maven, npm workspaces, monorepos)
 - Generates practice exercises, architecture diagrams, and navigation
 - Time: 10-30 minutes
+- **Engine options**:
+  - `--engine honkit` (default): Generates Markdown for HonKit
+  - `--engine antora`: Generates AsciiDoc for Antora
 
 ## Development Guidelines
 
@@ -138,7 +201,10 @@ When updating this skill:
 - `package.json` - NPM package configuration
 - `installer.js` - Installation script
 - `bin/` - Executable commands
-- `lib/` - HonKit docs helpers
+- `lib/` - Helper libraries (updater)
+- `templates/` - Template directories
+  - `honkit/` - Markdown templates for HonKit
+  - `antora/` - AsciiDoc templates for Antora
 - `DEV_TESTING.md` - Maintainer local testing notes
 - `tests/` - Test files
 

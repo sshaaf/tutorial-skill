@@ -1,0 +1,13 @@
+name: {{MODULE_NAME}}
+title: '{{TUTORIAL_TITLE}}'
+version: '1.0'
+start_page: ROOT:index.adoc
+nav:
+  - modules/ROOT/nav.adoc
+asciidoc:
+  attributes:
+    page-difficulty: {{DIFFICULTY}}
+    page-estimated-time: {{ESTIMATED_TIME}}
+    author: {{AUTHOR}}
+    # Enable Mermaid diagrams (client-side rendering)
+    page-mermaid: ''

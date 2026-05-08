@@ -1,6 +1,6 @@
 ---
 name: tutorial
-description: Generate comprehensive, chapter-based tutorials from any codebase with AI. Use "/tutorial build" to analyze code architecture and create beginner-friendly tutorial content with practice exercises, architecture diagrams, and HonKit-ready files. Supports multi-module projects (Maven, npm workspaces, monorepos). Works with any programming language. Triggers on requests about creating tutorials, analyzing code architecture, understanding codebases, or generating learning materials.
+description: Generate comprehensive, chapter-based tutorials from any codebase with AI. Use "/tutorial build" to analyze code architecture and create beginner-friendly tutorial content with practice exercises, architecture diagrams, and documentation-ready files. Supports HonKit (Markdown) and Antora (AsciiDoc) output formats. Supports multi-module projects (Maven, npm workspaces, monorepos). Works with any programming language. Triggers on requests about creating tutorials, analyzing code architecture, understanding codebases, or generating learning materials.
 ---
 
 # Tutorial Generator
@@ -18,8 +18,13 @@ This skill generates comprehensive, beginner-friendly tutorials from any codebas
   - Output: `/tutorial build --output ./docs`
   - Language: `/tutorial build --language python`
   - Focus: `/tutorial build --focus services`
+  - Engine: `/tutorial build --engine antora` (default: honkit)
 
 Parse arguments flexibly - accept both flags and positional arguments.
+
+**Engine Options**:
+  - `honkit` (default): Generates Markdown files compatible with HonKit static site generator
+  - `antora`: Generates AsciiDoc files compatible with Antora documentation system
 
 ---
 
@@ -33,11 +38,19 @@ Parse arguments flexibly - accept both flags and positional arguments.
 
 #### Stage 1: Code Discovery
 
-1. **Determine project path**:
+1. **Determine output engine**:
+   - Parse `--engine` flag from command args (default: `honkit`)
+   - Supported values: `honkit` (Markdown), `antora` (AsciiDoc)
+   - Set template directory based on engine:
+     - HonKit: `.claude/tutorial/templates/honkit/`
+     - Antora: `.claude/tutorial/templates/antora/`
+   - Store engine choice for use in all subsequent stages
+
+2. **Determine project path**:
    - Use path from command args if provided, otherwise ask user
    - Auto-detect primary language from file extensions
 
-2. **Detect multi-module structure**:
+3. **Detect multi-module structure**:
 
    Check for common multi-module patterns:
 
@@ -273,7 +286,9 @@ This stage creates:
 - Check for database initialization scripts (`.sql`, `.sh`, migrations)
 
 **Template Usage**:
-- A template is available at `.claude/tutorial/templates/honkit/getting-started.md`
+- A template is available based on the selected engine:
+  - HonKit: `.claude/tutorial/templates/honkit/getting-started.md`
+  - Antora: `.claude/tutorial/templates/antora/getting-started.adoc`
 - The template has placeholders like `{{PROJECT_NAME}}`, `{{BUILD_COMMANDS}}`, etc.
 - Use this template as a structural guide, but generate content based on actual analysis of build and configuration files
 
@@ -305,7 +320,9 @@ This stage creates:
 
 Use code blocks with proper syntax highlighting for all commands and configuration examples.
 
-**6b. Generate Code Chapters**: For each abstraction in order, create a chapter file (`{N:02d}-{chapter-name}.md`) using the template at `.claude/tutorial/templates/honkit/chapter-template.md`:
+**6b. Generate Code Chapters**: For each abstraction in order, create a chapter file using the appropriate template:
+- HonKit: `{N:02d}-{chapter-name}.md` using `.claude/tutorial/templates/honkit/chapter-template.md`
+- Antora: `chapter-{N:02d}.adoc` using `.claude/tutorial/templates/antora/chapter-template.adoc`
 
 **Template placeholders to replace**:
 - `{{CHAPTER_TITLE}}` - Descriptive chapter title in Chicago Manual of Style title case (e.g., "User Service: The Heart of Authentication", "Understanding the Repository Pattern"). See capitalization-guide.md for rules.
@@ -353,7 +370,9 @@ Use code blocks with proper syntax highlighting for all commands and configurati
 - Use `[(Database)]` for storage/persistence
 - Use `{Decision?}` for conditional branching
 - Include data transformation labels between nodes
-- Reference `templates/honkit/flow-diagram-examples.md` for patterns and examples
+- Reference flow diagram examples based on engine:
+  - HonKit: `templates/honkit/flow-diagram-examples.md`
+  - Antora: `templates/antora/flow-diagram-examples.adoc` (note: use `[mermaid]` directive with `....` delimiters)
 - Keep diagrams focused on this component's primary data flow (3-8 nodes typically)
 
 **Flow Diagram examples**:
@@ -379,7 +398,11 @@ graph TD
 
 Generate sequentially to allow cross-referencing. Show progress for each chapter.
 
-**6c. Generate Conclusion Chapter**: Create a final chapter (`conclusion.md`) using `.claude/tutorial/templates/honkit/conclusion.md` following effective conclusion principles.
+**6c. Generate Conclusion Chapter**: Create a final chapter using the appropriate template:
+- HonKit: `conclusion.md` using `.claude/tutorial/templates/honkit/conclusion.md`
+- Antora: `conclusion.adoc` using `.claude/tutorial/templates/antora/conclusion.adoc`
+
+Follow effective conclusion principles from the template.
 
 **IMPORTANT**: Always generate the conclusion chapter unless the user explicitly requests not to. The conclusion synthesizes learning and provides next steps, making tutorials more complete and valuable.
 
@@ -406,7 +429,7 @@ Generate sequentially to allow cross-referencing. Show progress for each chapter
 - `{{SUPPORT_CHANNELS}}` - Specific channels for help (Discord, forum, GitHub issues) with what type of questions to ask where
 
 **Closing**:
-- `{{CONCLUSION_ILLUSTRATION}}` - Optional relevant illustration (xkcd comic or other image) that celebrates achievement or validates the learning journey. See illustrations-guide.md for options. Format: Image + attribution
+- `{{CONCLUSION_ILLUSTRATION}}` - Relevant illustration (xkcd comic recommended) that celebrates achievement or validates the learning journey. Consult illustrations-guide.md and select from "Success & Completion" or topic-specific sections. Format: Image + attribution (see Illustration Selection section below)
 - `{{CLOSING_REFLECTION}}` - 2-3 sentences that elevate beyond the tutorial: the mindset/approach that matters most, or the larger lesson
 - `{{CIRCLE_BACK_TO_INTRO}}` - Reference a specific concept, question, or goal from the introduction to create closure
 - `{{EMPOWERING_SENDOFF}}` - Final sentence that's empowering and forward-looking. Avoid clichés; be specific about what learners can now accomplish.
@@ -419,13 +442,29 @@ Generate sequentially to allow cross-referencing. Show progress for each chapter
 - **End with impact**: Final words should be memorable and empowering
 
 **Illustration Selection** (for both intro and conclusion):
-- Consult `templates/honkit/illustrations-guide.md` for curated xkcd comics and alternative sources
-- **For Introduction**: Choose images about learning, complexity, or starting journeys (e.g., xkcd #1053 "Ten Thousand")
-- **For Conclusion**: Choose images about mastery, achievement, or validation (e.g., xkcd #208 "Regular Expressions", #1319 "Automation")
-- Match illustration theme to tutorial topic (APIs → xkcd #1481, Security → xkcd #327, Git → xkcd #1172)
-- **Always include proper attribution**: `*[xkcd #NUMBER](https://xkcd.com/NUMBER/): "Title" by Randall Munroe (CC BY-NC 2.5)*`
-- Alternative sources: unDraw (no attribution), Unsplash (credit photographer), see guide for details
-- If no good match found, illustrations are optional—omit rather than force a poor fit
+- **REQUIRED**: Select appropriate illustrations for both intro and conclusion - do NOT leave these placeholders empty
+- Consult illustrations guide based on engine:
+  - HonKit: `templates/honkit/illustrations-guide.md`
+  - Antora: `templates/antora/illustrations-guide.adoc`
+- **For Introduction**: Choose images about learning, complexity, or starting journeys
+  - Examples: xkcd #1053 "Ten Thousand" (learning), #519 "11th Grade" (feeling lost), #974 "The General Problem"
+- **For Conclusion**: Choose images about mastery, achievement, or validation
+  - Examples: xkcd #208 "Regular Expressions" (mastery), #1319 "Automation" (ROI), #353 "Python" (joy of tools)
+- **Match theme to tutorial topic**:
+  - APIs/Web Dev → xkcd #1481 "API", #927 "Standards"
+  - Security/Auth → xkcd #327 "SQL Injection", #936 "Password Strength"
+  - ML/AI → xkcd #1425 "Tasks"
+  - DevOps/Automation → xkcd #1319 "Automation", #1205 "Is It Worth the Time?"
+  - Git/Version Control → xkcd #1172 "Workflow"
+  - Testing/Quality → xkcd #1513 "Code Quality", #1833 "Code Quality 2"
+- **Format** (always include image + attribution on separate lines):
+  ```markdown
+  ![xkcd comic description](https://imgs.xkcd.com/comics/image_name.png)
+
+  *[xkcd #NUMBER](https://xkcd.com/NUMBER/): "Title" by Randall Munroe (CC BY-NC 2.5)*
+  ```
+- Alternative sources if xkcd doesn't fit: unDraw (no attribution), Unsplash (credit photographer) - see guide for details
+- Only omit illustrations if truly no relevant match exists (rare - the xkcd catalog covers most programming topics)
 
 **Navigation placeholder**:
 - `{{PREV_CHAPTER_LINK}}` - Link back to last code chapter: `👈 **[Previous: Chapter N - ComponentName](0N-component-name.md)**`
@@ -436,48 +475,111 @@ Generate sequentially to allow cross-referencing. Show progress for each chapter
 
 **If `mode = "multi-module"` from Stage 1**, follow this workflow:
 
-#### For Each Module:
+**Core Principle**: Each module gets the EXACT SAME full tutorial treatment as single-module mode. The only difference is organization and navigation.
 
-1. **Run Stages 2-6 for each module independently**:
+**What this means**:
+- Run the complete 6-stage pipeline (Stages 2-6) for EACH module independently
+- Each module gets: README, getting-started, ALL code chapters (one per abstraction), conclusion
+- Generate content iteratively or in parallel for all modules
+- Link everything together with hierarchical navigation (SUMMARY.md or nav.adoc)
+- The result: A system of complete, standalone tutorials that can be learned together or separately
+
+#### Processing Flow:
+
+**For Module 1** (e.g., user-service):
+1. Run Stage 2: Identify abstractions (UserController, UserService, UserRepository, etc.)
+2. Run Stage 3: Analyze relationships within module
+3. Run Stage 4: Organize chapters (UserController → UserService → UserRepository)
+4. Run Stage 5: Generate metadata (module title, description, difficulty)
+5. Run Stage 6a: Generate getting-started.md for this module
+6. Run Stage 6b: Generate ALL code chapters (02-user-controller.md, 03-user-service.md, 04-user-repository.md, etc.)
+7. Run Stage 6c: Generate conclusion.md for this module
+
+**For Module 2** (e.g., payment-service):
+- Repeat the EXACT SAME process as Module 1
+- Generate complete tutorial: README → getting-started → chapters → conclusion
+
+**For Module 3** (e.g., notification-service):
+- Repeat the EXACT SAME process as Module 1
+- Generate complete tutorial: README → getting-started → chapters → conclusion
+
+**Then, create system-level files**:
+- Top-level README.md (system overview)
+- Top-level getting-started.md (system setup)
+- Top-level conclusion.md (system synthesis)
+- SUMMARY.md or nav.adoc (hierarchical navigation linking everything)
+
+---
+
+#### Detailed Steps:
+
+1. **Run Stages 2-6 for each module independently** (as described above):
+   - Each module gets the FULL tutorial generation treatment (same as single-module mode)
    - Stage 2: Identify abstractions within the module
    - Stage 3: Analyze relationships within the module
    - Stage 4: Organize chapters for the module
    - Stage 5: Generate metadata for the module
-   - Stage 6a-6c: Generate module chapters
+   - Stage 6a: Generate Getting Started chapter for the module
+   - Stage 6b: Generate ALL code chapters for the module (one per abstraction)
+   - Stage 6c: Generate Conclusion chapter for the module
 
-2. **Organize output in module subdirectories**:
+2. **IMPORTANT: Each module is a complete, standalone tutorial**:
+   - Each module should have its own:
+     - README.md (module introduction/overview)
+     - 01-getting-started.md (module-specific setup)
+     - 02-{abstraction-1}.md (first abstraction chapter)
+     - 03-{abstraction-2}.md (second abstraction chapter)
+     - ...
+     - NN-{abstraction-N}.md (last abstraction chapter)
+     - conclusion.md (module conclusion/synthesis)
+   - Generate content using the same quality and depth as single-module mode
+   - Practice exercises, diagrams, and code examples for each chapter
+
+3. **Organize output in module subdirectories**:
    ```
    tutorials/
-     README.md                    # Top-level introduction
+     README.md                    # Top-level system introduction
      01-getting-started.md        # Global setup (all modules)
-     user-service/                # Module 1
+     user-service/                # Module 1 - COMPLETE TUTORIAL
        README.md                  # Module introduction
-       01-user-controller.md
-       02-user-service.md
-       03-user-repository.md
-     payment-service/             # Module 2
+       01-getting-started.md      # Module-specific setup
+       02-user-controller.md      # Code chapter
+       03-user-service.md         # Code chapter
+       04-user-repository.md      # Code chapter
+       conclusion.md              # Module conclusion
+     payment-service/             # Module 2 - COMPLETE TUTORIAL
        README.md                  # Module introduction
-       01-payment-controller.md
-       02-payment-service.md
-     notification-service/        # Module 3
+       01-getting-started.md      # Module-specific setup
+       02-payment-controller.md   # Code chapter
+       03-payment-service.md      # Code chapter
+       04-payment-gateway.md      # Code chapter
+       conclusion.md              # Module conclusion
+     notification-service/        # Module 3 - COMPLETE TUTORIAL
        README.md                  # Module introduction
-       01-notification-handler.md
-       02-email-sender.md
-     conclusion.md                # Overall conclusion
-     SUMMARY.md                   # Hierarchical structure
-     book.json
-     styles/website.css
+       01-getting-started.md      # Module-specific setup
+       02-notification-handler.md # Code chapter
+       03-email-sender.md         # Code chapter
+       conclusion.md              # Module conclusion
+     conclusion.md                # Overall system conclusion
+     SUMMARY.md                   # Hierarchical navigation
+     book.json                    # HonKit config (or antora.yml for Antora)
+     styles/website.css           # HonKit only
    ```
 
-3. **Generate module-specific README.md** for each module:
+4. **Generate module-specific README.md** for each module:
    - Use same index.md template structure
    - Scope to this module only:
      - Module name as title
+     - Module-specific learning objectives
      - Module-specific architecture diagram
      - Module's abstractions only
-     - Navigation to first chapter in module
+     - Technical stack for this module
+     - Prerequisites specific to this module
+     - Navigation to first chapter in module (01-getting-started.md)
 
-4. **Create hierarchical SUMMARY.md**:
+5. **Create hierarchical SUMMARY.md** (HonKit) or **nav.adoc** (Antora):
+
+   **HonKit example**:
    ```markdown
    # Summary
 
@@ -487,68 +589,149 @@ Generate sequentially to allow cross-referencing. Show progress for each chapter
    ## User Service
 
    * [Module Overview](user-service/README.md)
-   * [UserController](user-service/01-user-controller.md)
-   * [UserService](user-service/02-user-service.md)
-   * [UserRepository](user-service/03-user-repository.md)
+   * [Getting Started](user-service/01-getting-started.md)
+   * [UserController](user-service/02-user-controller.md)
+   * [UserService](user-service/03-user-service.md)
+   * [UserRepository](user-service/04-user-repository.md)
+   * [Conclusion](user-service/conclusion.md)
 
    ## Payment Service
 
    * [Module Overview](payment-service/README.md)
-   * [PaymentController](payment-service/01-payment-controller.md)
-   * [PaymentService](payment-service/02-payment-service.md)
+   * [Getting Started](payment-service/01-getting-started.md)
+   * [PaymentController](payment-service/02-payment-controller.md)
+   * [PaymentService](payment-service/03-payment-service.md)
+   * [PaymentGateway](payment-service/04-payment-gateway.md)
+   * [Conclusion](payment-service/conclusion.md)
 
    ## Notification Service
 
    * [Module Overview](notification-service/README.md)
-   * [NotificationHandler](notification-service/01-notification-handler.md)
-   * [EmailSender](notification-service/02-email-sender.md)
+   * [Getting Started](notification-service/01-getting-started.md)
+   * [NotificationHandler](notification-service/02-notification-handler.md)
+   * [EmailSender](notification-service/03-email-sender.md)
+   * [Conclusion](notification-service/conclusion.md)
 
    * [Conclusion](conclusion.md)
    ```
 
-5. **Generate top-level README.md**:
+   **Antora example** (nav.adoc):
+   ```asciidoc
+   .Tutorial Title
+   * xref:index.adoc[Introduction]
+   * xref:getting-started.adoc[Getting Started]
+
+   .User Service
+   * xref:user-service/index.adoc[Module Overview]
+   * xref:user-service/getting-started.adoc[Getting Started]
+   * xref:user-service/chapter-02.adoc[UserController]
+   * xref:user-service/chapter-03.adoc[UserService]
+   * xref:user-service/chapter-04.adoc[UserRepository]
+   * xref:user-service/conclusion.adoc[Conclusion]
+
+   .Payment Service
+   * xref:payment-service/index.adoc[Module Overview]
+   * xref:payment-service/getting-started.adoc[Getting Started]
+   * xref:payment-service/chapter-02.adoc[PaymentController]
+   * xref:payment-service/chapter-03.adoc[PaymentService]
+   * xref:payment-service/chapter-04.adoc[PaymentGateway]
+   * xref:payment-service/conclusion.adoc[Conclusion]
+
+   .Notification Service
+   * xref:notification-service/index.adoc[Module Overview]
+   * xref:notification-service/getting-started.adoc[Getting Started]
+   * xref:notification-service/chapter-02.adoc[NotificationHandler]
+   * xref:notification-service/chapter-03.adoc[EmailSender]
+   * xref:notification-service/conclusion.adoc[Conclusion]
+
+   * xref:conclusion.adoc[System Conclusion]
+   ```
+
+   **Key points**:
+   - Each module section shows ALL chapters for that module
+   - Chapters are numbered within each module directory
+   - Each module is a complete tutorial that can be extracted and used standalone
+   - Navigation shows the hierarchical structure clearly
+
+6. **Generate top-level README.md**:
    - Cover the entire multi-module system
    - High-level architecture showing module interactions
    - System-wide overview and learning objectives
    - List all modules with brief descriptions
+   - Link to global Getting Started
 
-6. **Generate top-level Getting Started**:
+7. **Generate top-level Getting Started** (01-getting-started.md):
    - Setup instructions for entire project (root-level dependencies)
    - How to run all modules (docker-compose, orchestration)
    - Cross-module configuration
-   - Module-specific setup delegated to module READMEs
+   - High-level system architecture
+   - Link to first module overview or module-specific getting started
 
-7. **Navigation Links**:
-   - Within module chapters: navigate within module only
-   - Last chapter in module: links to next module's overview or conclusion
-   - Example: `👉 **[Next: Payment Service Overview](../payment-service/README.md)**`
+8. **Generate module Getting Started** (for each module):
+   - Module-specific dependencies and setup
+   - How to run this module in isolation
+   - Module-specific configuration
+   - Development workflow for this module
+   - Integration with other modules (if applicable)
 
-8. **Top-level Conclusion**:
-   - Synthesize learning across all modules
-   - How modules work together
-   - System-level insights and patterns
+9. **Generate module Conclusion** (for each module):
+   - Use the same conclusion.md template
+   - Synthesize learning for this module
+   - Module-specific key takeaways
+   - How this module fits in the larger system
+   - Link to next module or system conclusion
+
+10. **Navigation Links**:
+   - **Within module chapters**: Navigate within module (prev/next within module)
+     - Example in module chapter: `👈 **[Previous: UserController](02-user-controller.md)**` and `👉 **[Next: UserRepository](04-user-repository.md)**`
+   - **Last chapter in module** (module conclusion): Link to next module's overview
+     - Example: `👉 **[Next Module: Payment Service Overview](../payment-service/README.md)**`
+   - **First chapter in module** (module getting-started): Link back to module overview
+     - Example: `👈 **[Previous: User Service Overview](README.md)**`
+
+11. **Generate top-level System Conclusion** (conclusion.md):
+   - Use the same conclusion.md template
+   - Synthesize learning across ALL modules
+   - How modules work together as a system
+   - System-level insights and architectural patterns
+   - Cross-module design decisions and trade-offs
+   - System-wide best practices
+   - Next steps for extending or deploying the entire system
+   - This is NOT a summary of individual module conclusions - it's a higher-level synthesis
 
 **Benefits of this structure**:
-- ✅ Users can learn the entire system progressively
-- ✅ Easy to split: extract one module's directory for standalone tutorial
-- ✅ Hierarchical navigation shows system organization
-- ✅ Each module is self-contained with its own intro
-- ✅ SUMMARY.md provides clear roadmap
+- ✅ Users can learn the entire system progressively (start to finish)
+- ✅ Each module is a COMPLETE, standalone tutorial (intro → getting-started → chapters → conclusion)
+- ✅ Easy to extract: Copy one module's directory for standalone use without modifications
+- ✅ Hierarchical navigation shows system organization in SUMMARY.md/nav.adoc
+- ✅ Same quality and depth as single-module tutorials
+- ✅ Learn modules in any order (each is self-contained)
+- ✅ Module conclusions connect to the larger system
+- ✅ System conclusion synthesizes cross-module patterns
 
 ---
 
-#### Final Step: Create HonKit Navigation Files
+#### Final Step: Create Navigation and Configuration Files
 
-After generating chapters, prepare for HonKit using the provided templates.
+After generating chapters, create the navigation and configuration files based on the selected engine.
 
-**Note**: Instructions below apply to **single-module** tutorials. For **multi-module** tutorials, see the Multi-Module section above for SUMMARY.md structure and organization.
+**CRITICAL TEMPLATE USAGE RULES**:
+- ✅ **DO**: Read template files with Read tool and ONLY replace documented placeholders
+- ✅ **DO**: Preserve all template structure, plugins, and configuration exactly as written
+- ❌ **DO NOT**: Add extra plugins, config sections, or content not in the template
+- ❌ **DO NOT**: Modify template structure or "improve" the configuration
+- ❌ **DO NOT**: Hallucinate or invent content - use template + placeholder replacement ONLY
+
+**Note**: Instructions below apply to **single-module** tutorials. For **multi-module** tutorials, see the Multi-Module section above for structure and organization.
+
+**Choose the appropriate section based on the engine** (determined in Stage 1):
 
 **1. Create README.md** from template:
    - Read template from: `.claude/tutorial/templates/honkit/index.md`
    - Replace placeholders:
      - `{{TUTORIAL_TITLE}}` - Tutorial title from metadata
      - `{{WELCOME_MESSAGE}}` - 2-3 sentence warm welcome explaining what this tutorial covers
-     - `{{INTRO_ILLUSTRATION}}` - Optional relevant illustration (xkcd comic or other image) that sets the tone. See illustrations-guide.md for options. Format: Image + attribution
+     - `{{INTRO_ILLUSTRATION}}` - Relevant illustration (xkcd comic recommended) that sets the tone for learning. Consult illustrations-guide.md and select from "Learning & Development" or topic-specific sections. Format: Image + attribution (see Illustration Selection section below)
      - `{{LEARNING_OBJECTIVES}}` - Bulleted list of specific skills/concepts learners will master
      - `{{PROJECT_OVERVIEW}}` - 1-2 paragraphs describing the project's purpose and main functionality
      - `{{ARCHITECTURE_DIAGRAM}}` - Mermaid diagram from Stage 3 (architecture relationships)
@@ -583,20 +766,116 @@ After generating chapters, prepare for HonKit using the provided templates.
    - Quick rules: Capitalize first/last words and major words; lowercase articles (a, an, the), conjunctions (and, but, or), and prepositions (in, on, at, to, from, with, of, etc.)
 
 **3. Create book.json** from template:
-   - Read template from: `.claude/tutorial/templates/honkit/book.json`
-   - Replace placeholders:
+   - **IMPORTANT**: Read the EXACT template from: `.claude/tutorial/templates/honkit/book.json`
+   - **ONLY replace the following placeholders** - do NOT add any extra plugins, config, or sections:
      - `{{TUTORIAL_TITLE}}` - Tutorial title from metadata
      - `{{TUTORIAL_DESCRIPTION}}` - Tutorial description from metadata
      - `{{AUTHOR}}` - From metadata or default to "Generated by Claude Code"
      - `{{MODULE}}` - Default to "Module 01"
      - `{{DIFFICULTY}}` - From metadata
      - `{{ESTIMATED_TIME}}` - From metadata
+   - **Do NOT add**: extra plugins, pluginsConfig sections, links sections, or any other content not in the template
 
 **4. Copy styles** from template:
    - Copy `.claude/tutorial/templates/honkit/styles/website.css` to output directory's `styles/` folder
    - Creates `{output_dir}/styles/website.css` for custom HonKit styling
 
-**Completion**: Show summary with output directory, files created, stats, and next steps (review generated content, try practice exercises).
+**Completion** (HonKit): Show summary with output directory, files created, stats, and preview instructions:
+   ```
+   Preview locally:
+   npm install -g honkit
+   cd {output_dir}
+   honkit serve
+   ```
+
+---
+
+#### Antora Engine (AsciiDoc)
+
+If `--engine antora` was specified, follow these steps:
+
+**1. Create antora.yml** from template:
+   - **IMPORTANT**: Read the EXACT template from: `.claude/tutorial/templates/antora/antora.yml`
+   - **ONLY replace the following placeholders** - do NOT add any extra fields or sections:
+     - `{{MODULE_NAME}}` - Lowercase module identifier (e.g., "user-service", "tutorial")
+     - `{{TUTORIAL_TITLE}}` - Tutorial title from metadata
+     - `{{DIFFICULTY}}` - From metadata
+     - `{{ESTIMATED_TIME}}` - From metadata
+     - `{{AUTHOR}}` - From metadata or default to "Generated by Claude Code"
+   - Write to: `{output_dir}/antora.yml`
+
+**2. Create index.adoc** (landing page):
+   - Read template from: `.claude/tutorial/templates/antora/index.adoc`
+   - Replace placeholders (same as HonKit index.md but in AsciiDoc format):
+     - `{{TUTORIAL_TITLE}}`, `{{TUTORIAL_DESCRIPTION}}`, `{{AUTHOR}}`
+     - `{{LEARNING_OBJECTIVES}}`, `{{PREREQUISITES}}`
+     - `{{DIFFICULTY}}`, `{{ESTIMATED_TIME}}`
+   - Write to: `{output_dir}/modules/ROOT/pages/index.adoc`
+
+**3. Create nav.adoc** (navigation sidebar):
+   - Read template from: `.claude/tutorial/templates/antora/nav.adoc`
+   - Replace `{{TUTORIAL_TITLE}}` with tutorial title
+   - Replace `{{CHAPTER_NAVIGATION_ITEMS}}` with navigation items:
+     - For single-module: `* xref:chapter-01.adoc[Chapter 1: Title]`
+     - For multi-module: Use hierarchical structure with module sections
+   - Write to: `{output_dir}/modules/ROOT/nav.adoc`
+   - **IMPORTANT**: All chapter titles MUST use Chicago Manual of Style title case capitalization
+
+**4. Create chapter files**:
+   - Write all generated chapters to: `{output_dir}/modules/ROOT/pages/`
+   - File names: `getting-started.adoc`, `chapter-01.adoc`, `chapter-02.adoc`, etc., `conclusion.adoc`
+   - Use `.adoc` file extension (AsciiDoc format)
+   - **Cross-references**: Use `xref:filename.adoc[Link Text]` syntax for internal links
+   - **Mermaid diagrams**: Use `[mermaid]` directive with `....` delimiters:
+     ```
+     [mermaid]
+     ....
+     graph TD
+       A --> B
+     ....
+     ```
+
+**5. Create directories and copy supplemental UI**:
+   - Create: `{output_dir}/modules/ROOT/images/` (for future diagrams)
+   - Create: `{output_dir}/modules/ROOT/examples/` (for code examples)
+   - Copy: `.claude/tutorial/templates/antora/supplemental-ui/` to `{output_dir}/supplemental-ui/`
+     - This includes `partials/footer-scripts.hbs` for client-side Mermaid rendering
+
+**Completion** (Antora): Show summary with output directory, files created, stats, and preview instructions:
+   ```
+   Preview locally:
+   npm install -g @antora/cli @antora/site-generator-default
+
+   Create antora-playbook.yml:
+   cat > antora-playbook.yml << EOF
+   site:
+     title: {TUTORIAL_TITLE}
+     start_page: {MODULE_NAME}:ROOT:index.adoc
+   content:
+     sources:
+     - url: {GIT_REPO_ROOT}
+       start_path: {output_dir}
+       branches: HEAD
+       worktrees: true
+   ui:
+     bundle:
+       url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+       snapshot: true
+     supplemental_files: {output_dir}/supplemental-ui
+   EOF
+
+   antora antora-playbook.yml
+   npx http-server build/site -p 8080
+   ```
+
+   **Important configuration notes**:
+   - `start_page`: Use format `{MODULE_NAME}:ROOT:index.adoc` (not `ROOT::index.adoc`)
+   - `url`: Should point to git repository root (e.g., `/path/to/repo` or `.` if playbook is at repo root)
+   - `start_path`: Relative path from repo root to tutorial directory
+   - `worktrees: true`: Includes uncommitted files (important for local preview)
+   - `supplemental_files`: Points to supplemental-ui directory for Mermaid rendering
+
+   **Note**: Mermaid diagrams are rendered client-side using Mermaid.js loaded from CDN via supplemental-ui/partials/footer-scripts.hbs.
 
 ---
 
@@ -605,7 +884,7 @@ After generating chapters, prepare for HonKit using the provided templates.
 **Templates**:
 All tutorial templates are organized by output format at `.claude/tutorial/templates/`:
 
-**HonKit Templates** (`templates/honkit/`):
+**HonKit Templates** (`templates/honkit/` - Markdown format):
 - `book.json` - HonKit configuration with metadata placeholders (always use)
 - `index.md` - Tutorial introduction/landing page template used for README.md generation (always use)
 - `SUMMARY.md` - Table of contents template (always use)
@@ -620,17 +899,45 @@ All tutorial templates are organized by output format at `.claude/tutorial/templ
 - `capitalization-guide.md` - Chicago Manual of Style title case rules for all chapter titles (MUST follow for consistency)
 - `styles/website.css` - Custom CSS for HonKit rendering (always copy to output)
 
-These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
+**Antora Templates** (`templates/antora/` - AsciiDoc format):
+- `antora.yml` - Antora component descriptor with metadata placeholders (always use)
+- `index.adoc` - Tutorial introduction/landing page template (always use)
+- `nav.adoc` - Navigation sidebar template (always use)
+- `getting-started.adoc` - Getting Started chapter template with practice exercise (use as structural guide)
+- `chapter-template.adoc` - Code chapter template for abstraction chapters with practice exercises and flow diagrams (always use)
+- `conclusion.adoc` - Conclusion chapter template with synthesis and forward-looking structure (always use)
+- `practice-exercise-examples.adoc` - Reference examples showing good practice exercise structure in AsciiDoc (read for inspiration)
+- `flow-diagram-examples.adoc` - Reference examples of Mermaid flow diagrams in AsciiDoc format (read for inspiration)
+- `navigation-examples.adoc` - Reference examples showing proper xref formatting in AsciiDoc (read for guidance)
+- `conclusion-examples.adoc` - Reference examples of effective conclusions (read for guidance)
+- `illustrations-guide.adoc` - Curated xkcd comics and alternative illustration sources (read for selecting relevant images)
+- `capitalization-guide.md` - Chicago Manual of Style title case rules for all chapter titles (MUST follow for consistency)
 
-**Usage pattern**:
+All templates use `{{PLACEHOLDER}}` syntax for dynamic values.
+
+**Engine-specific usage**:
+
+**HonKit** (Markdown):
 - **book.json, SUMMARY.md, chapter-template.md**: Always read the template, replace all placeholders with actual values from analysis/metadata, and write to output directory
 - **index.md**: Read template and use it to generate README.md (the HonKit landing page) with all placeholders replaced
 - **getting-started.md, conclusion.md**: Use as structural references, generate content based on actual analysis following the template structure
-- **practice-exercise-examples.md, flow-diagram-examples.md, navigation-examples.md, conclusion-examples.md, illustrations-guide.md, capitalization-guide.md**: Reference documents for guidance - read to understand patterns and best practices
-- **capitalization-guide.md**: MUST be applied to ALL chapter titles throughout the tutorial (SUMMARY.md, chapter files, navigation links)
 - **styles/website.css**: Copy to `{output_dir}/styles/` without modification
+- **Output structure**: Flat directory with `README.md`, `SUMMARY.md`, `book.json`, `*.md` chapters, `styles/`
+- File extension: `.md`
 
-**Future template engines**: The templates directory is organized to support additional formats (e.g., `templates/mdbook/`, `templates/docusaurus/`) in future versions.
+**Antora** (AsciiDoc):
+- **antora.yml, nav.adoc, chapter-template.adoc**: Always read the template, replace all placeholders with actual values from analysis/metadata
+- **index.adoc**: Read template and generate `modules/ROOT/pages/index.adoc` with all placeholders replaced
+- **getting-started.adoc, conclusion.adoc**: Use as structural references, generate content based on actual analysis following the template structure
+- **Output structure**: `antora.yml` at root, `modules/ROOT/{nav.adoc,pages/*.adoc,images/,examples/}`
+- File extension: `.adoc`
+- **Mermaid diagrams**: Use `[mermaid]` directive with `....` delimiters instead of code fences
+- **Cross-references**: Use `xref:` syntax (e.g., `xref:chapter-02.adoc[Chapter 2]`)
+
+**Common for both engines**:
+- **Reference guides**: Read for inspiration and patterns but never copy to output directory
+- **capitalization-guide.md**: MUST be applied to ALL chapter titles throughout the tutorial
+- **Guide files**: Read format-specific versions when available (`.md` for HonKit, `.adoc` for Antora)
 
 **Error Handling**:
 - No files found: Verify path and suggest alternatives
@@ -638,7 +945,9 @@ These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
 - JSON parse error: Show raw output and retry
 - Missing relationships: Some components can be standalone
 - User cancels: Respect cancellation at any stage
-- Template not found: Template files should exist at `.claude/tutorial/templates/honkit/` after skill installation
+- Template not found: Template files should exist at `.claude/tutorial/templates/{engine}/` after skill installation
+  - HonKit templates: `.claude/tutorial/templates/honkit/`
+  - Antora templates: `.claude/tutorial/templates/antora/`
 
 **Progress Updates**: Show clear stage indicators (e.g., "⏳ Stage 2/6: Identifying abstractions... ✓ Identified 8 core components")
 

@@ -1,0 +1,183 @@
+= Practice Exercise Examples (AsciiDoc)
+
+This file provides examples of well-structured practice exercises for Antora tutorials.
+
+== Exercise Structure
+
+Each practice exercise should have:
+
+1. **Clear objective** - What the learner will accomplish
+2. **Step-by-step instructions** - Concrete, actionable steps
+3. **Expected outcome** - What success looks like
+4. **Hints** - Guidance without giving away the solution
+5. **Solution** - Full explanation or code
+
+== Example 1: Simple Modification Exercise
+
+=== Practice Exercise
+
+Modify the `UserService` class to add email validation before saving a user.
+
+[arabic]
+. Open `src/main/java/com/example/service/UserService.java`
+. Add a private method `validateEmail(String email)` that checks:
+* Email is not null or empty
+* Email contains "@" symbol
+* Email ends with a valid domain (e.g., ".com", ".org")
+. Call this validation method in the `saveUser()` method before saving
+. Throw an `IllegalArgumentException` if validation fails
+
+**Expected Outcome**: When you try to save a user with an invalid email, the application should throw an exception with a clear error message.
+
+**Hints**:
+
+* Use Java's `String.contains()` and `String.matches()` methods
+* Regular expressions can help: `"^[A-Za-z0-9+_.-]+@(.+)$"`
+* Consider what happens if email is `null`
+
+**Solution**:
+
+[source,java]
+----
+private void validateEmail(String email) {
+    if (email == null || email.isEmpty()) {
+        throw new IllegalArgumentException("Email cannot be empty");
+    }
+    if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+        throw new IllegalArgumentException("Invalid email format");
+    }
+}
+
+public void saveUser(User user) {
+    validateEmail(user.getEmail());
+    userRepository.save(user);
+}
+----
+
+**Why this works**: This validation follows the fail-fast principle, catching invalid data early before it reaches the database.
+
+== Example 2: Integration Exercise
+
+=== Practice Exercise
+
+Integrate the `NotificationService` into the user registration flow.
+
+The current registration process saves a user to the database but doesn't notify anyone. Your task is to send a welcome email after successful registration.
+
+[arabic]
+. Inject `NotificationService` into `RegistrationController`
+. After successfully saving the user, call `notificationService.sendWelcomeEmail(user)`
+. Handle the case where email sending fails (catch `EmailException`)
+. Log the failure but don't block registration (registration should succeed even if email fails)
+
+**Expected Outcome**:
+
+* User registration completes successfully
+* Welcome email is sent asynchronously
+* If email fails, error is logged but registration still succeeds
+
+**Hints**:
+
+* Use try-catch around the email sending
+* Consider using `@Async` annotation for asynchronous sending
+* Think about transaction boundaries - should email be part of the same transaction?
+
+**Solution**:
+
+[source,java]
+----
+@RestController
+public class RegistrationController {
+    private final UserService userService;
+    private final NotificationService notificationService;
+    private static final Logger log = LoggerFactory.getLogger(RegistrationController.class);
+
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody UserDto userDto) {
+        User user = userService.createUser(userDto);
+
+        try {
+            notificationService.sendWelcomeEmail(user);
+        } catch (EmailException e) {
+            log.error("Failed to send welcome email to user {}", user.getId(), e);
+            // Continue - don't fail registration due to email issues
+        }
+
+        return ResponseEntity.ok(user);
+    }
+}
+----
+
+== Example 3: Architectural Exercise
+
+=== Practice Exercise
+
+Refactor the monolithic `OrderProcessor` class to follow the Single Responsibility Principle.
+
+Currently, `OrderProcessor` handles:
+
+* Order validation
+* Inventory checking
+* Payment processing
+* Email notifications
+* Order persistence
+
+Your task: Split these responsibilities into separate service classes.
+
+[arabic]
+. Create new service classes:
+* `OrderValidator`
+* `InventoryService`
+* `PaymentService`
+* `NotificationService`
+* `OrderRepository`
+. Inject these services into `OrderProcessor`
+. Refactor `OrderProcessor.process()` to orchestrate these services
+. Ensure proper error handling and transaction management
+
+**Expected Outcome**:
+
+* Each service has a single, clear responsibility
+* `OrderProcessor` becomes a lightweight orchestrator
+* Code is more testable (you can mock individual services)
+* Error handling is consistent across services
+
+**Hints**:
+
+* Start with the easiest extraction (e.g., `NotificationService`)
+* Consider using `@Transactional` on the orchestrator method
+* Think about what happens if inventory check fails after payment succeeds
+
+**Solution**: See the complete refactoring in `examples/order-processor-refactored/`
+
+The key insight: A class that does everything is hard to test, hard to maintain, and hard to extend. Breaking it into focused services makes each piece simple and composable.
+
+== Tips for Creating Exercises
+
+=== Make Them Progressively Challenging
+
+* **Chapter 1-2**: Simple modifications to existing code
+* **Chapter 3-4**: Adding new features using existing patterns
+* **Chapter 5-6**: Refactoring and architectural improvements
+* **Chapter 7+**: Open-ended challenges requiring design decisions
+
+=== Connect to Real-World Scenarios
+
+Good: "Add caching to reduce database queries"
+Better: "Users complain the dashboard is slow. Add caching to the user profile lookup to improve response time from 500ms to under 50ms."
+
+=== Provide Scaffolding
+
+For complex exercises, provide:
+
+* Starter code with TODO comments
+* Test cases that currently fail
+* Acceptance criteria checklist
+
+=== Include "Why" Not Just "How"
+
+Always explain:
+
+* Why this solution is better than alternatives
+* What trade-offs were made
+* When you might choose a different approach

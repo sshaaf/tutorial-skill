@@ -1,0 +1,250 @@
+= Flow Diagram Examples (AsciiDoc + Mermaid)
+
+This file shows how to create effective flow diagrams in AsciiDoc using Mermaid syntax.
+
+== Including Mermaid Diagrams in AsciiDoc
+
+In Antora with AsciiDoc, Mermaid diagrams are included using code blocks:
+
+[source,asciidoc]
+----
+[mermaid]
+....
+graph TD
+    A[Start] --> B[Process]
+    B --> C[End]
+....
+----
+
+== Example 1: Simple Sequence Flow
+
+[mermaid]
+....
+sequenceDiagram
+    participant User
+    participant Controller
+    participant Service
+    participant Database
+
+    User->>Controller: POST /api/users
+    Controller->>Service: createUser(data)
+    Service->>Database: INSERT user
+    Database-->>Service: user_id
+    Service-->>Controller: User object
+    Controller-->>User: 201 Created
+....
+
+**When to use**: Show the interaction between components over time.
+
+== Example 2: Decision Flow
+
+[mermaid]
+....
+flowchart TD
+    Start([User Registration]) --> Validate{Valid Data?}
+    Validate -->|No| Error[Return 400 Error]
+    Validate -->|Yes| CheckEmail{Email Exists?}
+    CheckEmail -->|Yes| Conflict[Return 409 Conflict]
+    CheckEmail -->|No| Save[Save to Database]
+    Save --> SendEmail[Send Welcome Email]
+    SendEmail --> Success([Return 201 Created])
+
+    style Error fill:#f96
+    style Conflict fill:#f96
+    style Success fill:#9f6
+....
+
+**When to use**: Show branching logic and decision points.
+
+== Example 3: State Machine
+
+[mermaid]
+....
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Submitted: submit()
+    Submitted --> UnderReview: assign_reviewer()
+    UnderReview --> Approved: approve()
+    UnderReview --> Rejected: reject()
+    UnderReview --> NeedsChanges: request_changes()
+    NeedsChanges --> Submitted: resubmit()
+    Approved --> Published: publish()
+    Published --> [*]
+    Rejected --> [*]
+
+    note right of UnderReview
+        Reviewer can approve,
+        reject, or request changes
+    end note
+....
+
+**When to use**: Show how an entity transitions between states.
+
+== Example 4: Component Interaction
+
+[mermaid]
+....
+graph LR
+    subgraph Client Layer
+        UI[Web UI]
+    end
+
+    subgraph API Layer
+        GW[API Gateway]
+        Auth[Auth Service]
+    end
+
+    subgraph Business Layer
+        Order[Order Service]
+        Payment[Payment Service]
+        Inventory[Inventory Service]
+    end
+
+    subgraph Data Layer
+        DB[(Database)]
+        Cache[(Redis Cache)]
+    end
+
+    UI -->|HTTPS| GW
+    GW -->|Authenticate| Auth
+    GW -->|Create Order| Order
+    Order -->|Check Stock| Inventory
+    Order -->|Process Payment| Payment
+    Order -->|Save| DB
+    Inventory -->|Read/Write| DB
+    Payment -->|Cache Token| Cache
+
+    style UI fill:#e1f5ff
+    style GW fill:#ffe1f5
+    style DB fill:#f5ffe1
+    style Cache fill:#f5ffe1
+....
+
+**When to use**: Show the overall architecture and how services communicate.
+
+== Example 5: Data Pipeline
+
+[mermaid]
+....
+graph LR
+    A[Raw Events] -->|Ingest| B[Kafka Topic]
+    B -->|Stream Processing| C[Flink Job]
+    C -->|Transform| D[Normalized Events]
+    D -->|Aggregate| E[Time Windows]
+    E -->|Write| F[(Analytics DB)]
+    C -->|Filter| G[Error Events]
+    G -->|Alert| H[Monitoring System]
+
+    style A fill:#ddd
+    style F fill:#9f6
+    style G fill:#f96
+    style H fill:#fa3
+....
+
+**When to use**: Show data flow through a processing pipeline.
+
+== Example 6: Authentication Flow
+
+[mermaid]
+....
+sequenceDiagram
+    actor User
+    participant Browser
+    participant Backend
+    participant AuthProvider
+    participant Database
+
+    User->>Browser: Click "Login"
+    Browser->>Backend: GET /auth/login
+    Backend->>Browser: Redirect to Auth Provider
+    Browser->>AuthProvider: OAuth Authorization Request
+    User->>AuthProvider: Enter Credentials
+    AuthProvider->>Browser: Authorization Code
+    Browser->>Backend: POST /auth/callback?code=...
+    Backend->>AuthProvider: Exchange code for token
+    AuthProvider->>Backend: Access Token + ID Token
+    Backend->>Backend: Validate Token
+    Backend->>Database: Get or Create User
+    Database->>Backend: User Record
+    Backend->>Backend: Create Session
+    Backend->>Browser: Set Session Cookie
+    Browser->>User: Redirect to Dashboard
+....
+
+**When to use**: Show complex authentication flows with multiple actors.
+
+== Best Practices
+
+=== Keep It Focused
+
+Each diagram should illustrate ONE concept:
+
+* ✅ Good: "User registration flow"
+* ❌ Bad: "Entire application architecture"
+
+=== Use Appropriate Diagram Types
+
+* **Sequence diagrams**: Time-based interactions
+* **Flowcharts**: Decision trees and processes
+* **State diagrams**: Lifecycle and states
+* **Component diagrams**: System architecture
+* **Class diagrams**: Object relationships
+
+=== Add Context
+
+Always include:
+
+* A brief description before the diagram
+* A "When to use" note
+* Key takeaways after the diagram
+
+=== Style for Emphasis
+
+Use colors to highlight:
+
+[source,asciidoc]
+----
+style ErrorNode fill:#f96
+style SuccessNode fill:#9f6
+style WarningNode fill:#fa3
+----
+
+=== Limit Complexity
+
+* Maximum 10-12 nodes per diagram
+* If larger, break into multiple diagrams
+* Use subgraphs to group related components
+
+== Common Patterns
+
+=== Request-Response Pattern
+
+[mermaid]
+....
+sequenceDiagram
+    Client->>Server: Request
+    Server->>Client: Response
+....
+
+=== Pub-Sub Pattern
+
+[mermaid]
+....
+graph LR
+    Publisher -->|Publish| Topic[Message Topic]
+    Topic -->|Subscribe| Sub1[Subscriber 1]
+    Topic -->|Subscribe| Sub2[Subscriber 2]
+    Topic -->|Subscribe| Sub3[Subscriber 3]
+....
+
+=== Circuit Breaker Pattern
+
+[mermaid]
+....
+stateDiagram-v2
+    [*] --> Closed
+    Closed --> Open: Failure threshold exceeded
+    Open --> HalfOpen: Timeout expires
+    HalfOpen --> Closed: Success
+    HalfOpen --> Open: Failure
+....
