@@ -32,11 +32,6 @@ npx @sshaaf/tutorial-skill install
 
 ## Pipeline Overview
 
-### Analyze Mode (3 stages)
-1. **Code Discovery**: Find and read source files
-2. **Identify Abstractions**: Extract core concepts
-3. **Analyze Relationships**: Map component interactions
-
 ### Build Mode (6 stages)
 1. **Code Discovery**: Find and read source files
 2. **Identify Abstractions**: Extract core concepts
@@ -51,12 +46,6 @@ Works with any programming language:
 - Java, Python, JavaScript/TypeScript, Go, C#, Ruby, PHP, Rust, Kotlin etc.
 
 ## Commands
-
-### `/tutorial analyze`
-Fast codebase analysis with architecture diagrams
-- **Time**: 2-5 minutes
-- **Output**: Interactive summary + Mermaid diagram
-- **Use for**: Understanding codebases, onboarding, planning refactors
 
 ### `/tutorial build`
 Complete tutorial generation with chapters
@@ -183,12 +172,6 @@ npx @sshaaf/tutorial-skill update  # Updates only app-B
 ### Usage
 
 ```bash
-# Quick analysis
-/tutorial analyze .
-
-# With path
-/tutorial analyze ./src/main/java
-
 # Full tutorial
 /tutorial build .
 

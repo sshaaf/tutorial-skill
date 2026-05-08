@@ -47,7 +47,7 @@ Maintainers should validate locally using the repo CLI (`./bin/cli.js`) — see 
 
 ### Architecture Diagram Export Feature
 
-After completing the analysis phase (`/tutorial analyze`), the skill now proactively asks users if they want to save the architecture diagram to disk.
+After completing the analysis phase (Stage 3 of `/tutorial build`), the skill now proactively asks users if they want to save the architecture diagram to disk.
 
 **New behavior in Stage 3 (Analyze Relationships)**:
 - After displaying the analysis results, prompts user to save the diagram
@@ -60,12 +60,6 @@ After completing the analysis phase (`/tutorial analyze`), the skill now proacti
 This enhancement makes it easy to share and reuse architecture diagrams without having to manually copy/paste from the conversation.
 
 ## Skill Modes
-
-### Analyze Mode (`/tutorial analyze`)
-- 3-stage pipeline for quick codebase understanding
-- Generates architecture diagrams with Mermaid
-- **NEW**: Option to save diagrams to disk
-- Time: 2-5 minutes
 
 ### Build Mode (`/tutorial build`)
 - 6-stage pipeline for comprehensive tutorial generation
@@ -84,7 +78,7 @@ This enhancement makes it easy to share and reuse architecture diagrams without 
 ## Development Guidelines
 
 When updating this skill:
-1. Keep the analyze mode fast and interactive
+1. Keep the analysis stages (1-3) fast and interactive
 2. Maintain beginner-friendly language in generated content
 3. Ensure architecture diagrams are saved in valid Mermaid format
 4. Test with multiple programming languages

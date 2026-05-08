@@ -167,10 +167,7 @@ function install() {
   console.log('');
   console.log('🎯 Usage in Claude Code:');
   console.log('');
-  console.log('  Fast Analysis (2-5 minutes):');
-  console.log('    /tutorial analyze ./src');
-  console.log('');
-  console.log('  Full Tutorial (10-30 minutes):');
+  console.log('  Generate Tutorial (10-30 minutes):');
   console.log('    /tutorial build --output ./docs');
   console.log('');
   console.log('  Local HonKit Preview (default docs engine):');
@@ -186,7 +183,7 @@ function install() {
   console.log('');
   console.log('🧪 Test the skill:');
   console.log('  cd', path.join(SKILL_DIR, 'tests/java'));
-  console.log('  # Then in Claude Code: /tutorial analyze .');
+  console.log('  # Then in Claude Code: /tutorial build .');
   console.log('');
   console.log('📚 Documentation:');
   console.log('  README:', path.join(SKILL_DIR, 'README.md'));
