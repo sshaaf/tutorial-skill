@@ -59,24 +59,28 @@ Parse arguments flexibly - accept both flags and positional arguments.
 
 #### Stage 2: Identify Core Abstractions
 
-**System Prompt**:
-```
-You are a senior software architect analyzing a codebase.
+**Task**: Identify the core abstractions - the main concepts, classes, modules, or patterns that define this codebase's architecture.
 
-Your task is to identify the core abstractions - the main concepts, classes, modules, or patterns that define this codebase's architecture.
+**Approach**: Analyze the code as a senior software architect would. For each abstraction, determine:
 
-For each abstraction, provide:
 1. **name**: A concise, clear name for the concept
 2. **description**: A 2-3 sentence explanation of what it does and why it exists (use simple, beginner-friendly language with analogies where helpful)
 3. **category**: Classify as one of: "Model/Entity", "Service/Business Logic", "Controller/Handler", "Repository/Data Access", "Utility/Helper", "Configuration", "Interface/Contract", "Middleware", "Other"
 4. **relevantFiles**: Array of file paths where this abstraction is primarily defined or used
 5. **importance**: Rate as "core", "supporting", or "auxiliary"
 
-Focus on the most important abstractions. Aim for 5-15 key concepts depending on codebase complexity.
+**Requirements**:
+- Focus on the most important abstractions
+- Aim for 5-15 key concepts depending on codebase complexity
+- Structure output as JSON: `{"abstractions": [...]}`
 
-Return a JSON object with a single key "abstractions" containing an array of abstraction objects.
+**Input to analyze**:
+- Project Name: {project_name or "Unknown Project"}
+- Primary Language: {detected_language}
+- Codebase: {concatenated_file_contents}
 
-Example:
+**Example output structure**:
+```json
 {
   "abstractions": [
     {
@@ -90,32 +94,19 @@ Example:
 }
 ```
 
-**User Prompt**:
-```
-Project Name: {project_name or "Unknown Project"}
-Primary Language: {detected_language}
-
-Analyze the following codebase:
----
-{concatenated_file_contents}
-```
-
 **Display Results**: Show grouped abstractions (Core, Supporting, Auxiliary) with brief descriptions.
 
 #### Stage 3: Analyze Relationships
 
-**System Prompt**:
-```
-You are a software architect analyzing component relationships.
+**Task**: Identify how the identified components interact with each other.
 
-Given a list of abstractions and the codebase, identify how these components interact.
+**Approach**: Analyze as a software architect would. Provide:
 
-Provide:
 1. **summary**: A 3-5 sentence high-level overview of:
    - The project's main purpose
    - The architectural style (MVC, layered, microservices, etc.)
    - The primary data flow or request flow
-   Use markdown formatting with **bold** for key concepts.
+   - Use markdown formatting with **bold** for key concepts
 
 2. **relationships**: Array of relationships between abstractions, where each includes:
    - **from**: Source abstraction index and name (format: "0 # AbstractionName")
@@ -123,26 +114,18 @@ Provide:
    - **description**: Short phrase describing the relationship (e.g., "uses for data access", "extends", "validates input for", "sends events to")
    - **type**: Classify as "dependency", "inheritance", "composition", "calls", "data-flow", or "event"
 
-Requirements:
+**Requirements**:
 - Every abstraction must appear in at least one relationship
 - Focus on significant relationships - exclude trivial ones
 - Prefer relationships backed by actual code interactions (method calls, field references)
 - Limit to ~2-3 relationships per abstraction to avoid clutter
+- Return JSON: `{"summary": "...", "relationships": [...]}`
 
-Return JSON: {"summary": "...", "relationships": [...]}
-```
-
-**User Prompt**:
-```
-Project: {project_name}
-Language: {language}
-
-Abstractions (numbered):
-{numbered_list_of_abstractions_with_descriptions}
-
-Codebase:
-{concatenated_file_contents}
-```
+**Input to analyze**:
+- Project: {project_name}
+- Language: {language}
+- Abstractions (numbered): {numbered_list_of_abstractions_with_descriptions}
+- Codebase: {concatenated_file_contents}
 
 **Display Results**: Show project overview summary, Mermaid architecture diagram, and key relationships list.
 
