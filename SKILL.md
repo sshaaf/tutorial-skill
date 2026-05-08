@@ -1,45 +1,44 @@
 ---
 name: tutorial
-description: Generate tutorials and analyze codebases with AI. Use "/tutorial build" to create comprehensive, chapter-based tutorials from any codebase. Use "/tutorial analyze" for quick architectural analysis with diagrams. Use "/tutorial preview" to view generated tutorials locally with HonKit. Use "/tutorial doctor" to diagnose local preview/runtime issues. Works with any programming language. Triggers on requests about creating tutorials, analyzing code architecture, understanding codebases, or generating learning materials.
+description: Generate comprehensive, chapter-based tutorials from any codebase with AI. Use "/tutorial build" to analyze code architecture and create beginner-friendly tutorial content. Use "/tutorial preview" to view generated tutorials locally with HonKit. Use "/tutorial doctor" to diagnose local preview/runtime issues. Works with any programming language. Triggers on requests about creating tutorials, analyzing code architecture, understanding codebases, or generating learning materials.
 ---
 
-# Tutorial Generator & Analyzer
+# Tutorial Generator
 
 ## Instructions
 
 ### Overview
 
-This skill provides four modes for codebase analysis and tutorial generation:
+This skill provides three modes for tutorial generation and management:
 
-1. **`/tutorial analyze`** - Fast codebase analysis with architecture diagrams (2-5 minutes, 3-stage pipeline)
-2. **`/tutorial build`** - Comprehensive tutorial generation (10-30 minutes, 6-stage pipeline)
-3. **`/tutorial preview`** - Local docs preview using bundled HonKit (5-30 seconds)
-4. **`/tutorial doctor`** - Diagnose docs/runtime setup issues (10-30 seconds)
+1. **`/tutorial build`** - Comprehensive tutorial generation (10-30 minutes, 6-stage pipeline)
+2. **`/tutorial preview`** - Local docs preview using bundled HonKit (5-30 seconds)
+3. **`/tutorial doctor`** - Diagnose docs/runtime setup issues (10-30 seconds)
 
 ### Argument Parsing
 
 When the skill is invoked, determine the mode and parse arguments:
 
-- **Mode detection**: Check if invoked as `/tutorial analyze`, `/tutorial build`, `/tutorial preview`, or `/tutorial doctor`
-- **If no mode specified**: Ask user which mode they want (analyze, build, preview, or doctor)
+- **Mode detection**: Check if invoked as `/tutorial build`, `/tutorial preview`, or `/tutorial doctor`
+- **If no mode specified**: Default to build mode
 - **Supported arguments**:
-  - Path: `/tutorial analyze ./src/main/java`
+  - Path: `/tutorial build ./src/main/java`
   - Output: `/tutorial build --output ./docs`
-  - Language: `/tutorial analyze --language python`
-  - Focus: `/tutorial analyze --focus services`
+  - Language: `/tutorial build --language python`
+  - Focus: `/tutorial build --focus services`
   - Preview/Doctor Path: `/tutorial preview ./docs/tutorial` or `/tutorial preview --path ./docs/tutorial`
 
 Parse arguments flexibly - accept both flags and positional arguments.
 
 ---
 
-### Mode 1: Analyze (`/tutorial analyze`)
+### Mode 1: Build (`/tutorial build`)
 
-**Purpose**: Quickly understand any codebase by identifying core components and their relationships.
+**Purpose**: Transform any codebase into comprehensive, beginner-friendly tutorials with architecture analysis.
 
-**Use cases**: Onboarding, architecture understanding, refactoring planning, code review preparation
+**Use cases**: Learning materials, code documentation, training resources, educational content, onboarding
 
-**Pipeline** (3 stages):
+**Pipeline** (6 stages):
 
 #### Stage 1: Code Discovery
 
@@ -55,7 +54,6 @@ Parse arguments flexibly - accept both flags and positional arguments.
 3. **Handle large codebases**: If >50 files found, ask to analyze all or focus on subdirectory
 
 4. **Read files** with Read tool and report: "Found {N} files totaling {LOC} lines of code"
-
 
 #### Stage 2: Identify Core Abstractions
 
@@ -129,23 +127,11 @@ Parse arguments flexibly - accept both flags and positional arguments.
 
 **Display Results**: Show project overview summary, Mermaid architecture diagram, and key relationships list.
 
-**Offer Follow-up**: Ask if user wants to save diagram (`.mmd` file) or full analysis (`.md` file), deep dive into components, generate full tutorial (`/tutorial build`), or ask questions.
-
----
-
-### Mode 2: Build (`/tutorial build`)
-
-**Purpose**: Transform any codebase into comprehensive, beginner-friendly tutorials.
-
-**Use cases**: Learning materials, code documentation, training resources, educational content
-
-**Pipeline** (6 stages): Runs Analyze mode stages 1-3, then adds:
-
 #### Stage 4: Organize Chapters
 
 **Goal**: Determine pedagogical order for teaching concepts (foundational → data access → business logic → presentation → cross-cutting concerns).
 
-**System Prompt**: Ask LLM to organize abstractions into teaching order, considering dependencies.
+**Approach**: Organize abstractions into teaching order, considering dependencies and pedagogical flow.
 
 **User Confirmation**: Show suggested chapter order and ask user to approve or modify.
 
@@ -153,7 +139,7 @@ Parse arguments flexibly - accept both flags and positional arguments.
 
 **Goal**: Generate metadata (title, description, difficulty, tags, prerequisites, estimated time).
 
-**System Prompt**: Ask LLM to create tutorial metadata JSON with all required fields.
+**Approach**: Create tutorial metadata JSON with all required fields based on the analyzed codebase.
 
 **Display**: Show generated metadata to user for confirmation.
 
@@ -184,7 +170,7 @@ After generating chapters, prepare for HonKit:
 
 ---
 
-### Mode 3: Preview (`/tutorial preview`)
+### Mode 2: Preview (`/tutorial preview`)
 
 **Purpose**: Preview generated tutorial docs locally using bundled HonKit.
 
@@ -202,7 +188,7 @@ After generating chapters, prepare for HonKit:
 
 ---
 
-### Mode 4: Doctor (`/tutorial doctor`)
+### Mode 3: Doctor (`/tutorial doctor`)
 
 **Purpose**: Diagnose local docs preview issues.
 
@@ -228,29 +214,12 @@ After generating chapters, prepare for HonKit:
 **Progress Updates**: Show clear stage indicators (e.g., "⏳ Stage 2/6: Identifying abstractions... ✓ Identified 8 core components")
 
 **Tips**:
-- Analyze: Focus on specific modules for large projects, offer to export results
-- Build: Confirm chapter order before generation, generate one module at a time for large projects
+- Build: Focus on specific modules for large projects, confirm chapter order before generation, generate one module at a time for large projects
 - Preview/Doctor: Use local dev CLI before publishing, suggest reinstall if runtime fails
 
 ---
 
 ## Examples
-
-### Analyze Mode
-
-```bash
-# Basic analysis
-/tutorial analyze .
-
-# Analyze specific directory
-/tutorial analyze ./src/services
-
-# With language hint
-/tutorial analyze ./app --language typescript
-
-# Focus on specific layer
-/tutorial analyze ./backend --focus "authentication and authorization"
-```
 
 ### Build Mode
 
@@ -300,34 +269,39 @@ npx @sshaaf/tutorial-skill@latest docs preview --dir ./docs/tutorial
 ### Interactive Workflow
 
 ```
-User: /tutorial analyze .
+User: /tutorial build .
 
-Claude: I'll analyze your codebase. What directory should I analyze?
+Claude: I'll generate a comprehensive tutorial. What directory should I analyze?
 
 User: ./src/main/java
 
 Claude:
-⏳ Discovering source files...
+⏳ Stage 1/6: Discovering source files...
 ✓ Found 18 Java files (3,245 lines)
 
-⏳ Identifying abstractions...
+⏳ Stage 2/6: Identifying abstractions...
 ✓ Found 9 core components
+
+⏳ Stage 3/6: Analyzing relationships...
+✓ Generated architecture diagram
 
 [Shows architecture diagram and summary]
 
-Would you like me to:
-- Deep dive into a specific component?
-- Generate a full tutorial? (use /tutorial build)
-- Export this analysis?
+⏳ Stage 4/6: Organizing chapters...
+[Shows suggested chapter order]
 
-User: Generate a full tutorial
+⏳ Stage 5/6: Generating tutorial metadata...
+[Shows tutorial metadata]
 
-Claude:
-Great! I'll generate a comprehensive tutorial.
-
-[Asks configuration questions...]
-[Runs stages 4-6...]
-[Creates tutorial files...]
+⏳ Stage 6/6: Writing tutorial content...
+✓ Created index.md
+✓ Created chapter 01-user-service.md
+✓ Created chapter 02-data-repository.md
+...
 
 ✅ Complete! Tutorial saved to ./tutorials
+
+Next steps:
+- Review the generated content
+- Preview with: /tutorial preview ./tutorials
 ```
