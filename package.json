@@ -8,6 +8,7 @@
   "files": [
     "bin/",
     "lib/",
+    "templates/",
     "installer.js",
     "SKILL.md",
     "README.md",

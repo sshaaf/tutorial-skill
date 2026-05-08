@@ -1,0 +1,19 @@
+{
+  "title": "{{TUTORIAL_TITLE}}",
+  "description": "{{TUTORIAL_DESCRIPTION}}",
+  "author": "{{AUTHOR}}",
+  "language": "en",
+  "gitbook": "3.x.x",
+  "plugins": [
+    "mermaid-hybrid"
+  ],
+  "pluginsConfig": {},
+  "variables": {
+    "module": "{{MODULE}}",
+    "difficulty": "{{DIFFICULTY}}",
+    "estimatedTime": "{{ESTIMATED_TIME}}"
+  },
+  "styles": {
+    "website": "styles/website.css"
+  }
+}
