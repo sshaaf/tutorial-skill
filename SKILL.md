@@ -177,6 +177,7 @@ Parse arguments flexibly - accept both flags and positional arguments.
 **Template placeholders to replace**:
 - `{{TUTORIAL_TITLE}}` - Tutorial title from metadata
 - `{{WELCOME_MESSAGE}}` - 2-3 sentence warm welcome explaining what this tutorial covers
+- `{{INTRO_ILLUSTRATION}}` - Optional relevant illustration (xkcd comic or other image) that sets the tone. See illustrations-guide.md for options. Format: Image + attribution
 - `{{LEARNING_OBJECTIVES}}` - Bulleted list of specific skills/concepts learners will master
 - `{{PROJECT_OVERVIEW}}` - 1-2 paragraphs describing the project's purpose and main functionality
 - `{{ARCHITECTURE_DIAGRAM}}` - Mermaid diagram from Stage 3 (architecture relationships)
@@ -349,6 +350,7 @@ Generate sequentially to allow cross-referencing. Show progress for each chapter
 - `{{SUPPORT_CHANNELS}}` - Specific channels for help (Discord, forum, GitHub issues) with what type of questions to ask where
 
 **Closing**:
+- `{{CONCLUSION_ILLUSTRATION}}` - Optional relevant illustration (xkcd comic or other image) that celebrates achievement or validates the learning journey. See illustrations-guide.md for options. Format: Image + attribution
 - `{{CLOSING_REFLECTION}}` - 2-3 sentences that elevate beyond the tutorial: the mindset/approach that matters most, or the larger lesson
 - `{{CIRCLE_BACK_TO_INTRO}}` - Reference a specific concept, question, or goal from the introduction to create closure
 - `{{EMPOWERING_SENDOFF}}` - Final sentence that's empowering and forward-looking. Avoid clichés; be specific about what learners can now accomplish.
@@ -359,6 +361,15 @@ Generate sequentially to allow cross-referencing. Show progress for each chapter
 - **Provide closure**: Circle back to the introduction's promise
 - **Look forward**: Point to next steps without introducing entirely new topics
 - **End with impact**: Final words should be memorable and empowering
+
+**Illustration Selection** (for both intro and conclusion):
+- Consult `templates/honkit/illustrations-guide.md` for curated xkcd comics and alternative sources
+- **For Introduction**: Choose images about learning, complexity, or starting journeys (e.g., xkcd #1053 "Ten Thousand")
+- **For Conclusion**: Choose images about mastery, achievement, or validation (e.g., xkcd #208 "Regular Expressions", #1319 "Automation")
+- Match illustration theme to tutorial topic (APIs → xkcd #1481, Security → xkcd #327, Git → xkcd #1172)
+- **Always include proper attribution**: `*[xkcd #NUMBER](https://xkcd.com/NUMBER/): "Title" by Randall Munroe (CC BY-NC 2.5)*`
+- Alternative sources: unDraw (no attribution), Unsplash (credit photographer), see guide for details
+- If no good match found, illustrations are optional—omit rather than force a poor fit
 
 **Navigation placeholder**:
 - `{{PREV_CHAPTER_LINK}}` - Link back to last code chapter: `👈 **[Previous: Chapter N - ComponentName](0N-component-name.md)**`
@@ -453,6 +464,7 @@ All tutorial templates are organized by output format at `~/.claude/skills/tutor
 - `flow-diagram-examples.md` - Reference examples of Mermaid flow diagrams showing data flow patterns (read for inspiration)
 - `navigation-examples.md` - Reference examples showing proper navigation link formatting (read for guidance)
 - `conclusion-examples.md` - Reference examples of effective conclusions based on Harvard Writing Center principles (read for guidance)
+- `illustrations-guide.md` - Curated xkcd comics and alternative illustration sources with attribution guidelines (read for selecting relevant images)
 - `styles/website.css` - Custom CSS for HonKit rendering (always copy to output)
 
 These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
@@ -460,7 +472,7 @@ These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
 **Usage pattern**:
 - **book.json, README.md, SUMMARY.md, index.md, chapter-template.md**: Always read the template, replace all placeholders with actual values from analysis/metadata, and write to output directory
 - **getting-started.md, conclusion.md**: Use as structural references, generate content based on actual analysis following the template structure
-- **practice-exercise-examples.md, flow-diagram-examples.md, navigation-examples.md, conclusion-examples.md**: Reference documents for inspiration - read to understand patterns and best practices
+- **practice-exercise-examples.md, flow-diagram-examples.md, navigation-examples.md, conclusion-examples.md, illustrations-guide.md**: Reference documents for inspiration - read to understand patterns and best practices
 - **styles/website.css**: Copy to `{output_dir}/styles/` without modification
 
 **Future template engines**: The templates directory is organized to support additional formats (e.g., `templates/mdbook/`, `templates/docusaurus/`) in future versions.

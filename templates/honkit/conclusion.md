@@ -50,6 +50,8 @@ Now that you have a solid foundation, you're ready to explore:
 
 ## Final Thoughts
 
+{{CONCLUSION_ILLUSTRATION}}
+
 {{CLOSING_REFLECTION}}
 
 {{CIRCLE_BACK_TO_INTRO}}

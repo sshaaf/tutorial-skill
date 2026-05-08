@@ -2,6 +2,8 @@
 
 {{WELCOME_MESSAGE}}
 
+{{INTRO_ILLUSTRATION}}
+
 ## What You'll Learn
 
 {{LEARNING_OBJECTIVES}}
