@@ -1,9 +1,8 @@
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 const { execFileSync } = require('child_process');
 
-const SKILL_DIR = path.join(os.homedir(), '.claude/skills/tutorial');
+const SKILL_DIR = path.join(process.cwd(), '.claude/tutorial');
 const SOURCE_DIR = __dirname;
 const HONKIT_RUNTIME_DIR = path.join(SKILL_DIR, '.runtime', 'honkit');
 const HONKIT_RUNTIME_PACKAGE = path.join(HONKIT_RUNTIME_DIR, 'package.json');
@@ -151,6 +150,8 @@ function install() {
 
   console.log('');
   console.log(isUpdate ? '✅ Update complete!' : '✅ Installation complete!');
+  console.log('');
+  console.log('💡 Tip: Add .claude/ to your .gitignore to exclude, or commit it for version control');
   console.log('');
   console.log('📍 Installed to:', SKILL_DIR);
   console.log('');

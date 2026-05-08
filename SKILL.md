@@ -179,7 +179,7 @@ Parse arguments flexibly - accept both flags and positional arguments.
 
 **Goal**: Generate introduction, setup guide, and individual chapters as Markdown files.
 
-**6a. Generate Introduction**: Create `index.md` using the template at `~/.claude/skills/tutorial/templates/honkit/index.md`:
+**6a. Generate Introduction**: Create `index.md` using the template at `.claude/tutorial/templates/honkit/index.md`:
 
 **Template placeholders to replace**:
 - `{{TUTORIAL_TITLE}}` - Tutorial title from metadata
@@ -226,7 +226,7 @@ Generate content that is beginner-friendly, encouraging, and sets clear expectat
 - Check for database initialization scripts (`.sql`, `.sh`, migrations)
 
 **Template Usage**:
-- A template is available at `~/.claude/skills/tutorial/templates/honkit/getting-started.md`
+- A template is available at `.claude/tutorial/templates/honkit/getting-started.md`
 - The template has placeholders like `{{PROJECT_NAME}}`, `{{BUILD_COMMANDS}}`, etc.
 - Use this template as a structural guide, but generate content based on actual analysis of build and configuration files
 
@@ -258,7 +258,7 @@ Generate content that is beginner-friendly, encouraging, and sets clear expectat
 
 Use code blocks with proper syntax highlighting for all commands and configuration examples.
 
-**6c. Generate Code Chapters**: For each abstraction in order, create a chapter file (`{N:02d}-{chapter-name}.md`) using the template at `~/.claude/skills/tutorial/templates/honkit/chapter-template.md`:
+**6c. Generate Code Chapters**: For each abstraction in order, create a chapter file (`{N:02d}-{chapter-name}.md`) using the template at `.claude/tutorial/templates/honkit/chapter-template.md`:
 
 **Template placeholders to replace**:
 - `{{CHAPTER_TITLE}}` - Descriptive chapter title in Chicago Manual of Style title case (e.g., "User Service: The Heart of Authentication", "Understanding the Repository Pattern"). See capitalization-guide.md for rules.
@@ -332,7 +332,7 @@ graph TD
 
 Generate sequentially to allow cross-referencing. Show progress for each chapter.
 
-**6d. Generate Conclusion Chapter** (Optional): Create a final chapter using `~/.claude/skills/tutorial/templates/honkit/conclusion.md` following effective conclusion principles:
+**6d. Generate Conclusion Chapter** (Optional): Create a final chapter using `.claude/tutorial/templates/honkit/conclusion.md` following effective conclusion principles:
 
 **Template placeholders** (based on Harvard Writing Center guidance):
 
@@ -386,7 +386,7 @@ Generate sequentially to allow cross-referencing. Show progress for each chapter
 After generating chapters, prepare for HonKit using the provided templates:
 
 **1. Create README.md** from template:
-   - Read template from: `~/.claude/skills/tutorial/templates/honkit/README.md`
+   - Read template from: `.claude/tutorial/templates/honkit/README.md`
    - Replace placeholders:
      - `{{TUTORIAL_TITLE}}` - Tutorial title from metadata
      - `{{TUTORIAL_DESCRIPTION}}` - Tutorial description from metadata
@@ -396,7 +396,7 @@ After generating chapters, prepare for HonKit using the provided templates:
      - `{{ESTIMATED_TIME}}` - From metadata
 
 **2. Create SUMMARY.md** from template:
-   - Read template from: `~/.claude/skills/tutorial/templates/honkit/SUMMARY.md`
+   - Read template from: `.claude/tutorial/templates/honkit/SUMMARY.md`
    - Replace `{{CHAPTER_LINKS}}` with links to all chapter files:
      - First link should always be Getting Started: `* [Getting Started](01-getting-started.md)`
      - Followed by code chapters: `* [Chapter N - Chapter Title](0N-chapter-name.md)`, etc.
@@ -408,7 +408,7 @@ After generating chapters, prepare for HonKit using the provided templates:
      - Quick rules: Capitalize first/last words and major words; lowercase articles (a, an, the), conjunctions (and, but, or), and prepositions (in, on, at, to, from, with, of, etc.)
 
 **3. Create book.json** from template:
-   - Read template from: `~/.claude/skills/tutorial/templates/honkit/book.json`
+   - Read template from: `.claude/tutorial/templates/honkit/book.json`
    - Replace placeholders:
      - `{{TUTORIAL_TITLE}}` - Tutorial title from metadata
      - `{{TUTORIAL_DESCRIPTION}}` - Tutorial description from metadata
@@ -418,7 +418,7 @@ After generating chapters, prepare for HonKit using the provided templates:
      - `{{ESTIMATED_TIME}}` - From metadata
 
 **4. Copy styles** from template:
-   - Copy `~/.claude/skills/tutorial/templates/honkit/styles/website.css` to output directory's `styles/` folder
+   - Copy `.claude/tutorial/templates/honkit/styles/website.css` to output directory's `styles/` folder
    - Creates `{output_dir}/styles/website.css` for custom HonKit styling
 
 **Completion**: Show summary with output directory, files created, stats, and next steps (review, preview with `/tutorial preview`).
@@ -460,7 +460,7 @@ After generating chapters, prepare for HonKit using the provided templates:
 ### General Guidelines
 
 **Templates**:
-All tutorial templates are organized by output format at `~/.claude/skills/tutorial/templates/`:
+All tutorial templates are organized by output format at `.claude/tutorial/templates/`:
 
 **HonKit Templates** (`templates/honkit/`):
 - `book.json` - HonKit configuration with metadata placeholders (always use)
@@ -495,7 +495,7 @@ These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
 - JSON parse error: Show raw output and retry
 - Missing relationships: Some components can be standalone
 - User cancels: Respect cancellation at any stage
-- Template not found: Template files should exist at `~/.claude/skills/tutorial/templates/honkit/` after skill installation
+- Template not found: Template files should exist at `.claude/tutorial/templates/honkit/` after skill installation
 
 **Progress Updates**: Show clear stage indicators (e.g., "⏳ Stage 2/6: Identifying abstractions... ✓ Identified 8 core components")
 

@@ -68,11 +68,24 @@ Diagnostics for local preview/runtime + docs scaffolding
 ### Installation
 
 ```bash
+# Navigate to your project directory
+cd /path/to/your/project
+
 # Install via NPM (recommended)
 npx @sshaaf/tutorial-skill install
 ```
 
-The installer bootstraps a local HonKit runtime under `~/.claude/skills/tutorial/.runtime/honkit` and installs `honkit-plugin-mermaid-hybrid` for diagram rendering.
+This creates `.claude/tutorial/` in your project directory with:
+- Skill definition (SKILL.md)
+- Templates for tutorial generation
+- CLI tools for preview/build
+- Bundled HonKit runtime (`.runtime/honkit`)
+
+**Benefits of local installation**:
+- ✅ Version control templates with your project
+- ✅ Customize templates per project
+- ✅ Multiple projects can have different versions
+- ✅ No global state - everything is project-local
 
 ### Updating
 
@@ -98,14 +111,24 @@ The update command:
 
 **Alternative methods:**
 ```bash
-# Manual install from source
-cp -r tutorial ~/.claude/skills/tutorial
+# Manual install from source (run from project directory)
+cp -r /path/to/tutorial-skill .claude/tutorial
 
-# Or extract from package
-tar -xzf tutorial.skill -C ~/.claude/skills/
+# Or clone directly
+git clone https://github.com/sshaaf/tutorial-skill .claude/tutorial
 ```
 
 Note: alternative/manual installation methods do not bootstrap the bundled HonKit runtime; use the NPM installer for the default preview workflow.
+
+**Version control**:
+```bash
+# Option 1: Exclude from git (default)
+echo ".claude/" >> .gitignore
+
+# Option 2: Commit templates for team customization
+git add .claude/tutorial/templates/
+git add .claude/tutorial/SKILL.md
+```
 
 ### Usage
 

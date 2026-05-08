@@ -2,7 +2,7 @@
 
 This package has two surfaces:
 
-- **Skill files**: installed to `~/.claude/skills/tutorial` (what Claude reads)
+- **Skill files**: installed to `.claude/tutorial/` in the project directory (what Claude reads)
 - **CLI**: ships from this repo’s `bin/cli.js` + `lib/` (what powers `init`, `preview`, `build`, `doctor`)
 
 During development, treat the git checkout as the source of truth:
@@ -12,7 +12,7 @@ During development, treat the git checkout as the source of truth:
 ## Prerequisites
 
 - Node + npm available on PATH
-- Network access for the first HonKit runtime install (`npm install` into `~/.claude/skills/tutorial/.runtime/honkit`)
+- Network access for the first HonKit runtime install (`npm install` into `.claude/tutorial/.runtime/honkit`)
 
 ## Fast loop (recommended)
 
@@ -46,9 +46,9 @@ node ./bin/cli.js …
 
 ## Skill install pitfalls
 
-`~/.claude/skills/tutorial/bin/cli.js` only exists if your installer copies `bin/`, `lib/`, and `installer.js` into the skill directory (this repo’s installer is intended to do that on install).
+`.claude/tutorial/bin/cli.js` only exists if your installer copies `bin/`, `lib/`, and `installer.js` into the skill directory (this repo’s installer is intended to do that on install).
 
-Do **not** assume `~/.claude/skills/tutorial/bin/cli.js` exists unless that copy step ran.
+Do **not** assume `.claude/tutorial/bin/cli.js` exists unless that copy step ran.
 
 If preview says the HonKit runtime is missing/out of date:
 
