@@ -147,9 +147,16 @@ Parse arguments flexibly - accept both flags and positional arguments.
 
 **Goal**: Determine pedagogical order for teaching concepts (foundational → data access → business logic → presentation → cross-cutting concerns).
 
-**Approach**: Organize abstractions into teaching order, considering dependencies and pedagogical flow.
+**Approach**: Organize abstractions into teaching order, considering dependencies and pedagogical flow. Create descriptive chapter titles for each abstraction.
 
-**User Confirmation**: Show suggested chapter order and ask user to approve or modify.
+**Chapter Title Requirements**:
+- Use Chicago Manual of Style title case capitalization (see capitalization-guide.md)
+- Format: "Component Name: Descriptive Subtitle" or "Verb + Object + Context"
+- Examples: "User Service: The Heart of Authentication", "Understanding the Repository Pattern", "Building Your First API Endpoint"
+- Capitalize: First/last words, major words (nouns, verbs, adjectives, adverbs)
+- Lowercase: articles (a, an, the), conjunctions (and, but, or), prepositions (in, on, at, to, from, with, of)
+
+**User Confirmation**: Show suggested chapter order with properly capitalized titles and ask user to approve or modify.
 
 #### Stage 5: Generate Tutorial Metadata
 
@@ -254,7 +261,7 @@ Use code blocks with proper syntax highlighting for all commands and configurati
 **6c. Generate Code Chapters**: For each abstraction in order, create a chapter file (`{N:02d}-{chapter-name}.md`) using the template at `~/.claude/skills/tutorial/templates/honkit/chapter-template.md`:
 
 **Template placeholders to replace**:
-- `{{CHAPTER_TITLE}}` - Descriptive chapter title (e.g., "User Service: The Heart of Authentication")
+- `{{CHAPTER_TITLE}}` - Descriptive chapter title in Chicago Manual of Style title case (e.g., "User Service: The Heart of Authentication", "Understanding the Repository Pattern"). See capitalization-guide.md for rules.
 - `{{CHAPTER_INTRO_WITH_ANALOGY}}` - 2-3 sentences introducing the component with a relatable analogy
 - `{{COMPONENT_NAME}}` - Name of the abstraction/component
 - `{{COMPONENT_EXPLANATION}}` - Clear explanation of what this component is and its purpose
@@ -392,10 +399,13 @@ After generating chapters, prepare for HonKit using the provided templates:
    - Read template from: `~/.claude/skills/tutorial/templates/honkit/SUMMARY.md`
    - Replace `{{CHAPTER_LINKS}}` with links to all chapter files:
      - First link should always be Getting Started: `* [Getting Started](01-getting-started.md)`
-     - Followed by code chapters: `* [Chapter Title](02-chapter-name.md)`, etc.
-     - Optional conclusion chapter: `* [Conclusion](XX-conclusion.md)`
+     - Followed by code chapters: `* [Chapter N - Chapter Title](0N-chapter-name.md)`, etc.
+     - Optional conclusion chapter: `* [Conclusion](conclusion.md)`
      - Format: `* [Chapter Title](NN-chapter-name.md)`
      - One link per generated chapter in order
+     - **IMPORTANT**: All chapter titles MUST use Chicago Manual of Style title case capitalization
+     - See `templates/honkit/capitalization-guide.md` for complete rules and examples
+     - Quick rules: Capitalize first/last words and major words; lowercase articles (a, an, the), conjunctions (and, but, or), and prepositions (in, on, at, to, from, with, of, etc.)
 
 **3. Create book.json** from template:
    - Read template from: `~/.claude/skills/tutorial/templates/honkit/book.json`
@@ -465,6 +475,7 @@ All tutorial templates are organized by output format at `~/.claude/skills/tutor
 - `navigation-examples.md` - Reference examples showing proper navigation link formatting (read for guidance)
 - `conclusion-examples.md` - Reference examples of effective conclusions based on Harvard Writing Center principles (read for guidance)
 - `illustrations-guide.md` - Curated xkcd comics and alternative illustration sources with attribution guidelines (read for selecting relevant images)
+- `capitalization-guide.md` - Chicago Manual of Style title case rules for all chapter titles (MUST follow for consistency)
 - `styles/website.css` - Custom CSS for HonKit rendering (always copy to output)
 
 These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
@@ -472,7 +483,8 @@ These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
 **Usage pattern**:
 - **book.json, README.md, SUMMARY.md, index.md, chapter-template.md**: Always read the template, replace all placeholders with actual values from analysis/metadata, and write to output directory
 - **getting-started.md, conclusion.md**: Use as structural references, generate content based on actual analysis following the template structure
-- **practice-exercise-examples.md, flow-diagram-examples.md, navigation-examples.md, conclusion-examples.md, illustrations-guide.md**: Reference documents for inspiration - read to understand patterns and best practices
+- **practice-exercise-examples.md, flow-diagram-examples.md, navigation-examples.md, conclusion-examples.md, illustrations-guide.md, capitalization-guide.md**: Reference documents for guidance - read to understand patterns and best practices
+- **capitalization-guide.md**: MUST be applied to ALL chapter titles throughout the tutorial (SUMMARY.md, chapter files, navigation links)
 - **styles/website.css**: Copy to `{output_dir}/styles/` without modification
 
 **Future template engines**: The templates directory is organized to support additional formats (e.g., `templates/mdbook/`, `templates/docusaurus/`) in future versions.
