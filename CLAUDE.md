@@ -44,52 +44,6 @@ Both template sets are installed at:
 - `.claude/tutorial/templates/honkit/` - Markdown templates
 - `.claude/tutorial/templates/antora/` - AsciiDoc templates
 
-### Multi-Module Project Support
-
-The skill now detects multi-module projects (Maven multi-module, npm workspaces, monorepos, etc.) and asks users whether to:
-- **Generate comprehensive tutorial** covering all modules with hierarchical structure
-- **Focus on specific module** for in-depth single-module tutorial
-
-**Multi-module detection patterns**:
-- Maven: `pom.xml` with `<modules>` section
-- Gradle: `settings.gradle` with `include` statements
-- npm/Yarn: `package.json` with `workspaces`
-- Monorepo: `packages/`, `apps/`, `services/` directories
-- Go: Multiple `go.mod` files
-- .NET: `*.sln` files
-
-**Multi-module output structure**:
-```
-tutorials/
-  README.md                       # System overview
-  01-getting-started.md           # Global setup
-  user-service/                   # Module 1 - COMPLETE TUTORIAL
-    README.md                     # Module intro
-    01-getting-started.md         # Module setup
-    02-user-controller.md         # Code chapter
-    03-user-service.md            # Code chapter
-    04-user-repository.md         # Code chapter
-    conclusion.md                 # Module conclusion
-  payment-service/                # Module 2 - COMPLETE TUTORIAL
-    README.md                     # Module intro
-    01-getting-started.md         # Module setup
-    02-payment-controller.md      # Code chapter
-    03-payment-service.md         # Code chapter
-    conclusion.md                 # Module conclusion
-  conclusion.md                   # System synthesis
-  SUMMARY.md                      # Hierarchical navigation
-```
-
-**Key principle**: Each module gets the SAME full treatment as single-module mode.
-
-**Benefits**:
-- Learn entire system progressively (or jump to specific modules)
-- Each module is a COMPLETE standalone tutorial
-- Same depth and quality as single-module tutorials
-- Easy to extract: copy module directory for standalone use
-- Hierarchical navigation shows system organization
-- Module conclusions + system conclusion for different abstraction levels
-
 ### Installation Patterns
 
 The skill supports both local (per-project) and global (system-wide) installation:
@@ -179,7 +133,6 @@ This enhancement makes it easy to share and reuse architecture diagrams without 
 ### Build Mode (`/tutorial build`)
 - 6-stage pipeline for comprehensive tutorial generation
 - Creates multi-chapter tutorials in Markdown (HonKit) or AsciiDoc (Antora) format
-- Supports multi-module projects (Maven, npm workspaces, monorepos)
 - Generates practice exercises, architecture diagrams, and navigation
 - Time: 10-30 minutes
 - **Engine options**:

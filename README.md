@@ -3,11 +3,10 @@
 This skill generates code tutorials from source code using Large Language Models (LLMs). It analyzes the source code, identifies abstractions and relationships, and generates a structured tutorial with chapters.
 
 **Features**:
-- 🏗️ **Multi-module support**: Detects Maven multi-module, npm workspaces, monorepos, and generates hierarchical tutorials
-- 📚 **Single or comprehensive**: Choose to generate for one module or all modules in your project
 - 🎨 **Professional output**: HonKit (Markdown) or Antora (AsciiDoc) compatible with diagrams, practice exercises, and custom styling
-- 🔄 **Flexible structure**: Easy to split multi-module tutorials into standalone modules
 - 📝 **Multiple formats**: Generate Markdown for HonKit or AsciiDoc for Antora with `--engine` flag
+- 🏗️ **Architecture analysis**: Automatically identifies code abstractions and relationships
+- 📚 **Comprehensive content**: Practice exercises, flow diagrams, and beginner-friendly explanations
  
 
 ### Quick start
@@ -65,7 +64,6 @@ Complete tutorial generation with chapters
 - **Time**: 10-30 minutes
 - **Output**: Documentation files (Markdown for HonKit or AsciiDoc for Antora)
 - **Use for**: Creating learning materials, documentation, training resources
-- **Supports**: Multi-module projects (Maven, npm workspaces, monorepos)
 - **Engines**:
   - `--engine honkit` (default): Generates Markdown files for HonKit static site generator
   - `--engine antora`: Generates AsciiDoc files for Antora documentation system
@@ -279,17 +277,6 @@ See `DEV_TESTING.md` for the testing checklist.
 - Specify target audience (beginner/intermediate/advanced)
 - Review chapter order before generation
 - Regenerate specific chapters if needed
-
-### For Multi-Module Projects
-- The skill auto-detects Maven multi-module, npm workspaces, monorepos, etc.
-- **Choose "All modules"** to create comprehensive system-wide tutorial
-  - Each module gets a COMPLETE tutorial (getting-started → all chapters → conclusion)
-  - Same depth and quality as single-module mode
-  - Hierarchical navigation links all modules together
-  - Each module is fully standalone and can be extracted
-- **Choose "Specific module"** to focus on one module at a time
-- Multi-module tutorials are easy to split: just copy a module directory for standalone use
-- Learn modules in any order - each is self-contained
 
 ## Documentation
 
