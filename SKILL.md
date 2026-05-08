@@ -228,6 +228,18 @@ Generate content that is beginner-friendly, encouraging, and sets clear expectat
 6. **Running Locally** - Step-by-step commands to run the application
 7. **Verification** - How to verify it's working (URLs to visit, expected output)
 8. **Troubleshooting** - Common issues and solutions
+9. **Practice Exercise** - Hands-on verification exercise (3-4 tasks)
+
+**Practice Exercise for Getting Started**:
+- `{{SETUP_PRACTICE_EXERCISE}}` - Numbered list of verification tasks (e.g., change a log message, modify a config value, restart and verify)
+- `{{SETUP_EXPECTED_OUTCOME}}` - What should happen after completing the exercise
+- `{{SETUP_HINTS}}` - Helpful hints for finding files or running commands
+
+**Example tasks**:
+1. Locate the main application file and change a log message
+2. Rebuild/restart the application
+3. Verify the change appears in the logs/output
+4. Bonus: Change a configuration value and observe the effect
 
 Use code blocks with proper syntax highlighting for all commands and configuration examples.
 
@@ -250,6 +262,10 @@ Use code blocks with proper syntax highlighting for all commands and configurati
 - `{{RELATIONSHIP_DIAGRAM}}` - Optional Mermaid diagram showing relationships
 - `{{DETAILED_RELATIONSHIP_EXPLANATIONS}}` - Detailed explanation of each relationship
 - `{{KEY_POINTS}}` - Bulleted list of main takeaways
+- `{{PRACTICE_EXERCISE}}` - Numbered list of hands-on tasks (3-5 tasks with progressive difficulty)
+- `{{EXPECTED_OUTCOME}}` - What learners should achieve after completing the exercise
+- `{{HINTS}}` - Bulleted list of helpful hints (2-3 hints)
+- `{{SOLUTION_LINK_OR_EXPLANATION}}` - Brief explanation or approach to solving the exercise
 - `{{NEXT_CHAPTER_PREVIEW}}` - 1-2 sentences previewing the next chapter
 
 **Chapter requirements**:
@@ -257,6 +273,18 @@ Use code blocks with proper syntax highlighting for all commands and configurati
 - Include 2-4 code snippets with detailed explanations
 - Reference related components from earlier chapters
 - Keep consistent structure across all chapters
+
+**Practice Exercise guidelines**:
+- Create 3-5 numbered tasks with progressive difficulty
+- Start with a simple modification to existing code
+- Include a moderate task that extends functionality
+- Add a "Bonus" task for extra practice (optional)
+- Include a "Challenge" task for advanced learners (optional)
+- Tasks should be concrete and actionable (e.g., "Add a method called X that does Y")
+- Relate exercises to real-world use cases when possible
+- Provide 2-3 hints without giving away the complete solution
+- Expected outcome should describe what the code should do when working correctly
+- Solution should guide the approach without providing complete code (encourage learning)
 
 Generate sequentially to allow cross-referencing. Show progress for each chapter.
 
@@ -350,9 +378,10 @@ All tutorial templates are organized by output format at `~/.claude/skills/tutor
 - `README.md` - Tutorial landing page template (always use)
 - `SUMMARY.md` - Table of contents template (always use)
 - `index.md` - Introduction chapter template with structure and placeholders (always use)
-- `getting-started.md` - Getting Started chapter template (use as structural guide)
-- `chapter-template.md` - Code chapter template for abstraction chapters (always use)
+- `getting-started.md` - Getting Started chapter template with practice exercise (use as structural guide)
+- `chapter-template.md` - Code chapter template for abstraction chapters with practice exercises (always use)
 - `conclusion.md` - Optional conclusion chapter template (use if generating conclusion)
+- `practice-exercise-examples.md` - Reference examples showing good practice exercise structure (read for inspiration)
 - `styles/website.css` - Custom CSS for HonKit rendering (always copy to output)
 
 These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
@@ -467,11 +496,13 @@ Claude:
 
 Files created:
 - README.md, SUMMARY.md, book.json (HonKit configuration)
+- styles/website.css (Custom styling)
 - index.md (Introduction with architecture diagram)
-- 01-getting-started.md (Local setup guide)
-- 02-09 chapters covering core abstractions
+- 01-getting-started.md (Local setup guide with practice exercise)
+- 02-09 chapters covering core abstractions (each with practice exercises)
 
 Next steps:
 - Review the generated content
+- Try the practice exercises in each chapter
 - Preview with: /tutorial preview ./tutorials
 ```
