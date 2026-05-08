@@ -22,8 +22,12 @@ function copyRecursive(src, dest) {
       fs.mkdirSync(dest, { recursive: true });
     }
     fs.readdirSync(src).forEach(childItemName => {
-      // Skip NPM package metadata during install (but keep runtime CLI helpers)
-      if (['node_modules', 'installer.js', 'package.json', '.npmignore', 'PUBLISHING.md'].includes(childItemName)) {
+      // Skip NPM package metadata and development files during install
+      if (['node_modules', 'installer.js', 'package.json', '.npmignore', 'PUBLISHING.md', '.git', '.gitignore'].includes(childItemName)) {
+        return;
+      }
+      // Skip package tarballs (*.tgz)
+      if (childItemName.endsWith('.tgz')) {
         return;
       }
       copyRecursive(
