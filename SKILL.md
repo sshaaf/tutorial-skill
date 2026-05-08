@@ -45,9 +45,79 @@ Parse arguments flexibly - accept both flags and positional arguments.
 1. **Determine project path**:
    - Use path from command args if provided, otherwise ask user
    - Auto-detect primary language from file extensions
-   - Optionally ask if user wants to focus on specific areas
 
-2. **Find source files using Glob** (exclude test/build directories):
+2. **Detect multi-module structure**:
+
+   Check for common multi-module patterns:
+
+   **Maven multi-module**:
+   - Root `pom.xml` with `<modules>` section
+   - Multiple subdirectories each containing `pom.xml`
+
+   **Gradle multi-module**:
+   - `settings.gradle` or `settings.gradle.kts` with `include` statements
+   - Multiple subdirectories with `build.gradle` files
+
+   **npm/Yarn workspaces**:
+   - Root `package.json` with `workspaces` field
+   - Directories like `packages/*/package.json`
+
+   **Go modules**:
+   - Multiple `go.mod` files in subdirectories
+   - Directory structure like `cmd/`, `internal/`, `pkg/`
+
+   **Monorepo patterns**:
+   - Common directories: `packages/`, `apps/`, `services/`, `modules/`, `libs/`
+   - Presence of `lerna.json`, `nx.json`, `pnpm-workspace.yaml`
+
+   **.NET solutions**:
+   - `*.sln` file listing multiple projects
+   - Multiple `*.csproj` files in subdirectories
+
+   **Python packages**:
+   - Multiple `setup.py` or `pyproject.toml` in subdirectories
+   - Directory structure with package folders
+
+   **If modules detected**, ask user:
+   ```
+   🔍 Detected multi-module project with N modules:
+
+   Modules found:
+   1. user-service (./services/user-service) - Java/Spring Boot
+   2. payment-service (./services/payment-service) - Java/Spring Boot
+   3. notification-service (./services/notification-service) - Java/Spring Boot
+
+   How would you like to generate the tutorial?
+
+   A) Generate comprehensive tutorial covering ALL modules
+      - Each module becomes a chapter with sub-chapters
+      - Hierarchical SUMMARY.md structure
+      - Good for: understanding the full system architecture
+
+   B) Generate tutorial for a SPECIFIC module only
+      - Focus on one module in depth
+      - Good for: learning one service at a time
+
+   Please choose A or B (or specify module name/number):
+   ```
+
+   **If user chooses ALL modules (A)**:
+   - Set `mode = "multi-module"`
+   - Store module list with paths and metadata
+   - Process each module through all stages separately
+   - Generate hierarchical structure
+
+   **If user chooses SPECIFIC module (B)**:
+   - Ask which module to focus on
+   - Set `mode = "single-module"`
+   - Update project path to the selected module
+   - Continue with normal single-module flow
+
+   **If no modules detected**:
+   - Set `mode = "single-module"`
+   - Continue with current directory
+
+3. **Find source files using Glob** (exclude test/build directories):
    - Java: `**/*.java`, Python: `**/*.py`, JS/TS: `**/*.{js,ts,jsx,tsx}`
    - Go: `**/*.go`, C#: `**/*.cs`, Ruby: `**/*.rb`, Rust: `**/*.rs`, PHP: `**/*.php`
 
@@ -362,9 +432,118 @@ Generate sequentially to allow cross-referencing. Show progress for each chapter
 **Navigation placeholder**:
 - `{{PREV_CHAPTER_LINK}}` - Link back to last code chapter: `👈 **[Previous: Chapter N - ComponentName](0N-component-name.md)**`
 
+---
+
+### Multi-Module Tutorial Generation
+
+**If `mode = "multi-module"` from Stage 1**, follow this workflow:
+
+#### For Each Module:
+
+1. **Run Stages 2-6 for each module independently**:
+   - Stage 2: Identify abstractions within the module
+   - Stage 3: Analyze relationships within the module
+   - Stage 4: Organize chapters for the module
+   - Stage 5: Generate metadata for the module
+   - Stage 6a-6c: Generate module chapters
+
+2. **Organize output in module subdirectories**:
+   ```
+   tutorials/
+     README.md                    # Top-level introduction
+     01-getting-started.md        # Global setup (all modules)
+     user-service/                # Module 1
+       README.md                  # Module introduction
+       01-user-controller.md
+       02-user-service.md
+       03-user-repository.md
+     payment-service/             # Module 2
+       README.md                  # Module introduction
+       01-payment-controller.md
+       02-payment-service.md
+     notification-service/        # Module 3
+       README.md                  # Module introduction
+       01-notification-handler.md
+       02-email-sender.md
+     conclusion.md                # Overall conclusion
+     SUMMARY.md                   # Hierarchical structure
+     book.json
+     styles/website.css
+   ```
+
+3. **Generate module-specific README.md** for each module:
+   - Use same index.md template structure
+   - Scope to this module only:
+     - Module name as title
+     - Module-specific architecture diagram
+     - Module's abstractions only
+     - Navigation to first chapter in module
+
+4. **Create hierarchical SUMMARY.md**:
+   ```markdown
+   # Summary
+
+   * [Introduction](README.md)
+   * [Getting Started](01-getting-started.md)
+
+   ## User Service
+
+   * [Module Overview](user-service/README.md)
+   * [UserController](user-service/01-user-controller.md)
+   * [UserService](user-service/02-user-service.md)
+   * [UserRepository](user-service/03-user-repository.md)
+
+   ## Payment Service
+
+   * [Module Overview](payment-service/README.md)
+   * [PaymentController](payment-service/01-payment-controller.md)
+   * [PaymentService](payment-service/02-payment-service.md)
+
+   ## Notification Service
+
+   * [Module Overview](notification-service/README.md)
+   * [NotificationHandler](notification-service/01-notification-handler.md)
+   * [EmailSender](notification-service/02-email-sender.md)
+
+   * [Conclusion](conclusion.md)
+   ```
+
+5. **Generate top-level README.md**:
+   - Cover the entire multi-module system
+   - High-level architecture showing module interactions
+   - System-wide overview and learning objectives
+   - List all modules with brief descriptions
+
+6. **Generate top-level Getting Started**:
+   - Setup instructions for entire project (root-level dependencies)
+   - How to run all modules (docker-compose, orchestration)
+   - Cross-module configuration
+   - Module-specific setup delegated to module READMEs
+
+7. **Navigation Links**:
+   - Within module chapters: navigate within module only
+   - Last chapter in module: links to next module's overview or conclusion
+   - Example: `👉 **[Next: Payment Service Overview](../payment-service/README.md)**`
+
+8. **Top-level Conclusion**:
+   - Synthesize learning across all modules
+   - How modules work together
+   - System-level insights and patterns
+
+**Benefits of this structure**:
+- ✅ Users can learn the entire system progressively
+- ✅ Easy to split: extract one module's directory for standalone tutorial
+- ✅ Hierarchical navigation shows system organization
+- ✅ Each module is self-contained with its own intro
+- ✅ SUMMARY.md provides clear roadmap
+
+---
+
 #### Final Step: Create HonKit Navigation Files
 
-After generating chapters, prepare for HonKit using the provided templates:
+After generating chapters, prepare for HonKit using the provided templates.
+
+**Note**: Instructions below apply to **single-module** tutorials. For **multi-module** tutorials, see the Multi-Module section above for SUMMARY.md structure and organization.
 
 **1. Create README.md** from template:
    - Read template from: `.claude/tutorial/templates/honkit/index.md`
@@ -383,7 +562,9 @@ After generating chapters, prepare for HonKit using the provided templates:
    - Generate content that is beginner-friendly, encouraging, and sets clear expectations for what learners will accomplish
    - **Note**: README.md is the HonKit entry point (landing page) and uses the comprehensive index.md template
 
-**2. Create SUMMARY.md** from template:
+**2. Create SUMMARY.md**:
+
+   **For single-module tutorials**:
    - Read template from: `.claude/tutorial/templates/honkit/SUMMARY.md`
    - Replace `{{CHAPTER_LINKS}}` with links to all chapter files:
      - First link should always be Getting Started: `* [Getting Started](01-getting-started.md)`
@@ -391,9 +572,17 @@ After generating chapters, prepare for HonKit using the provided templates:
      - Optional conclusion chapter: `* [Conclusion](conclusion.md)`
      - Format: `* [Chapter Title](NN-chapter-name.md)`
      - One link per generated chapter in order
-     - **IMPORTANT**: All chapter titles MUST use Chicago Manual of Style title case capitalization
-     - See `templates/honkit/capitalization-guide.md` for complete rules and examples
-     - Quick rules: Capitalize first/last words and major words; lowercase articles (a, an, the), conjunctions (and, but, or), and prepositions (in, on, at, to, from, with, of, etc.)
+
+   **For multi-module tutorials**:
+   - Generate hierarchical structure with module sections (see Multi-Module section above)
+   - Use `##` headers for module names
+   - Nest module chapters under their module section
+   - Each module should have: `* [Module Overview](module-name/README.md)` followed by its chapters
+
+   **For both**:
+   - **IMPORTANT**: All chapter titles MUST use Chicago Manual of Style title case capitalization
+   - See `templates/honkit/capitalization-guide.md` for complete rules and examples
+   - Quick rules: Capitalize first/last words and major words; lowercase articles (a, an, the), conjunctions (and, but, or), and prepositions (in, on, at, to, from, with, of, etc.)
 
 **3. Create book.json** from template:
    - Read template from: `.claude/tutorial/templates/honkit/book.json`
@@ -594,5 +783,86 @@ Files created:
 Next steps:
 - Review the generated content
 - Try the practice exercises in each chapter
+- Preview with: /tutorial preview ./tutorials
+```
+
+### Multi-Module Workflow
+
+```
+User: /tutorial build .
+
+Claude:
+⏳ Stage 1/6: Discovering source files...
+
+🔍 Detected multi-module project with 3 modules:
+
+Modules found:
+1. user-service (./services/user-service) - Java/Spring Boot - 12 files
+2. payment-service (./services/payment-service) - Java/Spring Boot - 8 files
+3. notification-service (./services/notification-service) - Java/Spring Boot - 6 files
+
+How would you like to generate the tutorial?
+
+A) Generate comprehensive tutorial covering ALL modules
+   - Each module becomes a chapter with sub-chapters
+   - Hierarchical SUMMARY.md structure
+   - Good for: understanding the full system architecture
+
+B) Generate tutorial for a SPECIFIC module only
+   - Focus on one module in depth
+   - Good for: learning one service at a time
+
+Please choose A or B (or specify module name/number):
+
+User: A
+
+Claude:
+⏳ Processing all 3 modules...
+
+⏳ Module 1/3: user-service
+  ✓ Stage 2/6: Identified 5 core components
+  ✓ Stage 3/6: Analyzed relationships
+  ✓ Stage 4-6: Generated 5 chapters
+
+⏳ Module 2/3: payment-service
+  ✓ Stage 2/6: Identified 4 core components
+  ✓ Stage 3/6: Analyzed relationships
+  ✓ Stage 4-6: Generated 4 chapters
+
+⏳ Module 3/3: notification-service
+  ✓ Stage 2/6: Identified 3 core components
+  ✓ Stage 3/6: Analyzed relationships
+  ✓ Stage 4-6: Generated 3 chapters
+
+⏳ Creating top-level introduction and navigation...
+
+✅ Complete! Multi-module tutorial saved to ./tutorials
+
+Structure created:
+- README.md (System-wide introduction)
+- 01-getting-started.md (Setup all modules)
+- user-service/
+  ├── README.md (Module introduction)
+  ├── 01-user-controller.md
+  ├── 02-user-service.md
+  └── 03-user-repository.md
+- payment-service/
+  ├── README.md (Module introduction)
+  ├── 01-payment-controller.md
+  └── 02-payment-service.md
+- notification-service/
+  ├── README.md (Module introduction)
+  ├── 01-notification-handler.md
+  └── 02-email-sender.md
+- conclusion.md (System-wide summary)
+- SUMMARY.md (Hierarchical navigation)
+- book.json
+- styles/website.css
+
+Total: 3 modules, 12 chapters across 3 services
+
+Next steps:
+- Review the generated content
+- Each module can be extracted as standalone tutorial
 - Preview with: /tutorial preview ./tutorials
 ```

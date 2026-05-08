@@ -1,7 +1,14 @@
 # Tutorial Skill
 
 This skill generates code tutorials from source code using Large Language Models (LLMs). It analyzes the source code, identifies abstractions and relationships, and generates a structured tutorial with chapters.
-It has various commands such as `analysis`, `build` and `preview`. 
+
+**Features**:
+- 🏗️ **Multi-module support**: Detects Maven multi-module, npm workspaces, monorepos, and generates hierarchical tutorials
+- 📚 **Single or comprehensive**: Choose to generate for one module or all modules in your project
+- 🎨 **Professional output**: HonKit-ready with diagrams, practice exercises, and custom styling
+- 🔄 **Flexible structure**: Easy to split multi-module tutorials into standalone modules
+
+It has various commands such as `build` and `preview`. 
 
 ### Quick start
 ```bash
@@ -216,6 +223,13 @@ See `DEV_TESTING.md` for the short checklist.
 - Specify target audience (beginner/intermediate/advanced)
 - Review chapter order before generation
 - Regenerate specific chapters if needed
+
+### For Multi-Module Projects
+- The skill auto-detects Maven multi-module, npm workspaces, monorepos, etc.
+- **Choose "All modules"** to create comprehensive system-wide tutorial with hierarchical structure
+- **Choose "Specific module"** to focus on one module at a time
+- Multi-module tutorials are easy to split: just extract a module directory
+- Each module can be learned independently or as part of the whole system
 
 ## Documentation
 

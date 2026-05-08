@@ -7,7 +7,7 @@ This package has two surfaces:
 
 During development, treat the git checkout as the source of truth:
 
-`/Users/sshaaf/git/SKILLS/tutorial-skill/bin/cli.js`
+`git/SKILLS/tutorial-skill/bin/cli.js`
 
 ## Prerequisites
 

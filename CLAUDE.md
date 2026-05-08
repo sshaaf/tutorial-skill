@@ -4,6 +4,41 @@ This is a Claude Code skill for generating tutorials and analyzing codebases.
 
 ## Recent Updates (2026-05-08)
 
+### Multi-Module Project Support
+
+The skill now detects multi-module projects (Maven multi-module, npm workspaces, monorepos, etc.) and asks users whether to:
+- **Generate comprehensive tutorial** covering all modules with hierarchical structure
+- **Focus on specific module** for in-depth single-module tutorial
+
+**Multi-module detection patterns**:
+- Maven: `pom.xml` with `<modules>` section
+- Gradle: `settings.gradle` with `include` statements
+- npm/Yarn: `package.json` with `workspaces`
+- Monorepo: `packages/`, `apps/`, `services/` directories
+- Go: Multiple `go.mod` files
+- .NET: `*.sln` files
+
+**Multi-module output structure**:
+```
+tutorials/
+  README.md                  # System overview
+  01-getting-started.md      # Global setup
+  module-a/
+    README.md                # Module intro
+    01-*.md, 02-*.md        # Module chapters
+  module-b/
+    README.md
+    01-*.md, 02-*.md
+  conclusion.md              # System synthesis
+  SUMMARY.md                 # Hierarchical navigation
+```
+
+**Benefits**:
+- Learn entire system progressively
+- Easy to extract modules as standalone tutorials
+- Clear system organization in navigation
+- Each module self-contained
+
 ### Local Installation Pattern
 
 The skill now installs locally to `.claude/tutorial/` in your project directory instead of globally to `~/.claude/skills/tutorial/`. This enables:
