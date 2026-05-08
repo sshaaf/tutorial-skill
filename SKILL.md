@@ -324,12 +324,41 @@ graph TD
 
 Generate sequentially to allow cross-referencing. Show progress for each chapter.
 
-**6d. Generate Conclusion Chapter** (Optional): Create a final chapter using `~/.claude/skills/tutorial/templates/honkit/conclusion.md` to wrap up the tutorial with:
-- Summary of what was learned
-- Suggested next steps and projects to build
-- Additional resources
-- Contribution guidelines (if applicable)
-- Support channels
+**6d. Generate Conclusion Chapter** (Optional): Create a final chapter using `~/.claude/skills/tutorial/templates/honkit/conclusion.md` following effective conclusion principles:
+
+**Template placeholders** (based on Harvard Writing Center guidance):
+
+**Opening & Synthesis**:
+- `{{SYNTHESIS_OPENING}}` - 2-3 sentences that synthesize (not summarize) the tutorial's journey. Answer "So what?" - why this learning matters. Avoid generic congratulations; instead, reflect on what learners can now do that they couldn't before.
+- `{{WHY_IT_MATTERS}}` - 1-2 paragraphs on broader significance: How does this knowledge apply beyond this specific project? What problems can learners now solve? Connect to real-world applications and industry relevance.
+- `{{JOURNEY_REFLECTION}}` - Circle back to the introduction's promise. If intro said "you'll master X", reflect on how that was accomplished. Show transformation from beginning to end.
+
+**Knowledge Synthesis**:
+- `{{KEY_CONCEPTS_SYNTHESIS}}` - Bulleted list of major concepts, but with synthesis: group related concepts, show how they interconnect, highlight patterns that emerged across chapters
+- `{{TRANSFERABLE_SKILLS}}` - Name specific transferable skills gained (e.g., "architectural thinking", "debugging distributed systems", "API design principles") that apply beyond this tutorial
+- `{{DOMAIN}}` - The broader domain (e.g., "web development", "machine learning", "data engineering")
+
+**Action-Oriented Next Steps**:
+- `{{BUILD_PROJECT_CHALLENGE}}` - Specific, achievable project idea that combines multiple concepts from the tutorial. Include scope/complexity guidance.
+- `{{CONTRIBUTION_PATH}}` - Concrete ways to contribute (fix bugs, improve docs, add features) with guidance on where to start
+- `{{CONTRIBUTION_VALUE}}` - Why contributing matters (builds portfolio, deepens understanding, helps community)
+- `{{ADVANCED_TOPICS}}` - 3-5 advanced topics to explore next, each with 1-sentence description of what it adds
+
+**Resources & Support**:
+- `{{CURATED_RESOURCES}}` - Short, curated list (3-5 items) of high-quality resources. Explain why each is valuable, not just links.
+- `{{SUPPORT_CHANNELS}}` - Specific channels for help (Discord, forum, GitHub issues) with what type of questions to ask where
+
+**Closing**:
+- `{{CLOSING_REFLECTION}}` - 2-3 sentences that elevate beyond the tutorial: the mindset/approach that matters most, or the larger lesson
+- `{{CIRCLE_BACK_TO_INTRO}}` - Reference a specific concept, question, or goal from the introduction to create closure
+- `{{EMPOWERING_SENDOFF}}` - Final sentence that's empowering and forward-looking. Avoid clichés; be specific about what learners can now accomplish.
+
+**Conclusion Writing Principles**:
+- **Synthesize, don't summarize**: Show how concepts connect, don't just list what was covered
+- **Answer "So what?"**: Explain why this knowledge matters in the real world
+- **Provide closure**: Circle back to the introduction's promise
+- **Look forward**: Point to next steps without introducing entirely new topics
+- **End with impact**: Final words should be memorable and empowering
 
 **Navigation placeholder**:
 - `{{PREV_CHAPTER_LINK}}` - Link back to last code chapter: `👈 **[Previous: Chapter N - ComponentName](0N-component-name.md)**`
@@ -419,18 +448,19 @@ All tutorial templates are organized by output format at `~/.claude/skills/tutor
 - `index.md` - Introduction chapter template with structure and placeholders (always use)
 - `getting-started.md` - Getting Started chapter template with practice exercise (use as structural guide)
 - `chapter-template.md` - Code chapter template for abstraction chapters with practice exercises and flow diagrams (always use)
-- `conclusion.md` - Optional conclusion chapter template (use if generating conclusion)
+- `conclusion.md` - Conclusion chapter template with synthesis and forward-looking structure (use if generating conclusion)
 - `practice-exercise-examples.md` - Reference examples showing good practice exercise structure (read for inspiration)
 - `flow-diagram-examples.md` - Reference examples of Mermaid flow diagrams showing data flow patterns (read for inspiration)
 - `navigation-examples.md` - Reference examples showing proper navigation link formatting (read for guidance)
+- `conclusion-examples.md` - Reference examples of effective conclusions based on Harvard Writing Center principles (read for guidance)
 - `styles/website.css` - Custom CSS for HonKit rendering (always copy to output)
 
 These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
 
 **Usage pattern**:
 - **book.json, README.md, SUMMARY.md, index.md, chapter-template.md**: Always read the template, replace all placeholders with actual values from analysis/metadata, and write to output directory
-- **getting-started.md, conclusion.md**: Use as structural references, generate content based on actual analysis
-- **practice-exercise-examples.md, flow-diagram-examples.md, navigation-examples.md**: Reference documents for inspiration - read to understand patterns and best practices
+- **getting-started.md, conclusion.md**: Use as structural references, generate content based on actual analysis following the template structure
+- **practice-exercise-examples.md, flow-diagram-examples.md, navigation-examples.md, conclusion-examples.md**: Reference documents for inspiration - read to understand patterns and best practices
 - **styles/website.css**: Copy to `{output_dir}/styles/` without modification
 
 **Future template engines**: The templates directory is organized to support additional formats (e.g., `templates/mdbook/`, `templates/docusaurus/`) in future versions.
