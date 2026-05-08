@@ -213,7 +213,7 @@ xkcd comics are perfect for technical tutorials—relatable, humorous, and licen
 
 ## Example Usage in Templates
 
-### Introduction (index.md):
+### Introduction (README.md):
 ```markdown
 # Welcome to Building Your First REST API
 

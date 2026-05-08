@@ -11,7 +11,7 @@ All navigation links should use the following format with emoji arrows:
 
 ## Examples by Chapter Type
 
-### Introduction (index.md)
+### Introduction (README.md)
 Only has next link (no previous):
 
 ```markdown
@@ -28,7 +28,7 @@ Has both previous and next:
 ```markdown
 ## Navigation
 
-👈 **[Previous: Introduction](index.md)**
+👈 **[Previous: Introduction](README.md)**
 
 👉 **[Next: Chapter 2 - User Service](02-user-service.md)**
 ```

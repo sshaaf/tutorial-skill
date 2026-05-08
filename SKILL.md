@@ -179,26 +179,7 @@ Parse arguments flexibly - accept both flags and positional arguments.
 
 **Goal**: Generate introduction, setup guide, and individual chapters as Markdown files.
 
-**6a. Generate Introduction**: Create `index.md` using the template at `.claude/tutorial/templates/honkit/index.md`:
-
-**Template placeholders to replace**:
-- `{{TUTORIAL_TITLE}}` - Tutorial title from metadata
-- `{{WELCOME_MESSAGE}}` - 2-3 sentence warm welcome explaining what this tutorial covers
-- `{{INTRO_ILLUSTRATION}}` - Optional relevant illustration (xkcd comic or other image) that sets the tone. See illustrations-guide.md for options. Format: Image + attribution
-- `{{LEARNING_OBJECTIVES}}` - Bulleted list of specific skills/concepts learners will master
-- `{{PROJECT_OVERVIEW}}` - 1-2 paragraphs describing the project's purpose and main functionality
-- `{{ARCHITECTURE_DIAGRAM}}` - Mermaid diagram from Stage 3 (architecture relationships)
-- `{{TECHNICAL_STACK}}` - Bulleted list of technologies, frameworks, and tools used (detected from Stage 1)
-- `{{TUTORIAL_STRUCTURE}}` - Numbered list of chapter titles with brief descriptions
-- `{{PREREQUISITES}}` - Bulleted list from metadata (programming knowledge, tools, concepts)
-- `{{TARGET_AUDIENCE}}` - 1-2 sentences describing intended audience based on difficulty level
-- `{{NEXT_CHAPTER_LINK}}` - Navigation link to first chapter (01-getting-started.md)
-
-**Navigation format**: `👉 **[Next: Chapter 1 - Getting Started](01-getting-started.md)**`
-
-Generate content that is beginner-friendly, encouraging, and sets clear expectations for what learners will accomplish.
-
-**6b. Generate Getting Started Chapter**: Create `01-getting-started.md` by analyzing build and configuration files discovered in Stage 1:
+**6a. Generate Getting Started Chapter**: Create `01-getting-started.md` by analyzing build and configuration files discovered in Stage 1:
 
 **Build System Analysis**:
 - Identify build tool (Maven, Gradle, npm, pip, cargo, etc.) from discovered files
@@ -253,12 +234,12 @@ Generate content that is beginner-friendly, encouraging, and sets clear expectat
 4. Bonus: Change a configuration value and observe the effect
 
 **Navigation placeholders**:
-- `{{PREV_CHAPTER_LINK}}` - Link back to introduction: `👈 **[Previous: Introduction](index.md)**`
+- `{{PREV_CHAPTER_LINK}}` - Link back to introduction: `👈 **[Previous: Introduction](README.md)**`
 - `{{NEXT_CHAPTER_LINK}}` - Link to first code chapter: `👉 **[Next: Chapter 2 - ComponentName](02-component-name.md)**`
 
 Use code blocks with proper syntax highlighting for all commands and configuration examples.
 
-**6c. Generate Code Chapters**: For each abstraction in order, create a chapter file (`{N:02d}-{chapter-name}.md`) using the template at `.claude/tutorial/templates/honkit/chapter-template.md`:
+**6b. Generate Code Chapters**: For each abstraction in order, create a chapter file (`{N:02d}-{chapter-name}.md`) using the template at `.claude/tutorial/templates/honkit/chapter-template.md`:
 
 **Template placeholders to replace**:
 - `{{CHAPTER_TITLE}}` - Descriptive chapter title in Chicago Manual of Style title case (e.g., "User Service: The Heart of Authentication", "Understanding the Repository Pattern"). See capitalization-guide.md for rules.
@@ -332,7 +313,7 @@ graph TD
 
 Generate sequentially to allow cross-referencing. Show progress for each chapter.
 
-**6d. Generate Conclusion Chapter** (Optional): Create a final chapter using `.claude/tutorial/templates/honkit/conclusion.md` following effective conclusion principles:
+**6c. Generate Conclusion Chapter** (Optional): Create a final chapter using `.claude/tutorial/templates/honkit/conclusion.md` following effective conclusion principles:
 
 **Template placeholders** (based on Harvard Writing Center guidance):
 
@@ -386,14 +367,21 @@ Generate sequentially to allow cross-referencing. Show progress for each chapter
 After generating chapters, prepare for HonKit using the provided templates:
 
 **1. Create README.md** from template:
-   - Read template from: `.claude/tutorial/templates/honkit/README.md`
+   - Read template from: `.claude/tutorial/templates/honkit/index.md`
    - Replace placeholders:
      - `{{TUTORIAL_TITLE}}` - Tutorial title from metadata
-     - `{{TUTORIAL_DESCRIPTION}}` - Tutorial description from metadata
-     - `{{LEARNING_OBJECTIVES}}` - Bullet list of what learners will achieve
-     - `{{PREREQUISITES}}` - Bullet list from metadata
-     - `{{DIFFICULTY}}` - From metadata
-     - `{{ESTIMATED_TIME}}` - From metadata
+     - `{{WELCOME_MESSAGE}}` - 2-3 sentence warm welcome explaining what this tutorial covers
+     - `{{INTRO_ILLUSTRATION}}` - Optional relevant illustration (xkcd comic or other image) that sets the tone. See illustrations-guide.md for options. Format: Image + attribution
+     - `{{LEARNING_OBJECTIVES}}` - Bulleted list of specific skills/concepts learners will master
+     - `{{PROJECT_OVERVIEW}}` - 1-2 paragraphs describing the project's purpose and main functionality
+     - `{{ARCHITECTURE_DIAGRAM}}` - Mermaid diagram from Stage 3 (architecture relationships)
+     - `{{TECHNICAL_STACK}}` - Bulleted list of technologies, frameworks, and tools used (detected from Stage 1)
+     - `{{TUTORIAL_STRUCTURE}}` - Numbered list of chapter titles with brief descriptions
+     - `{{PREREQUISITES}}` - Bulleted list from metadata (programming knowledge, tools, concepts)
+     - `{{TARGET_AUDIENCE}}` - 1-2 sentences describing intended audience based on difficulty level
+     - `{{NEXT_CHAPTER_LINK}}` - Navigation link to first chapter: `👉 **[Next: Chapter 1 - Getting Started](01-getting-started.md)**`
+   - Generate content that is beginner-friendly, encouraging, and sets clear expectations for what learners will accomplish
+   - **Note**: README.md is the HonKit entry point (landing page) and uses the comprehensive index.md template
 
 **2. Create SUMMARY.md** from template:
    - Read template from: `.claude/tutorial/templates/honkit/SUMMARY.md`
@@ -464,9 +452,8 @@ All tutorial templates are organized by output format at `.claude/tutorial/templ
 
 **HonKit Templates** (`templates/honkit/`):
 - `book.json` - HonKit configuration with metadata placeholders (always use)
-- `README.md` - Tutorial landing page template (always use)
+- `index.md` - Tutorial introduction/landing page template used for README.md generation (always use)
 - `SUMMARY.md` - Table of contents template (always use)
-- `index.md` - Introduction chapter template with structure and placeholders (always use)
 - `getting-started.md` - Getting Started chapter template with practice exercise (use as structural guide)
 - `chapter-template.md` - Code chapter template for abstraction chapters with practice exercises and flow diagrams (always use)
 - `conclusion.md` - Conclusion chapter template with synthesis and forward-looking structure (use if generating conclusion)
@@ -481,7 +468,8 @@ All tutorial templates are organized by output format at `.claude/tutorial/templ
 These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
 
 **Usage pattern**:
-- **book.json, README.md, SUMMARY.md, index.md, chapter-template.md**: Always read the template, replace all placeholders with actual values from analysis/metadata, and write to output directory
+- **book.json, SUMMARY.md, chapter-template.md**: Always read the template, replace all placeholders with actual values from analysis/metadata, and write to output directory
+- **index.md**: Read template and use it to generate README.md (the HonKit landing page) with all placeholders replaced
 - **getting-started.md, conclusion.md**: Use as structural references, generate content based on actual analysis following the template structure
 - **practice-exercise-examples.md, flow-diagram-examples.md, navigation-examples.md, conclusion-examples.md, illustrations-guide.md, capitalization-guide.md**: Reference documents for guidance - read to understand patterns and best practices
 - **capitalization-guide.md**: MUST be applied to ALL chapter titles throughout the tutorial (SUMMARY.md, chapter files, navigation links)
@@ -588,7 +576,7 @@ Claude:
 [Shows tutorial metadata]
 
 ⏳ Stage 6/6: Writing tutorial content...
-✓ Created index.md (Introduction)
+✓ Created README.md (Introduction with architecture diagram)
 ✓ Created 01-getting-started.md (Setup guide with build, config, and Docker instructions)
 ✓ Created 02-user-service.md
 ✓ Created 03-data-repository.md
@@ -597,9 +585,9 @@ Claude:
 ✅ Complete! Tutorial saved to ./tutorials
 
 Files created:
-- README.md, SUMMARY.md, book.json (HonKit configuration)
+- README.md (Introduction with architecture diagram - HonKit landing page)
+- SUMMARY.md, book.json (HonKit configuration)
 - styles/website.css (Custom styling)
-- index.md (Introduction with architecture diagram)
 - 01-getting-started.md (Local setup guide with practice exercise)
 - 02-09 chapters covering core abstractions (each with practice exercises)
 
