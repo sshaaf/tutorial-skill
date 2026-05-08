@@ -247,7 +247,12 @@ Parse arguments flexibly - accept both flags and positional arguments.
 
 #### Stage 6: Write Tutorial Content
 
-**Goal**: Generate introduction, setup guide, and individual chapters as Markdown files.
+**Goal**: Generate setup guide, individual chapters, and conclusion as Markdown files.
+
+This stage creates:
+- **Getting Started** (01-getting-started.md): Setup and configuration guide
+- **Code Chapters** (02-NN-*.md): One chapter per abstraction from Stage 2
+- **Conclusion** (conclusion.md): Synthesis, next steps, and resources
 
 **6a. Generate Getting Started Chapter**: Create `01-getting-started.md` by analyzing build and configuration files discovered in Stage 1:
 
@@ -383,7 +388,9 @@ graph TD
 
 Generate sequentially to allow cross-referencing. Show progress for each chapter.
 
-**6c. Generate Conclusion Chapter** (Optional): Create a final chapter using `.claude/tutorial/templates/honkit/conclusion.md` following effective conclusion principles:
+**6c. Generate Conclusion Chapter**: Create a final chapter (`conclusion.md`) using `.claude/tutorial/templates/honkit/conclusion.md` following effective conclusion principles.
+
+**IMPORTANT**: Always generate the conclusion chapter unless the user explicitly requests not to. The conclusion synthesizes learning and provides next steps, making tutorials more complete and valuable.
 
 **Template placeholders** (based on Harvard Writing Center guidance):
 
@@ -569,7 +576,7 @@ After generating chapters, prepare for HonKit using the provided templates.
    - Replace `{{CHAPTER_LINKS}}` with links to all chapter files:
      - First link should always be Getting Started: `* [Getting Started](01-getting-started.md)`
      - Followed by code chapters: `* [Chapter N - Chapter Title](0N-chapter-name.md)`, etc.
-     - Optional conclusion chapter: `* [Conclusion](conclusion.md)`
+     - Last link should be conclusion chapter: `* [Conclusion](conclusion.md)`
      - Format: `* [Chapter Title](NN-chapter-name.md)`
      - One link per generated chapter in order
 
@@ -645,7 +652,7 @@ All tutorial templates are organized by output format at `.claude/tutorial/templ
 - `SUMMARY.md` - Table of contents template (always use)
 - `getting-started.md` - Getting Started chapter template with practice exercise (use as structural guide)
 - `chapter-template.md` - Code chapter template for abstraction chapters with practice exercises and flow diagrams (always use)
-- `conclusion.md` - Conclusion chapter template with synthesis and forward-looking structure (use if generating conclusion)
+- `conclusion.md` - Conclusion chapter template with synthesis and forward-looking structure (always use - generates conclusion.md)
 - `practice-exercise-examples.md` - Reference examples showing good practice exercise structure (read for inspiration)
 - `flow-diagram-examples.md` - Reference examples of Mermaid flow diagrams showing data flow patterns (read for inspiration)
 - `navigation-examples.md` - Reference examples showing proper navigation link formatting (read for guidance)
@@ -770,6 +777,8 @@ Claude:
 ✓ Created 02-user-service.md
 ✓ Created 03-data-repository.md
 ...
+✓ Created 09-response-handler.md
+✓ Created conclusion.md (Synthesis and next steps)
 
 ✅ Complete! Tutorial saved to ./tutorials
 
@@ -779,6 +788,7 @@ Files created:
 - styles/website.css (Custom styling)
 - 01-getting-started.md (Local setup guide with practice exercise)
 - 02-09 chapters covering core abstractions (each with practice exercises)
+- conclusion.md (Synthesis, next steps, and resources)
 
 Next steps:
 - Review the generated content
@@ -835,6 +845,10 @@ Claude:
   ✓ Stage 4-6: Generated 3 chapters
 
 ⏳ Creating top-level introduction and navigation...
+✓ Created top-level README.md (System overview)
+✓ Created 01-getting-started.md (Global setup)
+✓ Created conclusion.md (System-wide synthesis)
+✓ Created hierarchical SUMMARY.md
 
 ✅ Complete! Multi-module tutorial saved to ./tutorials
 
