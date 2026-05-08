@@ -460,9 +460,10 @@ After generating chapters, create the navigation and configuration files based o
 **Completion** (HonKit): Show summary with output directory, files created, stats, and preview instructions:
    ```
    Preview locally:
-   npm install -g honkit
    cd {output_dir}
-   honkit serve
+   npm install honkit
+   npm install honkit-plugin-mermaid-hybrid --save-dev
+   npx honkit serve
    ```
 
 ---
