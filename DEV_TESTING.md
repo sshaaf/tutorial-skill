@@ -2,8 +2,12 @@
 
 This package has two surfaces:
 
-- **Skill files**: installed to `.claude/tutorial/` in the project directory (what Claude reads)
-- **CLI**: ships from this repo’s `bin/cli.js` + `lib/` (what powers `init`, `preview`, `build`, `doctor`)
+- **Skill command**: `/tutorial build` - installed to `.claude/tutorial/SKILL.md` (what Claude reads and executes)
+- **CLI utilities**: `bin/cli.js` + `lib/` - standalone tools for HonKit operations (`init`, `preview`, `build`, `doctor`)
+
+**Important distinction**:
+- The skill provides only `/tutorial build` for generating tutorials in Claude Code
+- The CLI provides utilities for working with generated HonKit files (separate from the skill)
 
 During development, treat the git checkout as the source of truth:
 
@@ -14,25 +18,69 @@ During development, treat the git checkout as the source of truth:
 - Node + npm available on PATH
 - Network access for the first HonKit runtime install (`npm install` into `.claude/tutorial/.runtime/honkit`)
 
-## Fast loop (recommended)
+## Understanding the workflow
 
-Run from the repo root:
+```
+┌─────────────────────────────────────────────────────────────┐
+│ User workflow:                                               │
+│                                                              │
+│ 1. Install skill:                                           │
+│    npx @sshaaf/tutorial-skill install                       │
+│                                                              │
+│ 2. Generate tutorial (in Claude Code):                      │
+│    /tutorial build                                          │
+│    → Creates: ./docs/tutorial/*.md, SUMMARY.md, book.json  │
+│                                                              │
+│ 3. Preview locally (optional):                              │
+│    npx @sshaaf/tutorial-skill preview --dir ./docs/tutorial │
+│    → Serves at http://localhost:4000                        │
+└─────────────────────────────────────────────────────────────┘
+
+Developer workflow (testing before publish):
+  Replace `npx @sshaaf/tutorial-skill` with `node ./bin/cli.js`
+```
+
+## Testing the skill command
+
+Test `/tutorial build` in Claude Code after installing the skill:
 
 ```bash
+# Install skill to local project
+node ./bin/cli.js install
+
+# In Claude Code, test the skill
+/tutorial build ./src
+```
+
+## Testing CLI utilities (HonKit workflows)
+
+Test the standalone CLI tools from the repo root:
+
+```bash
+# Install HonKit runtime
 node ./bin/cli.js runtime install
+
+# Initialize HonKit files (creates README.md, SUMMARY.md, book.json)
 node ./bin/cli.js init --dir ./tutorials
+
+# Run diagnostics
 node ./bin/cli.js doctor --dir ./tutorials
+
+# Preview locally (serves at http://localhost:4000)
 node ./bin/cli.js preview --dir ./tutorials
 ```
 
 ### What “healthy” looks like
 
-- `doctor` exits `0`
-- Preview logs include plugin load lines similar to:
+**Skill command**:
+- `/tutorial build` generates complete tutorial with all files
+- Creates README.md, SUMMARY.md, book.json, chapters, and conclusion
 
-  - `plugin "mermaid-hybrid" is loaded`
-
+**CLI utilities**:
+- `doctor` exits `0` with all checks passing
+- `preview` logs include: `plugin “mermaid-hybrid” is loaded`
 - HonKit serves at `http://localhost:4000`
+- Mermaid diagrams render correctly in browser
 
 ## Publishing vs local CLI (`npx`)
 
@@ -58,32 +106,49 @@ node ./bin/cli.js runtime install
 
 ## Best practices
 
-- **Always run `doctor`** before claiming preview works; it separates “markdown exists” vs “runtime/plugins healthy”.
-- **Keep `book.json` managed by `init`** during iteration; don’t hand-edit unless you know the HonKit plugin names.
+**For skill testing**:
+- Test `/tutorial build` with various project types (Maven, npm, monorepo)
+- Verify multi-module detection prompts appear correctly
+- Check generated files include all required sections (practice exercises, diagrams, navigation)
+
+**For CLI testing**:
+- **Always run `doctor`** before claiming preview works; it separates “markdown exists” vs “runtime/plugins healthy”
+- **Keep `book.json` managed by `init`** during iteration; don’t hand-edit unless you know the HonKit plugin names
 - **Prefer upgrading the renderer when diagrams look wrong** before rewriting content:
-  - Complex diagrams + older renderers often fail partially (single box / truncated graph).
+  - Complex diagrams + older renderers often fail partially (single box / truncated graph)
 - **Separate failures**:
-  - Runtime/plugins (`doctor` / preview logs)
-  - Diagram syntax (browser devtools console errors from Mermaid)
+  - Runtime/plugins issues: use `doctor` and check preview logs
+  - Diagram syntax errors: check browser devtools console (Mermaid errors)
 
 ## Minimal troubleshooting
 
-1. Runtime missing:
+### Skill command issues
 
+**Problem**: `/tutorial build` not recognized in Claude Code
+```bash
+# Reinstall skill locally
+node ./bin/cli.js install
+# Then reload Claude Code
+```
+
+**Problem**: Generated tutorial missing sections
+- Check SKILL.md has latest templates
+- Verify templates exist in `.claude/tutorial/templates/honkit/`
+
+### CLI utility issues
+
+**Problem**: HonKit runtime missing
 ```bash
 node ./bin/cli.js runtime install
 ```
 
-2. `book.json` plugin mismatch:
-
+**Problem**: `book.json` plugin mismatch or missing files
 ```bash
 node ./bin/cli.js init --dir ./tutorials
 ```
 
-3. Published CLI stale:
-
+**Problem**: Published CLI stale (npx uses old version)
 ```bash
 npm view @sshaaf/tutorial-skill version
 ```
-
 If it’s older than your working checkout, use `node ./bin/cli.js …` until you publish.

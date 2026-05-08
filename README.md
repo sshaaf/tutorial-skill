@@ -26,7 +26,7 @@ npx @sshaaf/tutorial-skill install
 # 5. Preview the tutorial
 # Option A: View markdown files directly (VS Code, etc.)
 # Option B: Preview as HTML with HonKit
-/tutorial preview
+npx @sshaaf/tutorial-skill preview --dir ./docs/tutorial
 ```
 
 **What happens**:
@@ -59,20 +59,9 @@ Complete tutorial generation with chapters
 - **Time**: 10-30 minutes
 - **Output**: Multiple Markdown files + HonKit-ready docs scaffolding
 - **Use for**: Creating learning materials, documentation, training resources
+- **Supports**: Multi-module projects (Maven, npm workspaces, monorepos)
 
-### `/tutorial preview`
-Local tutorial preview with HonKit
-- **Time**: 5-30 seconds to start
-- **Output**: Local docs site (usually `http://localhost:4000`)
-- **Use for**: Reviewing generated docs before publishing
-
-### `/tutorial doctor`
-Diagnostics for local preview/runtime + docs scaffolding
-- **Time**: ~10-30 seconds
-- **Output**: Pass/fail checklist
-- **Use for**: Verifying HonKit runtime + `book.json` before publishing
-
-### Installation
+## Installation
 
 ```bash
 # Navigate to your project directory
@@ -83,10 +72,10 @@ npx @sshaaf/tutorial-skill install
 ```
 
 This creates `.claude/tutorial/` in your project directory with:
-- Skill definition (SKILL.md)
+- Skill definition (SKILL.md) - enables `/tutorial build` command
 - Templates for tutorial generation
-- CLI tools for preview/build
-- Bundled HonKit runtime (`.runtime/honkit`)
+- CLI tools (npx @sshaaf/tutorial-skill init/preview/build/doctor)
+- Bundled HonKit runtime (`.runtime/honkit`) for local HTML preview
 
 **Benefits of local installation**:
 - ✅ Version control templates with your project
@@ -184,12 +173,6 @@ npx @sshaaf/tutorial-skill update  # Updates only app-B
 
 # With output directory
 /tutorial build --output ./docs/tutorial
-
-# Preview generated tutorial in Claude mode
-/tutorial preview ./docs/tutorial
-
-# Diagnose local preview/runtime/docs scaffolding
-/tutorial doctor ./docs/tutorial
 
 # Initialize docs files for HonKit
 npx @sshaaf/tutorial-skill init --dir ./docs/tutorial

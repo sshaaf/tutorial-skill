@@ -72,11 +72,15 @@ your-project/
 
 ### HonKit local preview + diagnostics
 
-The skill supports `/tutorial preview` and `/tutorial doctor`, backed by a bundled HonKit runtime installed under:
+The skill generates HonKit-ready tutorial files. A bundled HonKit runtime is installed under:
 
 `.claude/tutorial/.runtime/honkit` (in your project directory)
 
 Diagram rendering uses **`honkit-plugin-mermaid-hybrid`** (newer Mermaid than legacy GitBook Mermaid plugins).
+
+Users can preview tutorials locally using the CLI:
+- `npx @sshaaf/tutorial-skill preview --dir ./docs/tutorial`
+- `npx @sshaaf/tutorial-skill doctor --dir ./docs/tutorial` (diagnostics)
 
 Maintainers should validate locally using the repo CLI (`./bin/cli.js`) — see `DEV_TESTING.md`.
 
@@ -94,21 +98,14 @@ After completing the analysis phase (Stage 3 of `/tutorial build`), the skill no
 
 This enhancement makes it easy to share and reuse architecture diagrams without having to manually copy/paste from the conversation.
 
-## Skill Modes
+## Skill Command
 
 ### Build Mode (`/tutorial build`)
 - 6-stage pipeline for comprehensive tutorial generation
 - Creates multi-chapter Markdown tutorials with HonKit-ready files
+- Supports multi-module projects (Maven, npm workspaces, monorepos)
+- Generates practice exercises, architecture diagrams, and navigation
 - Time: 10-30 minutes
-
-### Preview Mode (`/tutorial preview`)
-- Previews generated tutorials locally with bundled HonKit
-- Automatically prepares `README.md`, `SUMMARY.md`, and `book.json` if needed
-- Time: 5-30 seconds
-
-### Doctor Mode (`/tutorial doctor`)
-- Runs diagnostics for bundled HonKit runtime + docs scaffolding (`README.md`, `SUMMARY.md`, `book.json`)
-- Intended as the fastest “why isn’t preview working?” checklist
 
 ## Development Guidelines
 

@@ -1,6 +1,6 @@
 ---
 name: tutorial
-description: Generate comprehensive, chapter-based tutorials from any codebase with AI. Use "/tutorial build" to analyze code architecture and create beginner-friendly tutorial content. Use "/tutorial preview" to view generated tutorials locally with HonKit. Use "/tutorial doctor" to diagnose local preview/runtime issues. Works with any programming language. Triggers on requests about creating tutorials, analyzing code architecture, understanding codebases, or generating learning materials.
+description: Generate comprehensive, chapter-based tutorials from any codebase with AI. Use "/tutorial build" to analyze code architecture and create beginner-friendly tutorial content with practice exercises, architecture diagrams, and HonKit-ready files. Supports multi-module projects (Maven, npm workspaces, monorepos). Works with any programming language. Triggers on requests about creating tutorials, analyzing code architecture, understanding codebases, or generating learning materials.
 ---
 
 # Tutorial Generator
@@ -9,30 +9,21 @@ description: Generate comprehensive, chapter-based tutorials from any codebase w
 
 ### Overview
 
-This skill provides three modes for tutorial generation and management:
+This skill generates comprehensive, beginner-friendly tutorials from any codebase using a 6-stage pipeline.
 
-1. **`/tutorial build`** - Comprehensive tutorial generation (10-30 minutes, 6-stage pipeline)
-2. **`/tutorial preview`** - Local docs preview using bundled HonKit (5-30 seconds)
-3. **`/tutorial doctor`** - Diagnose docs/runtime setup issues (10-30 seconds)
+**Command**: `/tutorial build`
 
-### Argument Parsing
-
-When the skill is invoked, determine the mode and parse arguments:
-
-- **Mode detection**: Check if invoked as `/tutorial build`, `/tutorial preview`, or `/tutorial doctor`
-- **If no mode specified**: Default to build mode
-- **Supported arguments**:
+**Supported arguments**:
   - Path: `/tutorial build ./src/main/java`
   - Output: `/tutorial build --output ./docs`
   - Language: `/tutorial build --language python`
   - Focus: `/tutorial build --focus services`
-  - Preview/Doctor Path: `/tutorial preview ./docs/tutorial` or `/tutorial preview --path ./docs/tutorial`
 
 Parse arguments flexibly - accept both flags and positional arguments.
 
 ---
 
-### Mode 1: Build (`/tutorial build`)
+### Build Mode (`/tutorial build`)
 
 **Purpose**: Transform any codebase into comprehensive, beginner-friendly tutorials with architecture analysis.
 
@@ -605,39 +596,7 @@ After generating chapters, prepare for HonKit using the provided templates.
    - Copy `.claude/tutorial/templates/honkit/styles/website.css` to output directory's `styles/` folder
    - Creates `{output_dir}/styles/website.css` for custom HonKit styling
 
-**Completion**: Show summary with output directory, files created, stats, and next steps (review, preview with `/tutorial preview`).
-
----
-
-### Mode 2: Preview (`/tutorial preview`)
-
-**Purpose**: Preview generated tutorial docs locally using bundled HonKit.
-
-**Use cases**: Reviewing content, validating Mermaid diagrams, checking navigation, team demos
-
-**Workflow**:
-1. **Determine directory**: Use path from args, `--path` flag, or default to `./tutorials`
-2. **Confirm exists**: If directory missing, suggest running `/tutorial build` first
-3. **Serve docs**:
-   - Local dev: `node <path-to-repo>/bin/cli.js preview --dir {path}`
-   - Published: `npx @sshaaf/tutorial-skill@latest preview --dir {path}`
-   - Auto-creates/updates HonKit files if needed
-4. **Confirm**: Show preview URL (`http://localhost:4000`) and stop command (Ctrl+C)
-5. **If fails**: Suggest runtime repair or skill reinstall
-
----
-
-### Mode 3: Doctor (`/tutorial doctor`)
-
-**Purpose**: Diagnose local docs preview issues.
-
-**Workflow**:
-1. **Determine directory**: Use path from args, `--path` flag, or default to `./tutorials`
-2. **Run diagnostics**:
-   - Local dev: `node <path-to-repo>/bin/cli.js doctor --dir {path}`
-   - Published: `npx @sshaaf/tutorial-skill@latest doctor --dir {path}`
-3. **Report**: Show pass/fail results with specific failing checks and fixes
-4. **Common fixes**: Runtime repair, skill reinstall, init/preview commands
+**Completion**: Show summary with output directory, files created, stats, and next steps (review generated content, try practice exercises).
 
 ---
 
@@ -704,44 +663,6 @@ These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
 /tutorial build ./src/main/java --output ./tutorials --name "Spring Boot API" --audience intermediate
 ```
 
-### Preview Mode
-
-```bash
-# Preview default directory
-/tutorial preview
-
-# Preview specific directory
-/tutorial preview ./docs/tutorial
-
-# Preview with flag
-/tutorial preview --path ./docs/tutorial
-
-# Local dev (from repo)
-node ./bin/cli.js preview --dir ./docs/tutorial
-
-# Published version
-npx @sshaaf/tutorial-skill@latest preview --dir ./docs/tutorial
-```
-
-### Doctor Mode
-
-```bash
-# Diagnose default directory
-/tutorial doctor
-
-# Diagnose specific directory
-/tutorial doctor ./docs/tutorial
-
-# Diagnose with flag
-/tutorial doctor --path ./docs/tutorial
-
-# Local dev (from repo)
-node ./bin/cli.js doctor --dir ./docs/tutorial
-
-# Published version
-npx @sshaaf/tutorial-skill@latest doctor --dir ./docs/tutorial
-```
-
 ### Interactive Workflow
 
 ```
@@ -793,7 +714,7 @@ Files created:
 Next steps:
 - Review the generated content
 - Try the practice exercises in each chapter
-- Preview with: /tutorial preview ./tutorials
+- Preview locally: npx @sshaaf/tutorial-skill preview --dir ./tutorials
 ```
 
 ### Multi-Module Workflow
@@ -878,5 +799,5 @@ Total: 3 modules, 12 chapters across 3 services
 Next steps:
 - Review the generated content
 - Each module can be extracted as standalone tutorial
-- Preview with: /tutorial preview ./tutorials
+- Preview locally: npx @sshaaf/tutorial-skill preview --dir ./tutorials
 ```
