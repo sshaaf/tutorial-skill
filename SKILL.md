@@ -184,6 +184,9 @@ Parse arguments flexibly - accept both flags and positional arguments.
 - `{{TUTORIAL_STRUCTURE}}` - Numbered list of chapter titles with brief descriptions
 - `{{PREREQUISITES}}` - Bulleted list from metadata (programming knowledge, tools, concepts)
 - `{{TARGET_AUDIENCE}}` - 1-2 sentences describing intended audience based on difficulty level
+- `{{NEXT_CHAPTER_LINK}}` - Navigation link to first chapter (01-getting-started.md)
+
+**Navigation format**: `👉 **[Next: Chapter 1 - Getting Started](01-getting-started.md)**`
 
 Generate content that is beginner-friendly, encouraging, and sets clear expectations for what learners will accomplish.
 
@@ -241,6 +244,10 @@ Generate content that is beginner-friendly, encouraging, and sets clear expectat
 3. Verify the change appears in the logs/output
 4. Bonus: Change a configuration value and observe the effect
 
+**Navigation placeholders**:
+- `{{PREV_CHAPTER_LINK}}` - Link back to introduction: `👈 **[Previous: Introduction](index.md)**`
+- `{{NEXT_CHAPTER_LINK}}` - Link to first code chapter: `👉 **[Next: Chapter 2 - ComponentName](02-component-name.md)**`
+
 Use code blocks with proper syntax highlighting for all commands and configuration examples.
 
 **6c. Generate Code Chapters**: For each abstraction in order, create a chapter file (`{N:02d}-{chapter-name}.md`) using the template at `~/.claude/skills/tutorial/templates/honkit/chapter-template.md`:
@@ -268,7 +275,14 @@ Use code blocks with proper syntax highlighting for all commands and configurati
 - `{{EXPECTED_OUTCOME}}` - What learners should achieve after completing the exercise
 - `{{HINTS}}` - Bulleted list of helpful hints (2-3 hints)
 - `{{SOLUTION_LINK_OR_EXPLANATION}}` - Brief explanation or approach to solving the exercise
-- `{{NEXT_CHAPTER_PREVIEW}}` - 1-2 sentences previewing the next chapter
+- `{{PREV_CHAPTER_LINK}}` - Navigation link to previous chapter
+- `{{NEXT_CHAPTER_LINK}}` - Navigation link to next chapter
+
+**Navigation format**:
+- Previous: `👈 **[Previous: Chapter N - ComponentName](0N-component-name.md)**`
+- Next: `👉 **[Next: Chapter N - ComponentName](0N-component-name.md)**`
+- For last code chapter before conclusion: `👉 **[Next: Conclusion](conclusion.md)**`
+- If no conclusion, omit next link on last chapter
 
 **Chapter requirements**:
 - Use beginner-friendly language with analogies
@@ -316,6 +330,9 @@ Generate sequentially to allow cross-referencing. Show progress for each chapter
 - Additional resources
 - Contribution guidelines (if applicable)
 - Support channels
+
+**Navigation placeholder**:
+- `{{PREV_CHAPTER_LINK}}` - Link back to last code chapter: `👈 **[Previous: Chapter N - ComponentName](0N-component-name.md)**`
 
 #### Final Step: Create HonKit Navigation Files
 
@@ -405,6 +422,7 @@ All tutorial templates are organized by output format at `~/.claude/skills/tutor
 - `conclusion.md` - Optional conclusion chapter template (use if generating conclusion)
 - `practice-exercise-examples.md` - Reference examples showing good practice exercise structure (read for inspiration)
 - `flow-diagram-examples.md` - Reference examples of Mermaid flow diagrams showing data flow patterns (read for inspiration)
+- `navigation-examples.md` - Reference examples showing proper navigation link formatting (read for guidance)
 - `styles/website.css` - Custom CSS for HonKit rendering (always copy to output)
 
 These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
@@ -412,7 +430,7 @@ These templates use `{{PLACEHOLDER}}` syntax for dynamic values.
 **Usage pattern**:
 - **book.json, README.md, SUMMARY.md, index.md, chapter-template.md**: Always read the template, replace all placeholders with actual values from analysis/metadata, and write to output directory
 - **getting-started.md, conclusion.md**: Use as structural references, generate content based on actual analysis
-- **practice-exercise-examples.md, flow-diagram-examples.md**: Reference documents for inspiration - read to understand patterns and best practices
+- **practice-exercise-examples.md, flow-diagram-examples.md, navigation-examples.md**: Reference documents for inspiration - read to understand patterns and best practices
 - **styles/website.css**: Copy to `{output_dir}/styles/` without modification
 
 **Future template engines**: The templates directory is organized to support additional formats (e.g., `templates/mdbook/`, `templates/docusaurus/`) in future versions.

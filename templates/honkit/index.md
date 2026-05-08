@@ -38,4 +38,6 @@ Before starting this tutorial, you should have:
 
 ---
 
-**Ready to get started?** Head to the next chapter to set up your development environment and run the project locally.
+## Navigation
+
+{{NEXT_CHAPTER_LINK}}

@@ -65,4 +65,8 @@ Verify your setup by making a small change:
 
 ---
 
-**Next Steps**: Now that you have the project running, let's explore the codebase architecture in the next chapter.
+## Navigation
+
+{{PREV_CHAPTER_LINK}}
+
+{{NEXT_CHAPTER_LINK}}

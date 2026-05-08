@@ -71,6 +71,10 @@ Now it's your turn! Apply what you've learned with this hands-on exercise:
 
 **Solution**: {{SOLUTION_LINK_OR_EXPLANATION}}
 
-## What's Next?
+---
 
-{{NEXT_CHAPTER_PREVIEW}}
+## Navigation
+
+{{PREV_CHAPTER_LINK}}
+
+{{NEXT_CHAPTER_LINK}}
